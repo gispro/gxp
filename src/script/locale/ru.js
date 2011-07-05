@@ -8,7 +8,7 @@ GeoExt.Lang.add("ru", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Добавить слои",
         addActionTip: "Добавить слои",
-        addServerText: "Добавить новый сервер",
+        addServerText: "Добавить сервер",
         addButtonText: "Добавить слои",
         untitledText: "Безымянный",
         addLayerSourceErrorText: "Ошибка получения WMS ({msg}).\nПожалуйста проверьте ссылку и попробуйте еще раз.",
