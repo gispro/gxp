@@ -283,6 +283,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             Ext.onReady(function() {
                 this.initPortal();
                 done();
+				servicesLoader.load();
             }, this);
         });
         
