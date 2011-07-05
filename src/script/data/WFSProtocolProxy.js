@@ -101,9 +101,16 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
                 records = [records];
             }
             // get features from records
-            var features = new Array(records.length);
+            var features = new Array(records.length), feature;
             Ext.each(records, function(r, i) {
                 features[i] = r.getFeature();
+                feature = features[i];
+                feature.modified = Ext.apply(feature.modified || {}, {
+                    attributes: Ext.apply(
+                        (feature.modified && feature.modified.attributes) || {},
+                        r.modified
+                    )
+                });
             }, this);
 
             
@@ -114,12 +121,16 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
                 scope: scope
             };
 
-            this.protocol.commit(features, {
+            var options = {
                 callback: function(response) {
                     this.onProtocolCommit(response, o);
                 },
                 scope: this
-            });
+            };
+
+            Ext.applyIf(options, params);
+
+            this.protocol.commit(features, options);
         }
         
     },
@@ -146,6 +157,8 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
                     } else if(state == OpenLayers.State.INSERT) {
                         feature.fid = insertIds[j];
                         ++j;
+                    } else if (feature.modified) {
+                        feature.modified = {};
                     }
                     feature.state = null;
                 }
@@ -209,8 +222,15 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
             o.callback.call(o.scope, data, response.priv, true);
         } else {
             // TODO: determine from response if exception was "response" or "remote"
-            this.fireEvent("exception", this, "response", o.action, o, response);
-            o.callback.call(o.scope, [], response.priv, false);
+            var request = response.priv;
+            if (request.status >= 200 && request.status < 300) {
+                // service exception with 200
+                this.fireEvent("exception", this, "remote", o.action, o, response.error, o.records);
+            } else {
+                // non 200 status
+                this.fireEvent("exception", this, "response", o.action, o, request);
+            }
+            o.callback.call(o.scope, [], request, false);
         }
         
     }

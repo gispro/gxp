@@ -189,6 +189,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             baseParams: baseParams,
             format: this.format,
             autoLoad: !lazy,
+            layerParams: {exceptions: null},
             listeners: {
                 load: function() {
                     // The load event is fired even if a bogus capabilities doc 
@@ -211,22 +212,18 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     delete this.store;
                     var msg, details = "";
                     if (type === "response") {
-                        msg = "Invalid response from server.";
-                        var status = response.status;
-                        if (status >= 200 && status < 300) {
-                            // TODO: consider pushing this into GeoExt
-                            var report = error.arg.exceptionReport;
-                            if (report && report.exceptions) {
-                                details = [];
-                                Ext.each(report.exceptions, function(obj) {
-                                    details.push(obj.text);
-                                });
-                                details = details.join("\n");
-                            } else {
-                                details = "Unknown error (no exception report).";
-                            }
+                        if (typeof error == "string") {
+                            msg = error;
                         } else {
-                            details = "Status: " + status;
+                            msg = "Invalid response from server.";
+                            var status = response.status;
+                            if (status >= 200 && status < 300) {
+                                // TODO: consider pushing this into GeoExt
+                                var report = error.arg.exceptionReport;
+                                details = gxp.util.getOGCExceptionText(report);
+                            } else {
+                                details = "Status: " + status;
+                            }
                         }
                     } else {
                         msg = "Trouble creating layer store from response.";
