@@ -85,10 +85,6 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 "background": {
                     title: this.baseNodeText,
                     exclusive: true
-                },
-				"animation": 
-				{
-                    title: animationNodeText
                 }
             };
         }
@@ -112,22 +108,6 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         node.select();
                     });
                 }
-				if (record.get("group") === "animation") {
-					node.on(
-					{
-						checkchange : function(node, evtObj)
-							{
-								if ((selectedNode !== null) && (selectedNode !== node))
-									resetSelectedNode (node.getOwnerTree().getRootNode(), selectedNode);
-								if (node.isSelected())
-									selectedNode = node;
-								else
-									selectedNode = null;
-								if (selectedNode !== null)
-									showAnimWindow(node.getOwnerTree().getRootNode(), selectedNode);
-							},
-					});
-				}
             }
         };
         
