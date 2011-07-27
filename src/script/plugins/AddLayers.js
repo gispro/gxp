@@ -348,6 +348,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             xtype: "container",
             region: "center",
             layout: "vbox",
+            layoutConfig: {
+                align: 'stretch'
+            },
             items: [capGridPanel]
         };
         if (this.instructionsText) {
