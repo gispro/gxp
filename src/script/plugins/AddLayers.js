@@ -203,36 +203,80 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var source, data = [];        
         for (var id in this.target.layerSources) {
             source = this.target.layerSources[id];
-            if (source.store) {
-                data.push([id, source.title || id]);                
+			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            if (source.store && (id != 'rss') && (id != 'arcgis93')) {
+                data.push([id, source.title || id]);
             }
         }
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		// RSS
+		data.push(['rss', 'RSS']);
+		
+		// ArcGIS
+		if(app.map.arcgis_servers){for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+		{
+			title = app.map.arcgis_servers[idx].title;
+			data.push(['arcgis93_' + idx, title]);
+		}
+                };
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         var sources = new Ext.data.ArrayStore({
             fields: ["id", "title"],
             data: data
         });
 
         var expander = this.createExpander();
-        
         var addLayers = function() {
             var key = sourceComboBox.getValue();
-            var layerStore = this.target.mapPanel.layers;
-            var source = this.target.layerSources[key];
-            var records = capGridPanel.getSelectionModel().getSelections();
-            var record;
-            for (var i=0, ii=records.length; i<ii; ++i) {
-                record = source.createLayerRecord({
-                    name: records[i].get("name"),
-                    source: key
-                });
-                if (record) {
-                    if (record.get("group") === "background") {
-                        layerStore.insert(0, [record]);
-                    } else {
-                        layerStore.add([record]);
-                    }
-                }
-            }
+			var records = capGridPanel.getSelectionModel().getSelections();
+			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			if (key == 'rss')
+			{
+				var source     = this.target.layerSources['rss'];
+				var layerStore = this.target.mapPanel.layers;
+				for (var i=0, ii = records.length; i<ii; ++i) 
+				{
+					record = source.createRecord(records[i].get("title"), records[i].get("name"));
+					if (record)
+						layerStore.add([record]);
+				}
+			}
+			else if (key.indexOf ('arcgis93_') == 0)
+			{
+				var source     = this.target.layerSources['arcgis93']; 
+				var url        = source.getServerURL(sourceComboBox.getRawValue());
+				var layerStore = this.target.mapPanel.layers;
+				for (var i=0; i < records.length; i++) 
+				{
+					var curl  = url + '?layers=show:' + records[i].get("id");
+					var layer = source.createLayer(records[i].get("title"), curl);
+					record = source.createRecord(sourceComboBox.getRawValue(), layer);
+					if (record)
+						layerStore.add([record]);
+				}
+			}
+			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			else
+			{
+				var source     = this.target.layerSources[key];
+				var layerStore = this.target.mapPanel.layers;
+				var record;
+				for (var i=0, ii=records.length; i<ii; ++i) 
+				{
+					record = source.createLayerRecord({
+						name: records[i].get("name"),
+						source: key
+					});
+					if (record) {
+						if (record.get("group") === "background") {
+							layerStore.insert(0, [record]);
+						} else {
+							layerStore.add([record]);
+						}
+					}
+				}
+			}
         };
 
         var idx = 0;
@@ -243,20 +287,13 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 }
             }, this);
         }
-        
-        var store = this.target.layerSources[data[idx][0]].store;
-        if (store.getCount() === 0) {
-            // assume a lazy source
-            store.load();
-        }
 
         var capGridPanel = new Ext.grid.GridPanel({
-            store: store,
+            store: this.target.layerSources[data[idx][0]].store,
             autoScroll: true,
             flex: 1,
             autoExpandColumn: "title",
             plugins: [expander],
-            loadMask: true,
             colModel: new Ext.grid.ColumnModel([
                 expander,
                 {id: "title", header: this.panelTitleText, dataIndex: "title", sortable: true},
@@ -279,17 +316,33 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             mode: "local",
             value: data[idx][0],
             listeners: {
-                select: function(combo, record, index) {
-                    var source = this.target.layerSources[record.get("id")];
-                    capGridPanel.reconfigure(source.store, capGridPanel.getColumnModel());
-                    // TODO: remove the following when this Ext issue is addressed
-                    // http://www.extjs.com/forum/showthread.php?100345-GridPanel-reconfigure-should-refocus-view-to-correct-scroller-height&p=471843
-                    capGridPanel.getView().focusRow(0);
-                    if (source.store.getCount() === 0) {
-                        // assume a lazy source
-                        source.store.load();
-                    }
-                    this.setSelectedSource(source);
+                select: function(combo, record, index)
+				{
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					if (record.get("id") === 'rss')
+					{
+						var source = this.target.layerSources['rss'];
+						capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
+						capGridPanel.getView().focusRow(0);
+					}
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					else if (record.get("id").indexOf ('arcgis93_') == 0)
+					{
+						var source = this.target.layerSources['arcgis93'];
+                        var url = source.getLayersURL(record.get("title"));
+						capGridPanel.reconfigure(source.getLayersStore(url), capGridPanel.getColumnModel());
+						capGridPanel.getView().focusRow(0);
+					}
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					else
+					{
+						var source = this.target.layerSources[record.get("id")];
+						capGridPanel.reconfigure(source.store, capGridPanel.getColumnModel());
+						// TODO: remove the following when this Ext issue is addressed
+						// http://www.extjs.com/forum/showthread.php?100345-GridPanel-reconfigure-should-refocus-view-to-correct-scroller-height&p=471843
+						capGridPanel.getView().focusRow(0);
+						this.setSelectedSource(source);
+					}
                 },
                 scope: this
             }
