@@ -188,7 +188,7 @@ GeoExt.Lang.add("ru", {
     "gxp.FillSymbolizer.prototype": {
         fillText: "Заливка",
         colorText: "Цвет",
-        opacityText: "Непрозрачность"
+        opacityText: "Прозрачность"
     },
     
     "gxp.FilterBuilder.prototype": {
@@ -279,7 +279,7 @@ GeoExt.Lang.add("ru", {
         nameText: "Название",
         descriptionText: "Описание",
         displayText: "Отображение",
-        opacityText: "Непрозрачность",
+        opacityText: "Прозрачность",
         formatText: "Формат",
         transparentText: "Прозрачность",
         cacheText: "Кэш",
