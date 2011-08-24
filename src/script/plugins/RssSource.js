@@ -7,18 +7,12 @@
  */
 Ext.namespace("gxp.plugins");
 
-/** api: constructor
- *  .. class:: RssSource(config)
- *
- *    Plugin for using ArcGIS93Source layers with :class:`gxp.Viewer` instances.
- */
-
- gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
- {
+gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
+{
     ptype : "gxp_rsssource",
 	layersStore : new Ext.data.JsonStore({ 
 		root   : 'layers',
-		fields    : ['title', 'name']
+		fields : ['title', 'name']
 	}),
 	createRssLayer: function(img, url)
 	{
@@ -32,29 +26,12 @@ Ext.namespace("gxp.plugins");
 
 		return this.layersStore;
 	},
-    /** api: method[createStore]
-     *  Creates a store of layer records. Fires "ready" when store is loaded.
-     */
-    createStore: function()
-	{
-		this.store = new GeoExt.data.LayerStore({
-            fields: [
-                {name: "timer"   , type: "string"}, 
-                {name: "name"    , type: "string"},
-                {name: "title"   , type: "string"},
-                {name: "url"     , type: "string"},
-                {name: "icon"    , type: "string"},
-                {name: "fixed"   , type: "boolean", defaultValue: true},
-                {name: "selected", type: "boolean", defaultValue: true}
-            ]
-        });
 
-        this.fireEvent("ready", this);
-    },
     createLayerRecord: function(config)
 	{
 		return this.createRecord (config.title, config.name);
 	},
+	
     createRecord: function(title, name)
 	{
 		var record = new GeoExt.data.LayerRecord();
@@ -70,27 +47,23 @@ Ext.namespace("gxp.plugins");
 			}
 		}
 		record.setLayer(layer);
-		//record.set("name" , layer.name);
-		record.set("title", name);
-
-		record.set("selected", true);
-		record.set("source"  , 'rss');
-                record.set("url"     , layer.url);
+		record.set("name"  , title    );
+		record.set("source", 'rss'    );
+        record.set("url"   , layer.url);
 		record.data.layer = layer;
 		record.commit();
-		
+
 		return record;
     },
     getConfigForRecord: function(record) {
         var layer = record.getLayer();
         return {
-            source: record.get("source"),
-            name: record.get("name"),
-	    title: record.get("title"),
-            selected: record.get("selected"),
-            timer: record.get("timer"),
-            icon: record.get("icon"),
-            url: record.get("url")
+            source : record.get("source"),
+            name   : record.get("name"  ),
+			title  : record.get("title" ),
+            timer  : record.get("timer" ),
+            icon   : record.get("icon"  ),
+            url    : record.get("url"   )
         };
     }
 });
