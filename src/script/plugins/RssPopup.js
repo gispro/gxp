@@ -1,6 +1,78 @@
 ﻿var rssPopupWindow;
 var mapCenter = {px : new OpenLayers.Pixel(), treeLayers : 0};
 
+function RssOnMapResize () 
+{
+	GeoExt.MapPanel.superclass.onResize.apply(this, arguments);
+	this.updateMapSize();
+	if (rssPopupWindow)
+	{
+		var px = GeoExt.MapPanel.guess().map.getLayerPxFromLonLat(rssPopupWindow.lonlat);
+		var xy = calcPopupLocation(GeoExt.MapPanel.guess().map, px);
+		rssPopupWindow.setPagePosition(xy.x, xy.y);
+	}
+};
+
+function RssOnMapMoveend ()
+ {
+	this.fireEvent("aftermapmove");
+	if (rssPopupWindow)
+	{
+		var px = GeoExt.MapPanel.guess().map.getLayerPxFromLonLat(rssPopupWindow.lonlat);
+		var xy = calcPopupLocation(GeoExt.MapPanel.guess().map, px);
+		rssPopupWindow.setPagePosition(xy.x, xy.y);
+	}
+};
+
+function RssSetMapCenter()
+{
+	mapCenter.px         = GeoExt.MapPanel.guess().map.getLayerPxFromLonLat(GeoExt.MapPanel.guess().map.getCenter());
+	mapCenter.treeLayers = Ext.get("tree").dom.clientWidth;
+}
+
+function calcPopupLocation(map, px)
+{
+	var ox = Ext.get("tree"     ).dom.clientWidth ; 
+	var oy = Ext.get("paneltbar").dom.clientHeight; 
+
+	if (mapCenter.treeLayers !== ox)
+		RssSetMapCenter();
+
+	center = map.getLayerPxFromLonLat(map.getCenter());
+
+	if (ox === 0)
+		ox = 33;
+	else
+	    ox += 5;
+	
+	var map_move_x = 0;
+	var map_move_y = 0;
+	if ((mapCenter.px.x !== center.x) || (mapCenter.px.y !== center.y))
+	{
+		map_move_x = mapCenter.px.x - center.x;
+		map_move_y = mapCenter.px.y - center.y;
+	}
+	ox += map_move_x;
+	oy += map_move_y;
+
+	var y = px.y - 275 + oy; 
+	if (y < 0)
+		y = px.y + oy;
+	var x = px.x + ox;
+	if ((x + 350) > map.getSize().w)
+		x -= 350;
+	xy = new OpenLayers.Pixel();
+	xy.x = x;
+	xy.y = y;
+	return xy;
+}
+
+function RssMarkerClick(evt)
+{
+	this.layer.map.addPopup(this.createPopup()); 
+	OpenLayers.Event.stop(evt);
+};
+
 function RssParseData (ajaxRequest) 
 {
 	var doc = ajaxRequest.responseXML;
@@ -65,9 +137,7 @@ function RssParseData (ajaxRequest)
 		var marker = feature.createMarker();
 		marker.events.register('click', feature, this.markerClick);
 
-		mapCenter.px         = GeoExt.MapPanel.guess().map.getLayerPxFromLonLat(GeoExt.MapPanel.guess().map.getCenter());
-		mapCenter.treeLayers = Ext.get("tree").dom.clientWidth;
-
+		RssSetMapCenter();
 		this.addMarker(marker);
 	}
 	this.events.triggerEvent("loadend");
@@ -82,50 +152,25 @@ gxp.plugins.RssPopup = Ext.extend(OpenLayers.Popup,
         if (px == null)
 			px = this.events.object.feature.marker.icon.px;
 
-		var ox = Ext.get("tree"     ).dom.clientWidth ; 
-		var oy = Ext.get("paneltbar").dom.clientHeight; 
-
-		if (mapCenter.treeLayers !== ox)
-		{
-			mapCenter.px         = this.map.getLayerPxFromLonLat(this.map.getCenter());
-			mapCenter.treeLayers = Ext.get("tree").dom.clientWidth;
-		}
-
-		center = this.map.getLayerPxFromLonLat(this.map.getCenter());
-
-		if (ox === 0)
-			ox = 33;
-		var map_move_x = 0;
-		var map_move_y = 0;
-		if ((mapCenter.px.x !== center.x) || (mapCenter.px.y !== center.y))
-		{
-			map_move_x = mapCenter.px.x - center.x;
-			map_move_y = mapCenter.px.y - center.y;
-		}
-		ox += map_move_x;
-		oy += map_move_y;
-
-        if(!rssPopupWindow){  
+		if(!rssPopupWindow)
+		{  
 			rssPopupWindow = new Ext.Window({  
 				width       : 350,  
 				height      : 275,  
 				title       : 'RSS',
 				closeAction : 'hide',
 				autoScroll  : true,
+				lonlat      : null,
 				html        : this.parseContentHTML(this.contentHTML),
 				bodyStyle   : {'background-color': '#FFFFFF'}  
 			})        
         } else {
 			rssPopupWindow.body.update (this.parseContentHTML(this.contentHTML));
 		}
-		
-		var y = px.y - 275 + oy; 
-		if (y < 0)
-			y = px.y + oy;
-		var x = px.x + ox
-		if ((x + 350) > this.map.getSize().w)
-			x -= 350;
-		rssPopupWindow.setPagePosition(x, y);
+
+		rssPopupWindow.lonlat = this.lonlat;
+		xy = calcPopupLocation(this.map, px);
+		rssPopupWindow.setPagePosition(xy.x, xy.y);
 
         rssPopupWindow.show();
 		return null; 
