@@ -371,7 +371,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var newSourceWindow = new gxp.NewSourceWindow({
             modal: true,
             listeners: {
-                "server-added": function(url) {
+                "server-added": function(url, titleCustom) {
                     newSourceWindow.setLoading();
                     this.target.addLayerSource({
                         config: {url: url}, // assumes default of gx_wmssource
@@ -379,7 +379,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                             // add to combo and select
                             var record = new sources.recordType({
                                 id: id,
-                                title: this.target.layerSources[id].title || this.untitledText
+                                title: titleCustom || this.target.layerSources[id].title || this.untitledText
                             });
                             sources.insert(0, [record]);
                             sourceComboBox.onSelect(record, 0);
