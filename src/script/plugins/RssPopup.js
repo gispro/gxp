@@ -265,6 +265,7 @@ function RssPopupGetState()
         return state;
 };
 
+/*
 function RssPopupAddLegend (record, index)
 {
 //		if (record.getLayer().name.indexOf('Scale') === -1)  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -287,3 +288,4 @@ function RssPopupAddLegend (record, index)
 		}
 	}
 }
+*/
