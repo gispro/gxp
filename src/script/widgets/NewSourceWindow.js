@@ -80,17 +80,66 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
         this.addEvents("server-added");
 
+
+        this.serversStore = new Ext.data.SimpleStore({
+            fields: ['serverName', 'url'],
+            data : [
+                ["Сорок второй", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_42/wms"],
+                ["Сорок шестой", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_46/wms"],
+                ["Шестидесятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_60/wms"],
+                ["Шестьдесят первый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_61/wms"],
+                ["Шестьдесят второй", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_62/wms"],
+                ["Шестьдесят третий", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_63/wms"],
+                ["Шестьдесят четвертый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_64/wms"],
+                ["Шестьдесят пятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_65/wms"],
+                ["Шестьдесят шестой", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_66/wms"],
+                ["Шестьдесят восьмой", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_68/wms"],
+                ["Шестьдесят девятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_69/wms"],
+                ["Семидесятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_70/wms"]            ]
+        });
+        this.serversSelector = new Ext.form.ComboBox({
+            emptyText: "Введите или выберите",
+            displayField: 'serverName',
+            valueField: 'url',
+            editable: true,
+            triggerAction: 'all',
+            mode: 'local',
+            store: this.serversStore,
+            width: 200
+        });
+        this.serversSelector.on({
+            //click: this.stopMouseEvents,
+            //mousedown: this.stopMouseEvents,
+            select: function(combo, record, index) {
+                this.urlTextField.setValue(record.data.url);
+                this.titleTextField.setValue(record.data.serverName);
+            },
+            scope: this
+        });
+        
+
         this.urlTextField = new Ext.form.TextField({
             fieldLabel: "URL",
             allowBlank: false,
             width: 240,
             msgTarget: "under",
-            validator: this.urlValidator.createDelegate(this)
+            validator: this.urlValidator.createDelegate(this),
+            hidden: true
+        });
+
+        this.titleTextField = new Ext.form.TextField({
+            fieldLabel: "Title",
+            allowBlank: false,
+            width: 240,
+            msgTarget: "under",
+            hidden: true
         });
 
         this.form = new Ext.form.FormPanel({
             items: [
-                this.urlTextField
+                this.titleTextField,
+                this.urlTextField,
+                this.serversSelector
             ],
             border: false,
             labelWidth: 30,
@@ -115,7 +164,12 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                     // Clear validation before trying again.
                     this.error = null;
                     if (this.urlTextField.validate()) {
-                        this.fireEvent("server-added", this.urlTextField.getValue());
+                        this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue());
+                    }else{
+                        this.urlTextField.setValue(this.serversSelector.lastSelectionText);
+                        if (this.urlTextField.validate()) {
+                            this.fireEvent("server-added", this.urlTextField.getValue());
+                        }
                     }
                 },
                 scope: this
