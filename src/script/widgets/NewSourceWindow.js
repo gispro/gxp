@@ -59,7 +59,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
     /** api: config[width]
      * The width defaults to 300
      */
-    width: 300,
+    width: 600,
 
     /** api: config[closeAction]
      * The default closeAction is 'hide'
@@ -84,18 +84,24 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.serversStore = new Ext.data.SimpleStore({
             fields: ['serverName', 'url'],
             data : [
-                ["Сорок второй", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_42/wms"],
-                ["Сорок шестой", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_46/wms"],
-                ["Шестидесятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_60/wms"],
-                ["Шестьдесят первый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_61/wms"],
-                ["Шестьдесят второй", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_62/wms"],
-                ["Шестьдесят третий", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_63/wms"],
-                ["Шестьдесят четвертый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_64/wms"],
-                ["Шестьдесят пятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_65/wms"],
-                ["Шестьдесят шестой", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_66/wms"],
-                ["Шестьдесят восьмой", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_68/wms"],
-                ["Шестьдесят девятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_69/wms"],
-                ["Семидесятый", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_70/wms"]            ]
+                ["Прогноз метеорологических полей с высоким пространственным разрешением для Мирового океана, включая моря России, от 00 часов (ASCII файлы)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_42/wms"],
+                ["Прогноз параметров ветрового волнения в Мировом океане от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_46/wms"],
+                ["Глобальный анализ поля атмосферного давления на уровне моря от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_60/wms"],
+                ["Глобальный анализ поля атмосферного давления на уровне моря от 12 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_61/wms"],
+                ["Краткосрочный прогноз полей скорости ветра и течений Баренцева моря от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_62/wms"],
+                ["Краткосрочный прогноз полей скорости ветра и течений Баренцева моря от 12 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_63/wms"],
+                ["Краткосрочный прогноз метеорологических  полей для Черного моря от 00 час (сетка 10х10 км)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_64/wms"],
+                ["Краткосрочный прогноз метеорологических  полей для Каспийского моря от 00 час (сетка 10х10 км)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_65/wms"],
+                ["Краткосрочный прогноз метеорологических  полей для Азовского моря от 00 час (сетка 3х3 км)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_66/wms"],
+                ["Прогноз параметров ветрового волнения в Азовском море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_68/wms"],
+                ["Прогноз параметров ветрового волнения в Черном море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_69/wms"],
+                ["Прогноз параметров ветрового волнения в Каспийском море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_70/wms"]
+                ,["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 04 час ВСВ","http://gisbox.ru:8080/geoserver/geoserver/ru_hydrometcentre_114/wms"],
+                ["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 06 час ВСВ","http://gisbox.ru:8080/geoserver/geoserver/ru_hydrometcentre_115/wms"],
+                ["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 12 час ВСВ","http://gisbox.ru:8080/geoserver/geoserver/ru_hydrometcentre_116/wms"]
+        
+    
+]
         });
         this.serversSelector = new Ext.form.ComboBox({
             emptyText: "Введите или выберите",
@@ -105,7 +111,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             triggerAction: 'all',
             mode: 'local',
             store: this.serversStore,
-            width: 200
+            width: 500
         });
         this.serversSelector.on({
             //click: this.stopMouseEvents,
@@ -158,7 +164,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             }),
             new Ext.Toolbar.Fill(),
             new Ext.Button({
-                text: this.addServerText,
+                text: "Добавить сервис",// this.addServerText,
                 iconCls: "add",
                 handler: function() {
                     // Clear validation before trying again.
