@@ -96,9 +96,9 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                 ["Прогноз параметров ветрового волнения в Азовском море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_68/wms"],
                 ["Прогноз параметров ветрового волнения в Черном море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_69/wms"],
                 ["Прогноз параметров ветрового волнения в Каспийском море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_70/wms"]
-                ,["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 04 час ВСВ","http://gisbox.ru:8080/geoserver/geoserver/ru_hydrometcentre_114/wms"],
-                ["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 06 час ВСВ","http://gisbox.ru:8080/geoserver/geoserver/ru_hydrometcentre_115/wms"],
-                ["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 12 час ВСВ","http://gisbox.ru:8080/geoserver/geoserver/ru_hydrometcentre_116/wms"]
+                ,["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 04 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_114/wms"],
+                ["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 06 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_115/wms"],
+                ["Анализ и прогноз класса пожарной опасности в лесах по территории Росии от 12 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_116/wms"]
         
     
 ]
