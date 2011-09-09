@@ -316,6 +316,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             allowBlank: false,
             forceSelection: true,
             mode: "local",
+            width: 400,
             value: data[idx][0],
             listeners: {
                 select: function(combo, record, index)
@@ -375,13 +376,19 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 "server-added": function(url, titleCustom) {
                     newSourceWindow.setLoading();
+                    
+                    var conf = {url: url};
+                    if(titleCustom){
+                        conf.title = titleCustom;
+                    }
+                    
                     this.target.addLayerSource({
-                        config: {url: url}, // assumes default of gx_wmssource
+                        config: conf, // assumes default of gx_wmssource
                         callback: function(id) {
                             // add to combo and select
                             var record = new sources.recordType({
                                 id: id,
-                                title: titleCustom || this.target.layerSources[id].title || this.untitledText
+                                title: this.target.layerSources[id].title || this.untitledText
                             });
                             sources.insert(0, [record]);
                             sourceComboBox.onSelect(record, 0);
@@ -449,7 +456,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             closeAction: "hide",
             layout: "border",
             height: 300,
-            width: 450,
+            width: 750,
             modal: true,
             items: items,
             tbar: capGridToolbar,
