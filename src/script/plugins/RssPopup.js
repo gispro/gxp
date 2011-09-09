@@ -3,21 +3,6 @@ var rssVectors      = [];
 var selectControl   = null;
 var selectedFeature = null;
 
-function rssPopupGetInfoForClick(evt)
-{
-	if (selectedFeature != null)
-	{
-		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
-							parseRSSContentHTML( selectedFeature.attributes.data['contentHTML']), false);
-		selectControl.unselect(selectedFeature);
-		selectedFeature = null;
-	}
-
-	this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
-	OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
-	this.request(evt.xy, {});
-}
-	
 function parseRSSContentHTML (text)
 {
 	if (text)
@@ -45,26 +30,27 @@ function onFeatureSelect(feature)
 {
 	selectedFeature = feature;
 }
-function createRssVector (name, icon_url) 
+ function createRssVector (title, location, icon_url) 
+// function createRssVector (title, icon_url) 
 {
-	var rssVector = new OpenLayers.Layer.Vector(name,
+	var layer = new OpenLayers.Layer.Vector(title,
 		{
 			styleMap: new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
-						externalGraphic	: icon_url, 
-						graphicOpacity	: 1,
-						strokeWidth		: 2,
-						strokeColor		: '#47FFFF',
-						fillColor		: '#9dfdfd',
-						fillOpacity		: 0.4,
-						pointRadius		: 5
-                    }, OpenLayers.Feature.Vector.style["default"])
-					, {
+							externalGraphic	: icon_url, 
+							graphicOpacity	: 1,
+							strokeWidth		: 2,
+							strokeColor		: '#47FFFF',
+							fillColor		: '#9dfdfd',
+							fillOpacity		: 0.4,
+							pointRadius		: 5
+						}, OpenLayers.Feature.Vector.style["default"]),
+						{
 							rules: [
 								new OpenLayers.Rule({
 									name   : 'RSS',
 									title  : 'RSS',
-				                   symbolizer: { externalGraphic: icon_url }
+								symbolizer: { externalGraphic: icon_url }
 								})
 							]
 						}
@@ -72,12 +58,14 @@ function createRssVector (name, icon_url)
                     "select": new OpenLayers.Style({
                         externalGraphic : icon_url
                     })
-                })
+                }),
+			params : {FORMAT : 'image/png', TRANSPARENT : true, OPACITY : 1, LAYERS : location}
 		});
-	app.mapPanel.map.addLayer(rssVector);
-	return rssVector;
+	app.mapPanel.map.addLayer(layer);
+	return layer;
 }
 
+// extend OpenLayers.Layer.GeoRSS.parseData
 function RssPopupParseData (ajaxRequest) 
 {
 	var doc = ajaxRequest.responseXML;
@@ -111,6 +99,8 @@ function RssPopupParseData (ajaxRequest)
 
 	var rssVector  = null;
 	var style_mark = null;
+	
+//	console.log ('~~~~~~~ RssPopupParseData ~~~~~~~~~~~~ : ' + name);
 	for (var i=0, len=features.length; i<len; i++)
 	{
 		var data = {};
@@ -125,7 +115,8 @@ function RssPopupParseData (ajaxRequest)
 		if (feature.geometry instanceof OpenLayers.Geometry.Polygon)
 		{
 			if (rssVector == null)
-				rssVector = createRssVector(name, null);
+				rssVector = createRssVector(name, this.location, null);
+//				rssVector = createRssVector(name, null);
 			rssVector.addFeatures(features);
 		}
 		else if (feature.geometry instanceof OpenLayers.Geometry.Point)
@@ -136,6 +127,7 @@ function RssPopupParseData (ajaxRequest)
 
 			data.title = name;
 			data.description = description;
+			data.properties = "gxp_wmslayerpanel";
 
 			var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
 			contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
@@ -147,8 +139,26 @@ function RssPopupParseData (ajaxRequest)
 
 			if (rssVector == null)
 			{
-				rssVector = createRssVector(name, data.icon.url);
-				
+				var records = app.mapPanel.layers;
+				var record  = null;
+
+				if (records.data.items.length > 0)
+				{
+					for (var i = 0; i < records.data.items.length; i++)
+					{
+//						if (records.data.items[i].data['name'] === name)
+						if (records.data.items[i].data['title'] === name)
+						{
+							record = records.data.items[i];
+							break;
+						}
+					}
+				};
+//				rssVector = createRssVector(name, data.icon.url);
+				rssVector = createRssVector(name, this.location, data.icon.url);
+				if (rssVector && record)
+					record.data.layer = rssVector;
+					
 				rssVectors.push(rssVector)
 				if (selectControl != null)
 					this.map.removeControl(selectControl);
@@ -160,21 +170,26 @@ function RssPopupParseData (ajaxRequest)
 			var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
 			var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
 			rssVector.addFeatures([new OpenLayers.Feature.Vector(point, {title: name, data : data}, markerStyle)]);
-			}
+		}
 	}
 	this.events.triggerEvent("loadend");
 };
-/*
- vector_layer = new OpenLayers.Layer.Vector("More Advanced Vector Layer",{
-              protocol: new OpenLayers.Protocol.HTTP({
-                url: 'admpol8000.geojson',
-                format: new OpenLayers.Format.GeoJSON({
-                'internalProjection': new OpenLayers.Projection("EPSG:102012"),
-                'externalProjection': new OpenLayers.Projection("EPSG:4326")})
-              }),
-              strategies: [new OpenLayers.Strategy.Fixed()]
-             });
-*/
+
+// extend OpenLayers.Control.WMSGetFeatureInfo.getInfoForClick
+function rssPopupGetInfoForClick(evt)
+{
+	if (selectedFeature != null)
+	{
+		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
+							parseRSSContentHTML( selectedFeature.attributes.data['contentHTML']), false);
+		selectControl.unselect(selectedFeature);
+		selectedFeature = null;
+	}
+
+	this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
+	OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
+	this.request(evt.xy, {});
+}
 
 // extend GeoExt.tree.LayerNode.render
 function RssPopupLayerNodeRender (bulkRender)
@@ -230,7 +245,7 @@ function RssPopupLayerNodeRender (bulkRender)
 	}
  };
  
-// extend gxp.Viewer.getState()
+// extend gxp.Viewer.getState
 function RssPopupGetState()
  {
         // start with what was originally given
@@ -265,27 +280,96 @@ function RssPopupGetState()
         return state;
 };
 
-/*
-function RssPopupAddLegend (record, index)
+function rssPopupAddActions()
 {
-//		if (record.getLayer().name.indexOf('Scale') === -1)  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		if (record.getLayer().name.indexOf(TEMPL_LAYER_ANIMATION) === -1)  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//	console.log ('RssSourceAddLegend : ' + record);
-	if (this.filter(record) === true)
-	{
-		var layer = record.getLayer();
-		index = index || 0;
-		var legend;
-		var types = GeoExt.LayerLegend.getTypes(record, this.preferredTypes);
-		if(layer.displayInLayerSwitcher && !record.get('hideInLegend') && types.length > 0)
-		{
-			this.insert(index, {
-						xtype: types[0],
-						id: this.getIdForLayer(layer),
-						layerRecord: record,
-						hidden: !((!layer.map && layer.visibility) || (layer.getVisibility() && layer.calculateInRange()))
-			});
-		}
-	}
-}
+	var selectedLayer;
+	var actions = gxp.plugins.RemoveLayer.superclass.addActions.apply(this, [{
+            menuText: this.removeMenuText,
+            iconCls: "gxp-icon-removelayers",
+            disabled: true,
+            tooltip: this.removeActionTip,
+            handler: function()
+			{
+                var record = selectedLayer;
+				// console.log ('rssPopupAddActions.handler - ' + record + ', ' + this.target.mapPanel.layers);
+                if(record)
+				{
+//					var title = record.data['title'];
+//					console.log ('rssPopupAddActions.handler - ' + record + ', ' + record.data.layer);
+//					record.data.layer.visibility = false;
+
+                    this.target.mapPanel.layers.remove(record);
+/*
+					for (var i = 0; i < this.target.mapPanel.layers.data.items.length; i++)
+					{
+						if (this.target.mapPanel.layers.data.items[i].data['title'] === title)
+						{
+//							console.log ('rssPopupAddActions.handler - ' + this.target.mapPanel.layers + ', title = ' + title);
+							this.target.mapPanel.layers.data.items[i].visibility = false;
+							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
+							break;
+						}
+					}
+*/					
+/*					
+					for (var i = 0; i < this.target.mapPanel.map.layers.length; i++)
+					{
+						if (this.target.mapPanel.map.layers[i].name === title)
+						{
+							console.log ('rssPopupAddActions.handler - ' + this.target.mapPanel.map.layers[i].CLASS_NAME + ', title = ' + 
+							                                               this.target.mapPanel.map.layers[i].name);
+							this.target.mapPanel.layers.data.items[i].visibility = false;
+							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
+//							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
+//							break;
+
+//				rssVectors.push(rssVector)
+//				if (selectControl != null)
+//					this.map.removeControl(selectControl);
+
+//				selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
+//				this.map.addControl(selectControl);
+//				selectControl.activate();
+						}
+					}
 */
+/*
+					for (var i = 0; i < rssVectors.length; i++)
+					{
+						if (rssVectors[i].name === title)
+						{
+							// this.target.mapPanel.map.removeLayer(rssVectors[1]);
+							app.mapPanel.map.removeLayer(rssVectors[i]);
+							rssVectors.splice(i,1);
+							if (selectControl != null)
+								this.target.mapPanel.map.removeControl(selectControl);
+
+							selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
+							this.target.mapPanel.map.addControl(selectControl);
+							selectControl.activate();
+							break;
+						}
+					}
+*/					
+                }
+            },
+            scope: this
+	}]);
+	var removeLayerAction = actions[0];
+
+	this.target.on("layerselectionchange", function(record)
+		{
+			selectedLayer = record;
+			removeLayerAction.setDisabled(this.target.mapPanel.layers.getCount() <= 1 || !record);
+        }, this);
+	var enforceOne = function(store)
+		{
+			removeLayerAction.setDisabled(!selectedLayer || store.getCount() <= 1);
+        }
+	this.target.mapPanel.layers.on({
+		"add": enforceOne,
+		"remove": enforceOne
+	});
+	return actions;
+}
+

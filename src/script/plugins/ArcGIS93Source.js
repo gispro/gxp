@@ -150,15 +150,15 @@ Ext.namespace("gxp.plugins");
     getConfigForRecord: function(record) {
         var layer = record.getLayer();
         return {
-            source: record.get("source"),
-            name: record.get("name"),
-            title: record.get("title"),
-            visibility: layer.getVisibility(),
-            opacity: layer.opacity || undefined,
-            group: record.get("group"),
-            fixed: record.get("fixed"),
-            selected: record.get("selected"),
-            url: record.get("url")
+            source     : record.get("source"  ),
+            name       : record.get("name"    ),
+            title      : record.get("title"   ),
+            group      : record.get("group"   ),
+            fixed      : record.get("fixed"   ),
+            selected   : record.get("selected"),
+            url        : record.get("url"     ),
+            visibility : layer.getVisibility(),
+            opacity    : layer.opacity || undefined
         };
     }
 });

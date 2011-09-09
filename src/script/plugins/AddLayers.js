@@ -213,12 +213,14 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 		data.push(['rss', 'RSS']);
 		
 		// ArcGIS
-		if(app.map.arcgis_servers){for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+		if(app.map.arcgis_servers)
 		{
-			title = app.map.arcgis_servers[idx].title;
-			data.push(['arcgis93_' + idx, title]);
-		}
-                };
+			for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+			{
+				title = app.map.arcgis_servers[idx].title;
+				data.push(['arcgis93_' + idx, title]);
+			}
+		};
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         var sources = new Ext.data.ArrayStore({
