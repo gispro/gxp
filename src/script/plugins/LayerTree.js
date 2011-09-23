@@ -85,7 +85,13 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 "background": {
                     title: this.baseNodeText,
                     exclusive: true
+                },
+                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                "animation" : 
+                {
+                    title : '\u0410\u043D\u0438\u043C\u0430\u0446\u0438\u044F' // Анимация
                 }
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             };
         }
     },
@@ -108,6 +114,26 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         node.select();
                     });
                 }
+                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                if (record.get("group") === "animation")
+                {
+                    node.on(
+                    {
+                        checkchange : function(node, evtObj)
+                        {
+                            if ((selectedNode !== null) && (selectedNode !== node))
+                                resetSelectedNode (node.getOwnerTree().getRootNode(), selectedNode);
+                            if (node.isSelected())
+                                selectedNode = node;
+                            else
+                                selectedNode = null;
+                            if (selectedNode !== null)
+                                showAnimWindow(node.getOwnerTree().getRootNode(), selectedNode);
+                        //								alert('LayerTree.addListeners : node.on.checkchange - node = ' + node.layer.name + ', isSelected = ' + node.isSelected());
+                        }
+                    });
+                }
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             }
         };
         
@@ -125,7 +151,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         var groupConfig, defaultGroup = this.defaultGroup;
         for (var group in this.groups) {
             groupConfig = typeof this.groups[group] == "string" ?
-                {title: this.groups[group]} : this.groups[group];
+            {
+                title: this.groups[group]
+                } : this.groups[group];
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: groupConfig.title,
                 iconCls: "gxp-folder",
@@ -133,12 +161,17 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 group: group == defaultGroup ? undefined : group,
                 loader: new GeoExt.tree.LayerLoader({
                     baseAttrs: groupConfig.exclusive ?
-                        {checkedGroup: group} : undefined,
+                    {
+                        checkedGroup: group
+                    } : undefined,
                     store: this.target.mapPanel.layers,
                     filter: (function(group) {
                         return function(record) {
-                            return (record.get("group") || defaultGroup) == group &&
+                            if(record)
+                                return (record.get("group") || defaultGroup) == group &&
                                 record.getLayer().displayInLayerSwitcher == true;
+                            else
+                                return null;
                         };
                     })(group),
                     createNode: function(attr) {

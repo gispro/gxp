@@ -16,9 +16,15 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 	}),
 	createRssLayer: function(img, url)
 	{
-		var icon  = new OpenLayers.Icon(img, new OpenLayers.Size(21,25));
-		var parts = url.split("/");            
-		return new OpenLayers.Layer.GeoRSS (parts[parts.length-1], url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': icon});
+            var icon  = new OpenLayers.Icon(img, new OpenLayers.Size(21,25));
+            var parts = (url?url.split("/"):null) ;
+            var name;
+            if (parts == null){
+                name = "Unreachable";
+            }else{
+                name = parts[parts.length-1];
+            }
+            return new OpenLayers.Layer.GeoRSS (name, url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': icon});
 	},
 	getLayersStore : function ()
 	{
@@ -49,7 +55,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 		record.setLayer(layer);
 		record.set("name"  , title    );
 		record.set("source", 'rss'    );
-        record.set("url"   , layer.url);
+        if(layer)record.set("url"   , layer.url);
 		record.data.layer = layer;
 		record.commit();
 
