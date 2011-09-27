@@ -259,17 +259,20 @@ function RssPopupGetState()
 	// include all layer config (and add new sources)
 	this.mapPanel.layers.each(function(record){
 		var layer = record.getLayer();
-		if (layer.displayInLayerSwitcher && (layer.CLASS_NAME  !== 'OpenLayers.Layer.Vector'))
+		if (layer.displayInLayerSwitcher)
 		{
 			var id = record.get("source");
-			var source = this.layerSources[id];
-			if (!source) {
-				throw new Error("Could not find source for layer '" + record.get("name") + "'");
-			}
-			// add layer
-			state.map.layers.push(source.getConfigForRecord(record));
-			if (!state.sources[id]) {
-				state.sources[id] = Ext.apply({}, source.initialConfig);
+			if (id)
+			{
+				var source = this.layerSources[id];
+				if (!source) {
+					throw new Error("Could not find source for layer '" + record.get("name") + "'");
+				}
+				// add layer
+				state.map.layers.push(source.getConfigForRecord(record));
+				if (!state.sources[id]) {
+					state.sources[id] = Ext.apply({}, source.initialConfig);
+				}
 			}
 		}
 	}, this);

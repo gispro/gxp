@@ -325,8 +325,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 					if (record.get("id") === 'rss')
 					{
 						var source = this.target.layerSources['rss'];
-						capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
-						capGridPanel.getView().focusRow(0);
+						if (source)
+						{
+							capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
+							capGridPanel.getView().focusRow(0);
+						}						
 					}
 					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					else if (record.get("id").indexOf ('arcgis93_') == 0)
