@@ -1,7 +1,8 @@
-﻿var wmsTool         = null;
-var rssVectors      = [];
-var selectControl   = null;
-var selectedFeature = null;
+﻿var wmsTool          = null;
+var rssVectors       = [];
+// var selectedControls = [];
+var selectControl    = null;
+var selectedFeature  = null;
 
 function parseRSSContentHTML (text)
 {
@@ -28,10 +29,12 @@ function parseRSSContentHTML (text)
 
 function onFeatureSelect(feature)
 {
+	console.log ('onFeatureSelect : feature = ' + feature + ', wmsTool = ' + wmsTool);
 	selectedFeature = feature;
 }
- function createRssVector (title, location, icon_url) 
+
 // function createRssVector (title, icon_url) 
+function createRssVector (title, location, icon_url) 
 {
 	var layer = new OpenLayers.Layer.Vector(title,
 		{
@@ -166,6 +169,7 @@ function RssPopupParseData (ajaxRequest)
 				selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
 				this.map.addControl(selectControl);
 				selectControl.activate();
+//				selectedControls.push(selectControl);
 			}
 			var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
 			var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
@@ -176,8 +180,9 @@ function RssPopupParseData (ajaxRequest)
 };
 
 // extend OpenLayers.Control.WMSGetFeatureInfo.getInfoForClick
-function rssPopupGetInfoForClick(evt)
+function RssPopupGetInfoForClick(evt)
 {
+	console.log ('rssPopupGetInfoForClick ...');
 	if (selectedFeature != null)
 	{
 		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
@@ -193,7 +198,8 @@ function rssPopupGetInfoForClick(evt)
 
 // extend GeoExt.tree.LayerNode.render
 function RssPopupLayerNodeRender (bulkRender)
- {
+{
+//	console.log ('RssPopupLayerNodeRender ...');
 	var layer = this.layer instanceof OpenLayers.Layer && this.layer;
 	if (layer.id.indexOf ('OpenLayers.Layer.GeoRSS') === -1)
 	{
@@ -247,41 +253,41 @@ function RssPopupLayerNodeRender (bulkRender)
  
 // extend gxp.Viewer.getState
 function RssPopupGetState()
- {
-        // start with what was originally given
-        var state = Ext.apply({}, this.initialConfig);
+{
+	// start with what was originally given
+	var state = Ext.apply({}, this.initialConfig);
         
-        // update anything that can change
-        var center = this.mapPanel.map.getCenter();
-        Ext.apply(state.map, {
-            center: [center.lon, center.lat],
-            zoom: this.mapPanel.map.zoom,
-            layers: []
-        });
+	// update anything that can change
+	var center = this.mapPanel.map.getCenter();
+	Ext.apply(state.map, {
+		center: [center.lon, center.lat],
+		zoom: this.mapPanel.map.zoom,
+		layers: []
+	});
         
-        // include all layer config (and add new sources)
-        this.mapPanel.layers.each(function(record){
-            var layer = record.getLayer();
-            if (layer.displayInLayerSwitcher && (layer.CLASS_NAME  !== 'OpenLayers.Layer.Vector'))
-			{
-                var id = record.get("source");
-                var source = this.layerSources[id];
-                if (!source) {
-                    throw new Error("Could not find source for layer '" + record.get("name") + "'");
-                }
-                // add layer
-                state.map.layers.push(source.getConfigForRecord(record));
-                if (!state.sources[id]) {
-                    state.sources[id] = Ext.apply({}, source.initialConfig);
-                }
-            }
-        }, this);
-        
-        return state;
+	// include all layer config (and add new sources)
+	this.mapPanel.layers.each(function(record){
+		var layer = record.getLayer();
+		if (layer.displayInLayerSwitcher && (layer.CLASS_NAME  !== 'OpenLayers.Layer.Vector'))
+		{
+			var id = record.get("source");
+			var source = this.layerSources[id];
+			if (!source) {
+				throw new Error("Could not find source for layer '" + record.get("name") + "'");
+			}
+			// add layer
+			state.map.layers.push(source.getConfigForRecord(record));
+			if (!state.sources[id]) {
+				state.sources[id] = Ext.apply({}, source.initialConfig);
+			}
+		}
+	}, this);
+	return state;
 };
 
-function rssPopupAddActions()
+function RssPopupAddActions()
 {
+//	console.log ('RssPopupAddActions ...');
 	var selectedLayer;
 	var actions = gxp.plugins.RemoveLayer.superclass.addActions.apply(this, [{
             menuText: this.removeMenuText,
@@ -291,66 +297,70 @@ function rssPopupAddActions()
             handler: function()
 			{
                 var record = selectedLayer;
-				// console.log ('rssPopupAddActions.handler - ' + record + ', ' + this.target.mapPanel.layers);
+//				console.log ('rssPopupAddActions.handler - ' + record + ', ' + this.target.mapPanel.layers);
                 if(record)
 				{
-//					var title = record.data['title'];
-//					console.log ('rssPopupAddActions.handler - ' + record + ', ' + record.data.layer);
+					var title = record.data['title'];
+//					console.log ('0. this.target.mapPanel.layers.data.items.length = ' + this.target.mapPanel.layers.data.items.length);
+//					console.log ('0. this.target.mapPanel.map.layers.length = ' + this.target.mapPanel.map.layers.length);
+//					console.log ('rssPopupAddActions.handler : record = ' + record + ', title = ' + title + ', layer = ' + record.data.layer);
 //					record.data.layer.visibility = false;
 
                     this.target.mapPanel.layers.remove(record);
-/*
-					for (var i = 0; i < this.target.mapPanel.layers.data.items.length; i++)
-					{
-						if (this.target.mapPanel.layers.data.items[i].data['title'] === title)
-						{
-//							console.log ('rssPopupAddActions.handler - ' + this.target.mapPanel.layers + ', title = ' + title);
-							this.target.mapPanel.layers.data.items[i].visibility = false;
-							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
-							break;
-						}
-					}
-*/					
-/*					
-					for (var i = 0; i < this.target.mapPanel.map.layers.length; i++)
-					{
-						if (this.target.mapPanel.map.layers[i].name === title)
-						{
-							console.log ('rssPopupAddActions.handler - ' + this.target.mapPanel.map.layers[i].CLASS_NAME + ', title = ' + 
-							                                               this.target.mapPanel.map.layers[i].name);
-							this.target.mapPanel.layers.data.items[i].visibility = false;
-							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
-//							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
-//							break;
 
-//				rssVectors.push(rssVector)
-//				if (selectControl != null)
-//					this.map.removeControl(selectControl);
-
-//				selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
-//				this.map.addControl(selectControl);
-//				selectControl.activate();
-						}
-					}
-*/
-/*
+//					console.log ('0. rssVectors.length = ' + rssVectors.length);
 					for (var i = 0; i < rssVectors.length; i++)
 					{
 						if (rssVectors[i].name === title)
 						{
 							// this.target.mapPanel.map.removeLayer(rssVectors[1]);
-							app.mapPanel.map.removeLayer(rssVectors[i]);
-							rssVectors.splice(i,1);
-							if (selectControl != null)
-								this.target.mapPanel.map.removeControl(selectControl);
+//							app.mapPanel.map.removeLayer(rssVectors[i]);
+//							if (selectControl != null)
+//								this.target.mapPanel.map.removeControl(selectControl);
 
-							selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
-							this.target.mapPanel.map.addControl(selectControl);
-							selectControl.activate();
+//							selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
+//							this.target.mapPanel.map.addControl(selectControl);
+//							selectControl.activate();
+							
+//							app.mapPanel.map.removeControl(selectedControls[i]);
+							rssVectors      .splice(i,1);
+//							selectedControls.splice(i,1);
 							break;
 						}
 					}
-*/					
+//					console.log ('1. rssVectors.length = ' + rssVectors.length);
+					
+//					for (var i = 0; i < this.target.mapPanel.layers.data.items.length; i++)
+					for (var i = (this.target.mapPanel.layers.data.items.length - 1); i >= 0 ; i--)
+					{
+						if (this.target.mapPanel.layers.data.items[i].data['title'] === title)
+						{
+//							console.log ('RssPopupAddActions.handler - ' + this.target.mapPanel.layers + ', title = ' + title);
+							this.target.mapPanel.layers.data.items[i].visibility = false;
+							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
+//							break;
+						}
+					}
+					
+//					for (var i = 0; i < this.target.mapPanel.map.layers.length; i++)
+					var deleted = false;
+					for (var i = (this.target.mapPanel.map.layers.length - 1); i >= 0; i--)
+					{
+						if (this.target.mapPanel.map.layers[i].name === title)
+						{
+//							console.log ('RssPopupAddActions.handler - ' + this.target.mapPanel.map.layers[i].CLASS_NAME + ', title = ' + 
+//							                                               this.target.mapPanel.map.layers[i].name);
+							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
+							deleted = true;
+						}
+						if (!deleted && this.target.mapPanel.map.layers[i].CLASS_NAME === 'OpenLayers.Layer.Vector.RootContainer')
+						{
+							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
+							deleted = false;
+						}
+					}
+//					console.log ('1. this.target.mapPanel.layers.data.items.length = ' + this.target.mapPanel.layers.data.items.length);
+//					console.log ('1. this.target.mapPanel.map.layers.length = ' + this.target.mapPanel.map.layers.length);
                 }
             },
             scope: this
@@ -373,3 +383,50 @@ function rssPopupAddActions()
 	return actions;
 }
 
+// extend GeoExt.tree.LayerLoader
+function RsspopupAddLayerNode (node, layerRecord, index)
+{
+	index = index || 0;
+	if (this.filter(layerRecord) === true)
+	{
+		var child = this.createNode({
+			nodeType: 'gx_layer',
+			layer: layerRecord.getLayer(),
+			layerStore: this.store
+		});
+		if (child)
+		{
+			var sibling = node.item(index);
+			if (sibling) 
+			{
+				if (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME)
+				{
+//					if (node.parentNode.childNodes[0].childNodes.length > 0)
+					var isPresent = false;
+					if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
+					{
+//						console.log ('0. RsspopupAddLayerNode : !' + node.parentNode.childNodes[0].childNodes.length);
+//						console.log ('0. RsspopupAddLayerNode : !' + sibling.parentNode.childNodes.length);
+						for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
+						{
+							if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
+							{
+//								console.log ('1. RsspopupAddLayerNode : !' +  sibling.parentNode.childNodes[i].layer.name);
+								isPresent = true;
+								break;
+							}
+						}
+					}
+//					if (child.layer.name !== sibling.layer.name)
+					if (!isPresent)
+						node.insertBefore(child, sibling);
+//					console.log ('2. RsspopupAddLayerNode : !' + child.layer.name + '!, !' + sibling.layer.name + '!');
+				} else
+					node.insertBefore(child, sibling);
+			} else {
+				node.appendChild(child);
+			}
+			child.on("move", this.onChildMove, this);
+		}
+	}
+}

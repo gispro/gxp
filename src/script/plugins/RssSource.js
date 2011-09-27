@@ -78,6 +78,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 
 //				layer = new OpenLayers.Layer.GeoRSS (parts[parts.length-1], url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': icon});
 				layer = new OpenLayers.Layer.GeoRSS (name, url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': icon});
+//				console.log ('name = ' + name + ', url = ' + url);
 /*				
 				layer = new OpenLayers.Layer.Vector(title,
 						{

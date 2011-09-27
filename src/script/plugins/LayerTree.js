@@ -163,11 +163,19 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                     store: this.target.mapPanel.layers,
                     filter: (function(group) {
                         return function(record) {
-                            return (record.get("group") || defaultGroup) == group &&
-                                record.getLayer().displayInLayerSwitcher == true;
+							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							if (record)
+								return (record.get("group") || defaultGroup) == group && record.getLayer().displayInLayerSwitcher == true;
+							else
+							   return null;
+							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         };
                     })(group),
                     createNode: function(attr) {
+						//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+						if (attr.layer.CLASS_NAME === 'OpenLayers.Layer.GeoRSS')
+							return null;
+						//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         attr.uiProvider = LayerNodeUI;
                         var layer = attr.layer;
                         var store = attr.layerStore;
@@ -185,7 +193,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                             }
                         }
                         var node = GeoExt.tree.LayerLoader.prototype.createNode.apply(this, arguments);
-                        addListeners(node, record);
+						addListeners(node, record);
                         return node;
                     }
                 }),
