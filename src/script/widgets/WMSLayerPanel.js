@@ -296,7 +296,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             title: this.displayText,
             style: {"padding": "10px"},
             layout: "form",
-            labelWidth: 70,
+            labelWidth: 100,
             items: [{
                 xtype: "slider",
                 name: "opacity",

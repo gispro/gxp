@@ -1,6 +1,5 @@
 ﻿var wmsTool          = null;
 var rssVectors       = [];
-// var selectedControls = [];
 var selectControl    = null;
 var selectedFeature  = null;
 
@@ -29,11 +28,9 @@ function parseRSSContentHTML (text)
 
 function onFeatureSelect(feature)
 {
-	console.log ('onFeatureSelect : feature = ' + feature + ', wmsTool = ' + wmsTool);
 	selectedFeature = feature;
 }
 
-// function createRssVector (title, icon_url) 
 function createRssVector (title, location, icon_url) 
 {
 	var layer = new OpenLayers.Layer.Vector(title,
@@ -103,7 +100,6 @@ function RssPopupParseData (ajaxRequest)
 	var rssVector  = null;
 	var style_mark = null;
 	
-//	console.log ('~~~~~~~ RssPopupParseData ~~~~~~~~~~~~ : ' + name);
 	for (var i=0, len=features.length; i<len; i++)
 	{
 		var data = {};
@@ -149,7 +145,6 @@ function RssPopupParseData (ajaxRequest)
 				{
 					for (var i = 0; i < records.data.items.length; i++)
 					{
-//						if (records.data.items[i].data['name'] === name)
 						if (records.data.items[i].data['title'] === name)
 						{
 							record = records.data.items[i];
@@ -157,7 +152,6 @@ function RssPopupParseData (ajaxRequest)
 						}
 					}
 				};
-//				rssVector = createRssVector(name, data.icon.url);
 				rssVector = createRssVector(name, this.location, data.icon.url);
 				if (rssVector && record)
 					record.data.layer = rssVector;
@@ -169,7 +163,6 @@ function RssPopupParseData (ajaxRequest)
 				selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
 				this.map.addControl(selectControl);
 				selectControl.activate();
-//				selectedControls.push(selectControl);
 			}
 			var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
 			var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
@@ -182,7 +175,6 @@ function RssPopupParseData (ajaxRequest)
 // extend OpenLayers.Control.WMSGetFeatureInfo.getInfoForClick
 function RssPopupGetInfoForClick(evt)
 {
-	console.log ('rssPopupGetInfoForClick ...');
 	if (selectedFeature != null)
 	{
 		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
@@ -199,7 +191,6 @@ function RssPopupGetInfoForClick(evt)
 // extend GeoExt.tree.LayerNode.render
 function RssPopupLayerNodeRender (bulkRender)
 {
-//	console.log ('RssPopupLayerNodeRender ...');
 	var layer = this.layer instanceof OpenLayers.Layer && this.layer;
 	if (layer.id.indexOf ('OpenLayers.Layer.GeoRSS') === -1)
 	{
@@ -287,7 +278,6 @@ function RssPopupGetState()
 
 function RssPopupAddActions()
 {
-//	console.log ('RssPopupAddActions ...');
 	var selectedLayer;
 	var actions = gxp.plugins.RemoveLayer.superclass.addActions.apply(this, [{
             menuText: this.removeMenuText,
@@ -297,59 +287,35 @@ function RssPopupAddActions()
             handler: function()
 			{
                 var record = selectedLayer;
-//				console.log ('rssPopupAddActions.handler - ' + record + ', ' + this.target.mapPanel.layers);
                 if(record)
 				{
 					var title = record.data['title'];
-//					console.log ('0. this.target.mapPanel.layers.data.items.length = ' + this.target.mapPanel.layers.data.items.length);
-//					console.log ('0. this.target.mapPanel.map.layers.length = ' + this.target.mapPanel.map.layers.length);
-//					console.log ('rssPopupAddActions.handler : record = ' + record + ', title = ' + title + ', layer = ' + record.data.layer);
-//					record.data.layer.visibility = false;
 
                     this.target.mapPanel.layers.remove(record);
 
-//					console.log ('0. rssVectors.length = ' + rssVectors.length);
 					for (var i = 0; i < rssVectors.length; i++)
 					{
 						if (rssVectors[i].name === title)
 						{
-							// this.target.mapPanel.map.removeLayer(rssVectors[1]);
-//							app.mapPanel.map.removeLayer(rssVectors[i]);
-//							if (selectControl != null)
-//								this.target.mapPanel.map.removeControl(selectControl);
-
-//							selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
-//							this.target.mapPanel.map.addControl(selectControl);
-//							selectControl.activate();
-							
-//							app.mapPanel.map.removeControl(selectedControls[i]);
 							rssVectors      .splice(i,1);
-//							selectedControls.splice(i,1);
 							break;
 						}
 					}
-//					console.log ('1. rssVectors.length = ' + rssVectors.length);
-					
-//					for (var i = 0; i < this.target.mapPanel.layers.data.items.length; i++)
 					for (var i = (this.target.mapPanel.layers.data.items.length - 1); i >= 0 ; i--)
 					{
 						if (this.target.mapPanel.layers.data.items[i].data['title'] === title)
 						{
-//							console.log ('RssPopupAddActions.handler - ' + this.target.mapPanel.layers + ', title = ' + title);
 							this.target.mapPanel.layers.data.items[i].visibility = false;
 							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
-//							break;
+							break;
 						}
 					}
 					
-//					for (var i = 0; i < this.target.mapPanel.map.layers.length; i++)
 					var deleted = false;
 					for (var i = (this.target.mapPanel.map.layers.length - 1); i >= 0; i--)
 					{
 						if (this.target.mapPanel.map.layers[i].name === title)
 						{
-//							console.log ('RssPopupAddActions.handler - ' + this.target.mapPanel.map.layers[i].CLASS_NAME + ', title = ' + 
-//							                                               this.target.mapPanel.map.layers[i].name);
 							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
 							deleted = true;
 						}
@@ -359,8 +325,6 @@ function RssPopupAddActions()
 							deleted = false;
 						}
 					}
-//					console.log ('1. this.target.mapPanel.layers.data.items.length = ' + this.target.mapPanel.layers.data.items.length);
-//					console.log ('1. this.target.mapPanel.map.layers.length = ' + this.target.mapPanel.map.layers.length);
                 }
             },
             scope: this
@@ -401,26 +365,20 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 			{
 				if (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME)
 				{
-//					if (node.parentNode.childNodes[0].childNodes.length > 0)
 					var isPresent = false;
 					if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
 					{
-//						console.log ('0. RsspopupAddLayerNode : !' + node.parentNode.childNodes[0].childNodes.length);
-//						console.log ('0. RsspopupAddLayerNode : !' + sibling.parentNode.childNodes.length);
 						for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
 						{
 							if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
 							{
-//								console.log ('1. RsspopupAddLayerNode : !' +  sibling.parentNode.childNodes[i].layer.name);
 								isPresent = true;
 								break;
 							}
 						}
 					}
-//					if (child.layer.name !== sibling.layer.name)
 					if (!isPresent)
 						node.insertBefore(child, sibling);
-//					console.log ('2. RsspopupAddLayerNode : !' + child.layer.name + '!, !' + sibling.layer.name + '!');
 				} else
 					node.insertBefore(child, sibling);
 			} else {

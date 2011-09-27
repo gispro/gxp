@@ -85,6 +85,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 "background": {
                     title: this.baseNodeText,
                     exclusive: true
+<<<<<<< HEAD
 				},
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				"animation" : 
@@ -92,6 +93,15 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 					title : '\u0410\u043D\u0438\u043C\u0430\u0446\u0438\u044F' // Àíèìàöèÿ
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======
+                },
+                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                "animation" : 
+                {
+                    title : '\u0410\u043D\u0438\u043C\u0430\u0446\u0438\u044F' // ÐÐ½Ð¸Ð¼Ð°Ñ†Ð¸Ñ
+                }
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>>>>> 6e12e0d92390a81ef873dad0f12b81d48837ce27
             };
         }
     },
@@ -114,6 +124,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         node.select();
                     });
                 }
+<<<<<<< HEAD
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				if (record.get("group") === "animation")
 				{
@@ -134,6 +145,28 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 					});
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======
+                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                if (record.get("group") === "animation")
+                {
+                    node.on(
+                    {
+                        checkchange : function(node, evtObj)
+                        {
+                            if ((selectedNode !== null) && (selectedNode !== node))
+                                resetSelectedNode (node.getOwnerTree().getRootNode(), selectedNode);
+                            if (node.isSelected())
+                                selectedNode = node;
+                            else
+                                selectedNode = null;
+                            if (selectedNode !== null)
+                                showAnimWindow(node.getOwnerTree().getRootNode(), selectedNode);
+                        //								alert('LayerTree.addListeners : node.on.checkchange - node = ' + node.layer.name + ', isSelected = ' + node.isSelected());
+                        }
+                    });
+                }
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>>>>> 6e12e0d92390a81ef873dad0f12b81d48837ce27
             }
         };
         
@@ -151,7 +184,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         var groupConfig, defaultGroup = this.defaultGroup;
         for (var group in this.groups) {
             groupConfig = typeof this.groups[group] == "string" ?
-                {title: this.groups[group]} : this.groups[group];
+            {
+                title: this.groups[group]
+                } : this.groups[group];
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: groupConfig.title,
                 iconCls: "gxp-folder",
@@ -159,16 +194,26 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 group: group == defaultGroup ? undefined : group,
                 loader: new GeoExt.tree.LayerLoader({
                     baseAttrs: groupConfig.exclusive ?
-                        {checkedGroup: group} : undefined,
+                    {
+                        checkedGroup: group
+                    } : undefined,
                     store: this.target.mapPanel.layers,
                     filter: (function(group) {
                         return function(record) {
+<<<<<<< HEAD
 							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 							if (record)
 								return (record.get("group") || defaultGroup) == group && record.getLayer().displayInLayerSwitcher == true;
 							else
 							   return null;
 							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======
+                            if(record)
+                                return (record.get("group") || defaultGroup) == group &&
+                                record.getLayer().displayInLayerSwitcher == true;
+                            else
+                                return null;
+>>>>>>> 6e12e0d92390a81ef873dad0f12b81d48837ce27
                         };
                     })(group),
                     createNode: function(attr) {
