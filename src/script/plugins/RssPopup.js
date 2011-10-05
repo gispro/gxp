@@ -3,6 +3,7 @@ var rssVectors       = [];
 var selectControl    = null;
 var selectedFeature  = null;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function parseRSSContentHTML (text)
 {
 	if (text)
@@ -68,6 +69,7 @@ function createRssVector (title, location, icon_url)
 // extend OpenLayers.Layer.GeoRSS.parseData
 function RssPopupParseData (ajaxRequest) 
 {
+//	console.log ('RssPopupParseData ...');
 	var doc = ajaxRequest.responseXML;
 	if (!doc || !doc.documentElement) {
 		doc = OpenLayers.Format.XML.prototype.read(ajaxRequest.responseText);
@@ -100,73 +102,100 @@ function RssPopupParseData (ajaxRequest)
 	var rssVector  = null;
 	var style_mark = null;
 	
-	for (var i=0, len=features.length; i<len; i++)
+	if (features.length == 0)
 	{
-		var data = {};
-		var feature = features[i];
-			
-		if (!feature.geometry) {
-			continue;
-		}
-		var title       = feature.attributes.title       ? feature.attributes.title       : "Untitled";
-		var description = feature.attributes.description ? feature.attributes.description : "No description.";
+		// Добавляем в ветку наименование RSS
+//		var data = {};
+//		data.icon = this.icon == null ? OpenLayers.Marker.defaultIcon() : this.icon.clone();
 
-		if (feature.geometry instanceof OpenLayers.Geometry.Polygon)
-		{
-			if (rssVector == null)
-				rssVector = createRssVector(name, this.location, null);
-//				rssVector = createRssVector(name, null);
-			rssVector.addFeatures(features);
-		}
-		else if (feature.geometry instanceof OpenLayers.Geometry.Point)
-		{
-			var location = feature.geometry.getBounds().getCenterLonLat();
+//		data.title = name;
+//		data.description = description;
+//		data.properties = "gxp_wmslayerpanel";
 
-			data.icon = this.icon == null ? OpenLayers.Marker.defaultIcon() : this.icon.clone();
+//		var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
+//		contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
+//		contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
+//		contentHTML += '</div>';
+//		contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
 
-			data.title = name;
-			data.description = description;
-			data.properties = "gxp_wmslayerpanel";
-
-			var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
-			contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
-			contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
-			contentHTML += '</div>';
-			contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
-
-			data['contentHTML'] = contentHTML;
-
-			if (rssVector == null)
-			{
-				var records = app.mapPanel.layers;
-				var record  = null;
-
-				if (records.data.items.length > 0)
-				{
-					for (var i = 0; i < records.data.items.length; i++)
-					{
-						if (records.data.items[i].data['title'] === name)
-						{
-							record = records.data.items[i];
-							break;
-						}
-					}
-				};
-				rssVector = createRssVector(name, this.location, data.icon.url);
-				if (rssVector && record)
-					record.data.layer = rssVector;
+//		data['contentHTML'] = contentHTML;
+		
+		rssVector = createRssVector(name, this.location, this.icon.url);
+		if (rssVector && record)
+			record.data.layer = rssVector;
 					
-				rssVectors.push(rssVector)
-				if (selectControl != null)
-					this.map.removeControl(selectControl);
-
-				selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
-				this.map.addControl(selectControl);
-				selectControl.activate();
+		rssVectors.push(rssVector)
+		if (selectControl != null)
+			this.map.removeControl(selectControl);
+	} else {
+		for (var i=0, len=features.length; i<len; i++)
+		{
+			var data = {};
+			var feature = features[i];
+			
+			if (!feature.geometry) {
+				continue;
 			}
-			var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
-			var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
-			rssVector.addFeatures([new OpenLayers.Feature.Vector(point, {title: name, data : data}, markerStyle)]);
+			var title       = feature.attributes.title       ? feature.attributes.title       : "Untitled";
+			var description = feature.attributes.description ? feature.attributes.description : "No description.";
+
+			if (feature.geometry instanceof OpenLayers.Geometry.Polygon)
+			{
+				if (rssVector == null)
+					rssVector = createRssVector(name, this.location, null);
+				rssVector.addFeatures(features);
+			}
+			else if (feature.geometry instanceof OpenLayers.Geometry.Point)
+			{
+				var location = feature.geometry.getBounds().getCenterLonLat();
+
+//				data.icon = this.icon == null ? OpenLayers.Marker.defaultIcon() : this.icon.clone();
+				data.icon = this.icon;
+
+				data.title = name;
+				data.description = description;
+				data.properties = "gxp_wmslayerpanel";
+
+				var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
+				contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
+				contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
+				contentHTML += '</div>';
+				contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
+
+				data['contentHTML'] = contentHTML;
+
+				if (rssVector == null)
+				{
+					var records = app.mapPanel.layers;
+					var record  = null;
+
+					if (records.data.items.length > 0)
+					{
+						for (var i = 0; i < records.data.items.length; i++)
+						{
+							if (records.data.items[i].data['title'] === name)
+							{
+								record = records.data.items[i];
+								break;
+							}
+						}
+					};
+					rssVector = createRssVector(name, this.location, data.icon.url);
+					if (rssVector && record)
+						record.data.layer = rssVector;
+					
+					rssVectors.push(rssVector)
+					if (selectControl != null)
+						this.map.removeControl(selectControl);
+
+					selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
+					this.map.addControl(selectControl);
+					selectControl.activate();
+				}
+				var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
+				var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
+				rssVector.addFeatures([new OpenLayers.Feature.Vector(point, {title: name, data : data}, markerStyle)]);
+			}
 		}
 	}
 	this.events.triggerEvent("loadend");
@@ -278,7 +307,7 @@ function RssPopupGetState()
 	}, this);
 	return state;
 };
-
+// extend gxp.plugins.RemoveLayer.addActions
 function RssPopupAddActions()
 {
 	var selectedLayer;
