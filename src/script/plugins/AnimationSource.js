@@ -141,7 +141,7 @@ gxp.plugins.AnimationSource = Ext.extend(gxp.plugins.LayerSource,
     ptype  : "gxp_animationsource",
 	layersStore : animationStore,
 	
-	getLayersStore : function (url)
+	getLayersStore : function () // url)
 	{
 		downloadAnimation();
 		return this.layersStore;
