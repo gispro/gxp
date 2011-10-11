@@ -69,7 +69,6 @@ function createRssVector (title, location, icon_url)
 // extend OpenLayers.Layer.GeoRSS.parseData
 function RssPopupParseData (ajaxRequest) 
 {
-//	console.log ('RssPopupParseData ...');
 	var doc = ajaxRequest.responseXML;
 	if (!doc || !doc.documentElement) {
 		doc = OpenLayers.Format.XML.prototype.read(ajaxRequest.responseText);
@@ -105,21 +104,6 @@ function RssPopupParseData (ajaxRequest)
 	if (features.length == 0)
 	{
 		// Добавляем в ветку наименование RSS
-//		var data = {};
-//		data.icon = this.icon == null ? OpenLayers.Marker.defaultIcon() : this.icon.clone();
-
-//		data.title = name;
-//		data.description = description;
-//		data.properties = "gxp_wmslayerpanel";
-
-//		var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
-//		contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
-//		contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
-//		contentHTML += '</div>';
-//		contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
-
-//		data['contentHTML'] = contentHTML;
-		
 		rssVector = createRssVector(name, this.location, this.icon.url);
 		if (rssVector && record)
 			record.data.layer = rssVector;
@@ -385,38 +369,54 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 	index = index || 0;
 	if (this.filter(layerRecord) === true)
 	{
-		var child = this.createNode({
-			nodeType: 'gx_layer',
-			layer: layerRecord.getLayer(),
-			layerStore: this.store
-		});
-		if (child)
+		if (layerRecord.data.title.length > 0)
 		{
-			var sibling = node.item(index);
-			if (sibling) 
+			var child;
+			if (layerRecord.data.group !== 'animation')
 			{
-				if (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME)
+				child = this.createNode({
+					nodeType: 'gx_layer',
+					layer: layerRecord.getLayer(),
+					layerStore: this.store
+				});
+			} else {
+				child = this.createNode({
+					checked : false,
+					nodeType: 'gx_layer',
+					layer: layerRecord.getLayer(),
+					layerStore: this.store
+				});
+			}
+			if (child)
+			{
+				if (!child.text)
+					child.text = layerRecord.data.title;
+				var sibling = node.item(index);
+				if (sibling) 
 				{
-					var isPresent = false;
-					if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
+					if (child.layer && sibling.layer && (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME))
 					{
-						for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
+						var isPresent = false;
+						if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
 						{
-							if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
+							for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
 							{
-								isPresent = true;
-								break;
+								if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
+								{
+									isPresent = true;
+									break;
+							}
 							}
 						}
-					}
-					if (!isPresent)
+						if (!isPresent)
+							node.insertBefore(child, sibling);
+					} else
 						node.insertBefore(child, sibling);
-				} else
-					node.insertBefore(child, sibling);
-			} else {
-				node.appendChild(child);
+				} else {
+					node.appendChild(child);
+				}
+				child.on("move", this.onChildMove, this);
 			}
-			child.on("move", this.onChildMove, this);
 		}
 	}
 }

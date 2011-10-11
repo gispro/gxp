@@ -89,7 +89,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				"animation" : 
 				{
-					title : '\u0410\u043D\u0438\u043C\u0430\u0446\u0438\u044F' // Анимация
+					title : animationNodeTitle // Анимация
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             };
@@ -121,16 +121,20 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 					{
 						checkchange : function(node, evtObj)
 							{
+								if (animWindow && !animWindow.hidden)
+									animWindow.close();
+									
 								if ((selectedNode !== null) && (selectedNode !== node))
 									resetSelectedNode (node.getOwnerTree().getRootNode(), selectedNode);
-								if (node.isSelected())
+
+								if (node.attributes['checked'])
 									selectedNode = node;
 								else
 									selectedNode = null;
+									
 								if (selectedNode !== null)
 									showAnimWindow(node.getOwnerTree().getRootNode(), selectedNode);
-//								alert('LayerTree.addListeners : node.on.checkchange - node = ' + node.layer.name + ', isSelected = ' + node.isSelected());
-							},
+							}
 					});
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,15 +169,20 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         return function(record) {
 							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 							if (record)
-								return (record.get("group") || defaultGroup) == group && record.getLayer().displayInLayerSwitcher == true;
-							else
-							   return null;
+							{
+								if (record.data.group == 'animation')
+									return true;
+								else
+									return ((record.get("group") || defaultGroup) == group) &&
+                                           (record.getLayer() && (record.getLayer().displayInLayerSwitcher == true));
+							}else
+							   return false;
 							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         };
                     })(group),
                     createNode: function(attr) {
 						//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						if (attr.layer.CLASS_NAME === 'OpenLayers.Layer.GeoRSS')
+						if (attr.layer && (attr.layer.CLASS_NAME === 'OpenLayers.Layer.GeoRSS'))
 							return null;
 						//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         attr.uiProvider = LayerNodeUI;
@@ -263,10 +272,12 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         }, config || {});
         
         var layerTree = gxp.plugins.LayerTree.superclass.addOutput.call(this, config);
-        
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		if ((layerTree.root.childNodes.length == 3) && (layerTree.root.childNodes[2].text === animationNodeTitle))
+			animationNode = layerTree.root.childNodes[2];
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return layerTree;
-    }
-        
+    }        
 });
 
 Ext.preg(gxp.plugins.LayerTree.prototype.ptype, gxp.plugins.LayerTree);
