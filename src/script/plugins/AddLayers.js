@@ -212,18 +212,17 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 		// RSS
 		data.push(['rss'      , 'RSS'     ]);
 		data.push(['animation', 'Анимация']);
-
 		// ArcGIS
-		if(app.map.arcgis_servers)
+		if (arcgisStore && arcgisStore.reader.jsonData.arcgis.servers.length > 0)
 		{
-			for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+			for (var idx=0; idx < arcgisStore.reader.jsonData.arcgis.servers.length; ++idx) 
 			{
-				title = app.map.arcgis_servers[idx].title;
+				title = arcgisStore.reader.jsonData.arcgis.servers[idx].title;
 				data.push(['arcgis93_' + idx, title]);
+//				console.log ('arcgis93_' + idx + ', ' + title);
 			}
-		};
+		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
         var sources = new Ext.data.ArrayStore({
             fields: ["id", "title"],
             data: data

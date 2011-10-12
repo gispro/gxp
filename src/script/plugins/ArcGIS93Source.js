@@ -7,9 +7,40 @@
  */
 Ext.namespace("gxp.plugins");
 
- gxp.plugins.ArcGIS93Source = Ext.extend(gxp.plugins.LayerSource,
- {
+var arcgisLoaded   = false;
+var arcgisDownload = false;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var arcgisStore = new Ext.data.JsonStore({ 
+	url       : 'arcgis.json',
+	root      : 'arcgis',
+	fields    : [ 'params', 'options', 'servers'],
+	listeners :
+    {
+   		load : function()
+   		{
+			arcgisLoaded   = true;
+			arcgisDownload = false;
+   		},
+		loadexception : function(o, arg, nul, e)
+		{
+			alert("arcgisStore.listeners - LoadException : " + e);         
+		} 
+	}  
+});
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function downloadArcgis()
+{
+	if (!arcgisLoaded && !arcgisDownload)
+	{
+		arcgisStore.load();
+		arcgisDownload = true;
+	}
+};
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gxp.plugins.ArcGIS93Source = Ext.extend(gxp.plugins.LayerSource,
+{
     ptype  : "gxp_arcgis93source",
+
 	layersLoader : new Ext.data.JsonStore({ 
 		url       : "",
 		proxy     : null,
@@ -29,9 +60,22 @@ Ext.namespace("gxp.plugins");
 			} 
 		}
 	}),
+	getLayersStore : function ()
+	{
+		downloadArcgis();
+		return this.arcgisStore;
+	},
+
+	getLayersStore : function (url)
+	{
+		this.layersLoader.url = url;
+		this.layersLoader.load();
+		return this.layersLoader;
+	},
+	
 	createLayer: function(name, url)
 	{
-		return new OpenLayers.Layer.ArcGIS93Rest(name, url, app.map.params, app.map.options);
+		return new OpenLayers.Layer.ArcGIS93Rest(name, url, arcgisStore.reader.jsonData.arcgis.params, arcgisStore.reader.jsonData.arcgis.options);
 	},
 	createBaseLayers : function()
 	{
@@ -46,14 +90,17 @@ Ext.namespace("gxp.plugins");
 	extractServerURL : function(title)
 	{
 		var layersURL;
-		for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+		if (arcgisStore && arcgisStore.reader.jsonData.arcgis.servers.length > 0)
 		{
-			if (title === app.map.arcgis_servers[idx].title)
+			for (var idx=0; idx < arcgisStore.reader.jsonData.arcgis.servers.length; ++idx) 
 			{
-				layersURL = app.map.arcgis_servers[idx].url;
-				break;
+				if (title === arcgisStore.reader.jsonData.arcgis.servers[idx].title)
+				{
+					layersURL = arcgisStore.reader.jsonData.arcgis.servers[idx].url;
+					break;
+				}
 			}
-		};
+		}
 		return layersURL;
 	},
 	getServerURL : function(title)
@@ -69,12 +116,6 @@ Ext.namespace("gxp.plugins");
 		if (layersURL.length > 0)
 			layersURL = layersURL + '?f=json';
 		return layersURL;
-	},
-	getLayersStore : function(url)
-	{
-		this.layersLoader.url = url;
-		this.layersLoader.load();
-		return this.layersLoader;
 	},
     createStore: function()
 	{
