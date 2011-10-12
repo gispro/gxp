@@ -100,6 +100,9 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                 ["Анализ и прогноз класса пожарной опасности по территории Росии от 06 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_115/wms"],
                 ["Анализ и прогноз класса пожарной опасности по территории Росии от 12 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_116/wms"]
                 ,["Местоположение судов","http://gisbox.ru:8080/geoserver/ru_morsvjazsputnik_act/wms"]
+
+
+
                 ,["Пользовательские слои","/geoserver/wms"]
         
     

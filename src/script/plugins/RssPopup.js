@@ -1,8 +1,9 @@
-﻿var wmsTool         = null;
-var rssVectors      = [];
-var selectControl   = null;
-var selectedFeature = null;
+﻿var wmsTool          = null;
+var rssVectors       = [];
+var selectControl    = null;
+var selectedFeature  = null;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function parseRSSContentHTML (text)
 {
 	if (text)
@@ -37,20 +38,20 @@ function createRssVector (title, location, icon_url)
 		{
 			styleMap: new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
-						externalGraphic	: icon_url, 
-						graphicOpacity	: 1,
-						strokeWidth		: 2,
-						strokeColor		: '#47FFFF',
-						fillColor		: '#9dfdfd',
-						fillOpacity		: 0.4,
-						pointRadius		: 5
+							externalGraphic	: icon_url, 
+							graphicOpacity	: 1,
+							strokeWidth		: 2,
+							strokeColor		: '#47FFFF',
+							fillColor		: '#9dfdfd',
+							fillOpacity		: 0.4,
+							pointRadius		: 5
 						}, OpenLayers.Feature.Vector.style["default"]),
 						{
 							rules: [
 								new OpenLayers.Rule({
 									name   : 'RSS',
 									title  : 'RSS',
-				                   symbolizer: { externalGraphic: icon_url }
+								symbolizer: { externalGraphic: icon_url }
 								})
 							]
 						}
@@ -100,74 +101,87 @@ function RssPopupParseData (ajaxRequest)
 	var rssVector  = null;
 	var style_mark = null;
 	
-	for (var i=0, len=features.length; i<len; i++)
+	if (features.length == 0)
 	{
-		var data = {};
-		var feature = features[i];
+		// Добавляем в ветку наименование RSS
+		rssVector = createRssVector(name, this.location, this.icon.url);
+		if (rssVector && record)
+			record.data.layer = rssVector;
+					
+		rssVectors.push(rssVector)
+		if (selectControl != null)
+			this.map.removeControl(selectControl);
+	} else {
+		for (var i=0, len=features.length; i<len; i++)
+		{
+			var data = {};
+			var feature = features[i];
 			
-		if (!feature.geometry) {
-			continue;
-		}
-		var title       = feature.attributes.title       ? feature.attributes.title       : "Untitled";
-		var description = feature.attributes.description ? feature.attributes.description : "No description.";
+			if (!feature.geometry) {
+				continue;
+			}
+			var title       = feature.attributes.title       ? feature.attributes.title       : "Untitled";
+			var description = feature.attributes.description ? feature.attributes.description : "No description.";
 
-		if (feature.geometry instanceof OpenLayers.Geometry.Polygon)
-		{
-			if (rssVector == null)
-				rssVector = createRssVector(name, this.location, null);
-//				rssVector = createRssVector(name, null);
-			rssVector.addFeatures(features);
-		}
-		else if (feature.geometry instanceof OpenLayers.Geometry.Point)
-		{
-			var location = feature.geometry.getBounds().getCenterLonLat();
+			if (feature.geometry instanceof OpenLayers.Geometry.Polygon)
+			{
+				if (rssVector == null)
+					rssVector = createRssVector(name, this.location, null);
+				rssVector.addFeatures(features);
+			}
+			else if (feature.geometry instanceof OpenLayers.Geometry.Point)
+			{
+				var location = feature.geometry.getBounds().getCenterLonLat();
 
-			data.icon = this.icon == null ? OpenLayers.Marker.defaultIcon() : this.icon.clone();
+//				data.icon = this.icon == null ? OpenLayers.Marker.defaultIcon() : this.icon.clone();
+				data.icon = this.icon;
 
-			data.title = name;
-			data.description = description;
+				data.title = name;
+				data.description = description;
+				data.properties = "gxp_wmslayerpanel";
 			data.properties = "gxp_wmslayerpanel";
 
-			var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
-			contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
-			contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
-			contentHTML += '</div>';
-			contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
+				var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
+				contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
+				contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
+				contentHTML += '</div>';
+				contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
 
-			data['contentHTML'] = contentHTML;
+				data['contentHTML'] = contentHTML;
 
-			if (rssVector == null)
-			{
-				var records = app.mapPanel.layers;
-				var record  = null;
-				
-				if (records.data.items.length > 0)
+				if (rssVector == null)
 				{
-					for (var i = 0; i < records.data.items.length; i++)
-					{
-						if (records.data.items[i].data['title'] === name)
-						{
-							record = records.data.items[i];
-							break;
-						}
-					}
-				};
-				rssVector = createRssVector(name, this.location, data.icon.url);
-				if (rssVector && record)
-					record.data.layer = rssVector;
-					
-				rssVectors.push(rssVector)
-				if (selectControl != null)
-					this.map.removeControl(selectControl);
+					var records = app.mapPanel.layers;
+					var record  = null;
 
-				selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
-				this.map.addControl(selectControl);
-				selectControl.activate();
+					if (records.data.items.length > 0)
+					{
+						for (var i = 0; i < records.data.items.length; i++)
+						{
+							if (records.data.items[i].data['title'] === name)
+							{
+								record = records.data.items[i];
+								break;
+							}
+						}
+					};
+					rssVector = createRssVector(name, this.location, data.icon.url);
+					if (rssVector && record)
+						record.data.layer = rssVector;
+					
+					rssVectors.push(rssVector)
+					if (selectControl != null)
+						this.map.removeControl(selectControl);
+
+					selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
+					this.map.addControl(selectControl);
+					selectControl.activate();
+				}
+				var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
+				var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
+				rssVector.addFeatures([new OpenLayers.Feature.Vector(point, {title: name, data : data}, markerStyle)]);
 			}
-			var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
-			var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
-			rssVector.addFeatures([new OpenLayers.Feature.Vector(point, {title: name, data : data}, markerStyle)]);
-			}
+		}
 	}
 	this.events.triggerEvent("loadend");
 };
@@ -190,7 +204,7 @@ function RssPopupGetInfoForClick(evt)
 
 // extend GeoExt.tree.LayerNode.render
 function RssPopupLayerNodeRender (bulkRender)
- {
+{
 	var layer = this.layer instanceof OpenLayers.Layer && this.layer;
 	if (layer.id.indexOf ('OpenLayers.Layer.GeoRSS') === -1)
 	{
@@ -244,41 +258,41 @@ function RssPopupLayerNodeRender (bulkRender)
  
 // extend gxp.Viewer.getState
 function RssPopupGetState()
- {
-        // start with what was originally given
-        var state = Ext.apply({}, this.initialConfig);
+{
+	// start with what was originally given
+	var state = Ext.apply({}, this.initialConfig);
         
-        // update anything that can change
-        var center = this.mapPanel.map.getCenter();
-        Ext.apply(state.map, {
-            center: [center.lon, center.lat],
-            zoom: this.mapPanel.map.zoom,
-            layers: []
-        });
+	// update anything that can change
+	var center = this.mapPanel.map.getCenter();
+	Ext.apply(state.map, {
+		center: [center.lon, center.lat],
+		zoom: this.mapPanel.map.zoom,
+		layers: []
+	});
         
-        // include all layer config (and add new sources)
-        this.mapPanel.layers.each(function(record){
-            var layer = record.getLayer();
+	// include all layer config (and add new sources)
+	this.mapPanel.layers.each(function(record){
+		var layer = record.getLayer();
 		if (layer.displayInLayerSwitcher)
-			{
-                var id = record.get("source");
+		{
+			var id = record.get("source");
 			if (id)
 			{
-                var source = this.layerSources[id];
-                if (!source) {
-                    throw new Error("Could not find source for layer '" + record.get("name") + "'");
-                }
-                // add layer
-                state.map.layers.push(source.getConfigForRecord(record));
-                if (!state.sources[id]) {
-                    state.sources[id] = Ext.apply({}, source.initialConfig);
-                }
-            }
+				var source = this.layerSources[id];
+				if (!source) {
+					throw new Error("Could not find source for layer '" + record.get("name") + "'");
+				}
+				// add layer
+				state.map.layers.push(source.getConfigForRecord(record));
+				if (!state.sources[id]) {
+					state.sources[id] = Ext.apply({}, source.initialConfig);
+				}
+			}
 		}
-        }, this);
-        return state;
+	}, this);
+	return state;
 };
-
+// extend gxp.plugins.RemoveLayer.addActions
 function RssPopupAddActions()
 {
 	var selectedLayer;
@@ -288,7 +302,7 @@ function RssPopupAddActions()
             disabled: true,
             tooltip: this.removeActionTip,
             handler: function()
-	{
+			{
                 var record = selectedLayer;
                 if(record)
 				{
@@ -338,6 +352,7 @@ function RssPopupAddActions()
 		{
 			selectedLayer = record;
 			removeLayerAction.setDisabled(this.target.mapPanel.layers.getCount() <= 1 || !record);
+		}
         }, this);
 	var enforceOne = function(store)
 		{
@@ -353,14 +368,57 @@ function RssPopupAddActions()
 // extend GeoExt.tree.LayerLoader
 function RsspopupAddLayerNode (node, layerRecord, index)
 {
-		index = index || 0;
+	index = index || 0;
 	if (this.filter(layerRecord) === true)
+	{
+		if (layerRecord.data.title.length > 0)
 		{
-		var child = this.createNode({
-			nodeType: 'gx_layer',
-			layer: layerRecord.getLayer(),
-			layerStore: this.store
-			});
+			var child;
+			if (layerRecord.data.group !== 'animation')
+			{
+				child = this.createNode({
+					nodeType: 'gx_layer',
+					layer: layerRecord.getLayer(),
+					layerStore: this.store
+				});
+			} else {
+				child = this.createNode({
+					checked : false,
+					nodeType: 'gx_layer',
+					layer: layerRecord.getLayer(),
+					layerStore: this.store
+				});
+			}
+			if (child)
+			{
+				if (!child.text)
+					child.text = layerRecord.data.title;
+				var sibling = node.item(index);
+				if (sibling) 
+				{
+					if (child.layer && sibling.layer && (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME))
+					{
+						var isPresent = false;
+						if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
+						{
+							for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
+							{
+								if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
+								{
+									isPresent = true;
+									break;
+							}
+							}
+						}
+						if (!isPresent)
+							node.insertBefore(child, sibling);
+					} else
+						node.insertBefore(child, sibling);
+				} else {
+					node.appendChild(child);
+				}
+				child.on("move", this.onChildMove, this);
+			}
 		if (child)
 		{
 			var sibling = node.item(index);
@@ -377,17 +435,6 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 							{
 								isPresent = true;
 								break;
-		}
-	}
-}
-					if (!isPresent)
-						node.insertBefore(child, sibling);
-				} else
-					node.insertBefore(child, sibling);
-			} else {
-				node.appendChild(child);
-			}
-			child.on("move", this.onChildMove, this);
 		}
 	}
 }

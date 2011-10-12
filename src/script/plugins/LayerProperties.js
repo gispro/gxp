@@ -58,7 +58,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         
         if (!this.outputConfig) {
             this.outputConfig = {
-                width: 365,
+                width: 265,
                 autoHeight: true
             };
         }

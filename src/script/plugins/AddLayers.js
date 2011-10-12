@@ -204,25 +204,25 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         for (var id in this.target.layerSources) {
             source = this.target.layerSources[id];
 			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            if (source.store && (id != 'rss') && (id != 'arcgis93')) {
+            if (source.store && (id != 'rss') && (id != 'arcgis93') && ((id != 'animation'))) {
                 data.push([id, source.title || id]);
             }
         }
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// RSS
-		data.push(['rss', 'RSS']);
-		
+		data.push(['rss'      , 'RSS'     ]);
+		data.push(['animation', 'Анимация']);
 		// ArcGIS
-		if(app.map.arcgis_servers)
+		if (arcgisStore && arcgisStore.reader.jsonData.arcgis.servers.length > 0)
 		{
-			for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+			for (var idx=0; idx < arcgisStore.reader.jsonData.arcgis.servers.length; ++idx) 
 			{
-			title = app.map.arcgis_servers[idx].title;
-			data.push(['arcgis93_' + idx, title]);
+				title = arcgisStore.reader.jsonData.arcgis.servers[idx].title;
+				data.push(['arcgis93_' + idx, title]);
+//				console.log ('arcgis93_' + idx + ', ' + title);
+			}
 		}
-                };
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
         var sources = new Ext.data.ArrayStore({
             fields: ["id", "title"],
             data: data
@@ -240,6 +240,19 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 				for (var i=0, ii = records.length; i<ii; ++i) 
 				{
 					record = source.createRecord(records[i].get("title"), records[i].get("name"));
+					if (record)
+						layerStore.add([record]);
+				}
+			}
+			else if (key == 'animation')
+			{
+				var source     = this.target.layerSources['animation'];
+				var layerStore = this.target.mapPanel.layers;
+				for (var i=0, ii = records.length; i<ii; ++i) 
+				{
+					record = source.createRecord(records[i].get("title" ), records[i].get("name"), 
+					                             records[i].get("url"   ), records[i].get("x_axis"),
+												 records[i].get("layers"));
 					if (record)
 						layerStore.add([record]);
 				}
@@ -327,9 +340,20 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 						var source = this.target.layerSources['rss'];
 						if (source)
 						{
-						capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
-						capGridPanel.getView().focusRow(0);
+							capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
+							capGridPanel.getView().focusRow(0);
+						}						
 					}
+					}
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					else if (record.get("id") === 'animation')
+					{
+						var source = this.target.layerSources['animation'];
+						if (source)
+						{
+							capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
+							capGridPanel.getView().focusRow(0);
+						}						
 					}
 					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					else if (record.get("id").indexOf ('arcgis93_') == 0)
