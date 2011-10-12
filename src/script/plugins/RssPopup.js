@@ -3,21 +3,6 @@ var rssVectors      = [];
 var selectControl   = null;
 var selectedFeature = null;
 
-function rssPopupGetInfoForClick(evt)
-{
-	if (selectedFeature != null)
-	{
-		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
-							parseRSSContentHTML( selectedFeature.attributes.data['contentHTML']), false);
-		selectControl.unselect(selectedFeature);
-		selectedFeature = null;
-	}
-
-	this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
-	OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
-	this.request(evt.xy, {});
-}
-	
 function parseRSSContentHTML (text)
 {
 	if (text)
@@ -45,9 +30,10 @@ function onFeatureSelect(feature)
 {
 	selectedFeature = feature;
 }
-function createRssVector (name, icon_url) 
+
+function createRssVector (title, location, icon_url) 
 {
-	var rssVector = new OpenLayers.Layer.Vector(name,
+	var layer = new OpenLayers.Layer.Vector(title,
 		{
 			styleMap: new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
@@ -58,8 +44,8 @@ function createRssVector (name, icon_url)
 						fillColor		: '#9dfdfd',
 						fillOpacity		: 0.4,
 						pointRadius		: 5
-                    }, OpenLayers.Feature.Vector.style["default"])
-					, {
+						}, OpenLayers.Feature.Vector.style["default"]),
+						{
 							rules: [
 								new OpenLayers.Rule({
 									name   : 'RSS',
@@ -72,12 +58,14 @@ function createRssVector (name, icon_url)
                     "select": new OpenLayers.Style({
                         externalGraphic : icon_url
                     })
-                })
+                }),
+			params : {FORMAT : 'image/png', TRANSPARENT : true, OPACITY : 1, LAYERS : location}
 		});
-	app.mapPanel.map.addLayer(rssVector);
-	return rssVector;
+	app.mapPanel.map.addLayer(layer);
+	return layer;
 }
 
+// extend OpenLayers.Layer.GeoRSS.parseData
 function RssPopupParseData (ajaxRequest) 
 {
 	var doc = ajaxRequest.responseXML;
@@ -111,6 +99,7 @@ function RssPopupParseData (ajaxRequest)
 
 	var rssVector  = null;
 	var style_mark = null;
+	
 	for (var i=0, len=features.length; i<len; i++)
 	{
 		var data = {};
@@ -125,7 +114,8 @@ function RssPopupParseData (ajaxRequest)
 		if (feature.geometry instanceof OpenLayers.Geometry.Polygon)
 		{
 			if (rssVector == null)
-				rssVector = createRssVector(name, null);
+				rssVector = createRssVector(name, this.location, null);
+//				rssVector = createRssVector(name, null);
 			rssVector.addFeatures(features);
 		}
 		else if (feature.geometry instanceof OpenLayers.Geometry.Point)
@@ -136,6 +126,7 @@ function RssPopupParseData (ajaxRequest)
 
 			data.title = name;
 			data.description = description;
+			data.properties = "gxp_wmslayerpanel";
 
 			var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
 			contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
@@ -147,8 +138,24 @@ function RssPopupParseData (ajaxRequest)
 
 			if (rssVector == null)
 			{
-				rssVector = createRssVector(name, data.icon.url);
+				var records = app.mapPanel.layers;
+				var record  = null;
 				
+				if (records.data.items.length > 0)
+				{
+					for (var i = 0; i < records.data.items.length; i++)
+					{
+						if (records.data.items[i].data['title'] === name)
+						{
+							record = records.data.items[i];
+							break;
+						}
+					}
+				};
+				rssVector = createRssVector(name, this.location, data.icon.url);
+				if (rssVector && record)
+					record.data.layer = rssVector;
+					
 				rssVectors.push(rssVector)
 				if (selectControl != null)
 					this.map.removeControl(selectControl);
@@ -164,17 +171,22 @@ function RssPopupParseData (ajaxRequest)
 	}
 	this.events.triggerEvent("loadend");
 };
-/*
- vector_layer = new OpenLayers.Layer.Vector("More Advanced Vector Layer",{
-              protocol: new OpenLayers.Protocol.HTTP({
-                url: 'admpol8000.geojson',
-                format: new OpenLayers.Format.GeoJSON({
-                'internalProjection': new OpenLayers.Projection("EPSG:102012"),
-                'externalProjection': new OpenLayers.Projection("EPSG:4326")})
-              }),
-              strategies: [new OpenLayers.Strategy.Fixed()]
-             });
-*/
+
+// extend OpenLayers.Control.WMSGetFeatureInfo.getInfoForClick
+function RssPopupGetInfoForClick(evt)
+{
+	if (selectedFeature != null)
+	{
+		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
+							parseRSSContentHTML( selectedFeature.attributes.data['contentHTML']), false);
+		selectControl.unselect(selectedFeature);
+		selectedFeature = null;
+	}
+
+	this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
+	OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
+	this.request(evt.xy, {});
+}
 
 // extend GeoExt.tree.LayerNode.render
 function RssPopupLayerNodeRender (bulkRender)
@@ -230,7 +242,7 @@ function RssPopupLayerNodeRender (bulkRender)
 	}
  };
  
-// extend gxp.Viewer.getState()
+// extend gxp.Viewer.getState
 function RssPopupGetState()
  {
         // start with what was originally given
@@ -247,9 +259,11 @@ function RssPopupGetState()
         // include all layer config (and add new sources)
         this.mapPanel.layers.each(function(record){
             var layer = record.getLayer();
-            if (layer.displayInLayerSwitcher && (layer.CLASS_NAME  !== 'OpenLayers.Layer.Vector'))
+		if (layer.displayInLayerSwitcher)
 			{
                 var id = record.get("source");
+			if (id)
+			{
                 var source = this.layerSources[id];
                 if (!source) {
                     throw new Error("Could not find source for layer '" + record.get("name") + "'");
@@ -260,32 +274,120 @@ function RssPopupGetState()
                     state.sources[id] = Ext.apply({}, source.initialConfig);
                 }
             }
+		}
         }, this);
-        
         return state;
 };
 
-/*
-function RssPopupAddLegend (record, index)
+function RssPopupAddActions()
 {
-//		if (record.getLayer().name.indexOf('Scale') === -1)  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		if (record.getLayer().name.indexOf(TEMPL_LAYER_ANIMATION) === -1)  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//	console.log ('RssSourceAddLegend : ' + record);
-	if (this.filter(record) === true)
+	var selectedLayer;
+	var actions = gxp.plugins.RemoveLayer.superclass.addActions.apply(this, [{
+            menuText: this.removeMenuText,
+            iconCls: "gxp-icon-removelayers",
+            disabled: true,
+            tooltip: this.removeActionTip,
+            handler: function()
 	{
-		var layer = record.getLayer();
-		index = index || 0;
-		var legend;
-		var types = GeoExt.LayerLegend.getTypes(record, this.preferredTypes);
-		if(layer.displayInLayerSwitcher && !record.get('hideInLegend') && types.length > 0)
+                var record = selectedLayer;
+                if(record)
+				{
+					var title = record.data['title'];
+
+                    this.target.mapPanel.layers.remove(record);
+
+					for (var i = 0; i < rssVectors.length; i++)
+					{
+						if (rssVectors[i].name === title)
+						{
+							rssVectors      .splice(i,1);
+							break;
+						}
+					}
+					for (var i = (this.target.mapPanel.layers.data.items.length - 1); i >= 0 ; i--)
+					{
+						if (this.target.mapPanel.layers.data.items[i].data['title'] === title)
+						{
+							this.target.mapPanel.layers.data.items[i].visibility = false;
+							this.target.mapPanel.layers.remove(this.target.mapPanel.layers.data.items[i]);
+							break;
+						}
+					}
+					
+					var deleted = false;
+					for (var i = (this.target.mapPanel.map.layers.length - 1); i >= 0; i--)
+					{
+						if (this.target.mapPanel.map.layers[i].name === title)
+						{
+							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
+							deleted = true;
+						}
+						if (!deleted && this.target.mapPanel.map.layers[i].CLASS_NAME === 'OpenLayers.Layer.Vector.RootContainer')
+						{
+							this.target.mapPanel.map.removeLayer(this.target.mapPanel.map.layers[i], false);
+							deleted = false;
+						}
+					}
+                }
+            },
+            scope: this
+	}]);
+	var removeLayerAction = actions[0];
+
+	this.target.on("layerselectionchange", function(record)
 		{
-			this.insert(index, {
-						xtype: types[0],
-						id: this.getIdForLayer(layer),
-						layerRecord: record,
-						hidden: !((!layer.map && layer.visibility) || (layer.getVisibility() && layer.calculateInRange()))
+			selectedLayer = record;
+			removeLayerAction.setDisabled(this.target.mapPanel.layers.getCount() <= 1 || !record);
+        }, this);
+	var enforceOne = function(store)
+		{
+			removeLayerAction.setDisabled(!selectedLayer || store.getCount() <= 1);
+        }
+	this.target.mapPanel.layers.on({
+		"add": enforceOne,
+		"remove": enforceOne
+	});
+	return actions;
+}
+
+// extend GeoExt.tree.LayerLoader
+function RsspopupAddLayerNode (node, layerRecord, index)
+{
+		index = index || 0;
+	if (this.filter(layerRecord) === true)
+		{
+		var child = this.createNode({
+			nodeType: 'gx_layer',
+			layer: layerRecord.getLayer(),
+			layerStore: this.store
 			});
+		if (child)
+		{
+			var sibling = node.item(index);
+			if (sibling) 
+			{
+				if (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME)
+				{
+					var isPresent = false;
+					if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
+					{
+						for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
+						{
+							if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
+							{
+								isPresent = true;
+								break;
 		}
 	}
 }
-*/
+					if (!isPresent)
+						node.insertBefore(child, sibling);
+				} else
+					node.insertBefore(child, sibling);
+			} else {
+				node.appendChild(child);
+			}
+			child.on("move", this.onChildMove, this);
+		}
+	}
+}

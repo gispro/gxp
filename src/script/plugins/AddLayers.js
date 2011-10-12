@@ -213,8 +213,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 		data.push(['rss', 'RSS']);
 		
 		// ArcGIS
-		if(app.map.arcgis_servers){for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+		if(app.map.arcgis_servers)
 		{
+			for (var idx=0; idx < app.map.arcgis_servers.length; ++idx) 
+			{
 			title = app.map.arcgis_servers[idx].title;
 			data.push(['arcgis93_' + idx, title]);
 		}
@@ -323,8 +325,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 					if (record.get("id") === 'rss')
 					{
 						var source = this.target.layerSources['rss'];
+						if (source)
+						{
 						capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
 						capGridPanel.getView().focusRow(0);
+					}
 					}
 					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					else if (record.get("id").indexOf ('arcgis93_') == 0)

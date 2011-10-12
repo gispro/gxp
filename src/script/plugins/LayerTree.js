@@ -114,26 +114,30 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         node.select();
                     });
                 }
-                //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                if (record.get("group") === "animation")
-                {
-                    node.on(
-                    {
-                        checkchange : function(node, evtObj)
-                        {
-                            if ((selectedNode !== null) && (selectedNode !== node))
-                                resetSelectedNode (node.getOwnerTree().getRootNode(), selectedNode);
-                            if (node.isSelected())
-                                selectedNode = node;
-                            else
-                                selectedNode = null;
-                            if (selectedNode !== null)
-                                showAnimWindow(node.getOwnerTree().getRootNode(), selectedNode);
-                        //								alert('LayerTree.addListeners : node.on.checkchange - node = ' + node.layer.name + ', isSelected = ' + node.isSelected());
-                        }
-                    });
-                }
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				if (record.get("group") === "animation")
+				{
+					node.on(
+					{
+						checkchange : function(node, evtObj)
+							{
+								if (animWindow && !animWindow.hidden)
+									animWindow.close();
+									
+								if ((selectedNode !== null) && (selectedNode !== node))
+									resetSelectedNode (node.getOwnerTree().getRootNode(), selectedNode);
+
+								if (node.attributes['checked'])
+									selectedNode = node;
+								else
+									selectedNode = null;
+									
+								if (selectedNode !== null)
+									showAnimWindow(node.getOwnerTree().getRootNode(), selectedNode);
+							}
+					});
+				}
+				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             }
         };
         
@@ -151,9 +155,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         var groupConfig, defaultGroup = this.defaultGroup;
         for (var group in this.groups) {
             groupConfig = typeof this.groups[group] == "string" ?
-            {
-                title: this.groups[group]
-                } : this.groups[group];
+                {title: this.groups[group]} : this.groups[group];
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: groupConfig.title,
                 iconCls: "gxp-folder",
@@ -161,20 +163,23 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 group: group == defaultGroup ? undefined : group,
                 loader: new GeoExt.tree.LayerLoader({
                     baseAttrs: groupConfig.exclusive ?
-                    {
-                        checkedGroup: group
-                    } : undefined,
+                        {checkedGroup: group} : undefined,
                     store: this.target.mapPanel.layers,
                     filter: (function(group) {
                         return function(record) {
-                            if(record)
-                                return (record.get("group") || defaultGroup) == group &&
-                                record.getLayer().displayInLayerSwitcher == true;
+							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							if (record)
+								return (record.get("group") || defaultGroup) == group && record.getLayer().displayInLayerSwitcher == true;
                             else
                                 return null;
+							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         };
                     })(group),
                     createNode: function(attr) {
+						//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+						if (attr.layer.CLASS_NAME === 'OpenLayers.Layer.GeoRSS')
+							return null;
+						//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         attr.uiProvider = LayerNodeUI;
                         var layer = attr.layer;
                         var store = attr.layerStore;

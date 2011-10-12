@@ -210,18 +210,18 @@ GeoExt.Lang.add("ru", {
     },
     
     "gxp.PointSymbolizer.prototype": {
-        graphicCircleText: "circle",
-        graphicSquareText: "square",
-        graphicTriangleText: "triangle",
-        graphicStarText: "star",
-        graphicCrossText: "cross",
+        graphicCircleText: "круг",
+        graphicSquareText: "квадрат",
+        graphicTriangleText: "треугольник",
+        graphicStarText: "звезда",
+        graphicCrossText: "крест",
         graphicXText: "x",
-        graphicExternalText: "external",
+        graphicExternalText: "внешний",
         urlText: "URL",
-        opacityText: "opacity",
-        symbolText: "Symbol",
-        sizeText: "Size",
-        rotationText: "Rotation"
+        opacityText: "прозрачность",
+        symbolText: "Символ",
+        sizeText: "Размер",
+        rotationText: "Поворот"
     },
 
     "gxp.QueryPanel.prototype": {
@@ -303,9 +303,9 @@ GeoExt.Lang.add("ru", {
          addStyleTip: "Добавить новый стиль",
          chooseStyleText: "Выбрать стиль",
          deleteStyleText: "Удалить",
-         deleteStyleTip: "Delete the selected style",
-         editStyleText: "Edit",
-         editStyleTip: "Edit the selected style",
+         deleteStyleTip: "Удалить выбранный стиль",
+         editStyleText: "Редактирование",
+         editStyleTip: "Редактировать выбранный стиль",
          duplicateStyleText: "Дублирование",
          duplicateStyleTip: "Дублировать стиль",
          addRuleText: "Добавить",
@@ -319,8 +319,8 @@ GeoExt.Lang.add("ru", {
          duplicateRuleTip: "Дублировать правило",
          cancelText: "Отмена",
          saveText: "Сохранить",
-         styleWindowTitle: "User Style: {0}",
-         ruleWindowTitle: "Style Rule: {0}",
+         styleWindowTitle: "Пользовательский стиль: {0}",
+         ruleWindowTitle: "Правило стиля: {0}",
          stylesFieldsetTitle: "Стили",
          rulesFieldsetTitle: "Правила"
     },

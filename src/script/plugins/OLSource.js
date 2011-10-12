@@ -84,7 +84,7 @@ gxp.plugins.OLSource = Ext.extend(gxp.plugins.LayerSource, {
             // create a constructor for the given layer type
             var Constructor = function() {
                 // this only works for args that can be serialized as JSON
-                Class.prototype.initialize.apply(this, config.args);
+                Class.prototype.initialize.apply(this, gxp.plugins.OLSource._instantiateConfigs(config.args));
             };
             Constructor.prototype = Class.prototype;
 
@@ -146,3 +146,50 @@ gxp.plugins.OLSource = Ext.extend(gxp.plugins.LayerSource, {
 });
 
 Ext.preg(gxp.plugins.OLSource.prototype.ptype, gxp.plugins.OLSource);
+
+
+    gxp.plugins.OLSource._instantiateConfigs = function(config){
+        return config;
+    }
+    /*
+        var ret;
+        if(config.constructor && config.constructor == Array){
+            ret = [];
+            for(var i=0, ii=config.length;i<ii;i++){
+                ret[i] = gxp.plugins.OLSource._instantiateConfigs(config[i]);
+            }
+        }else if(config.classtype){
+            var Class = window;
+            var parts = config.classtype.split(".");
+            for (var i=0, ii=parts.length; i<ii; ++i) {
+                Class = Class[parts[i]];
+                if (!Class) {
+                    break;
+                }
+            }
+
+            // TODO: consider static method on OL classes to construct instance with args
+            if (Class && Class.prototype && Class.prototype.initialize) {
+
+                // create a constructor for the given layer type
+                var Constructor = function() {
+                    // this only works for args that can be serialized as JSON
+                    Class.prototype.initialize.apply(this, gxp.plugins.OLSource._instantiateConfigs(config.args));
+                };
+                Constructor.prototype = Class.prototype;
+
+                // create a new layer given type and args
+                ret = new Constructor();
+            } 
+        }else if(typeof config != 'string' && typeof config != 'number'){
+            ret = {};
+            for(var param in config){
+                if(ret[param])
+                    ret[param] = gxp.plugins.OLSource._instantiateConfigs(config[param]);
+            }
+        }
+        return ret;
+    };
+    */
+    
+
