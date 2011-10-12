@@ -1,4 +1,4 @@
-﻿var animLayers         = []        ;
+var animLayers         = []        ;
 var animServices       = []        ;
 var selectedNode       = null      ; 
 

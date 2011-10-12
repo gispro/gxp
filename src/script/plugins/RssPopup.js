@@ -139,7 +139,6 @@ function RssPopupParseData (ajaxRequest)
 				data.title = name;
 				data.description = description;
 				data.properties = "gxp_wmslayerpanel";
-			data.properties = "gxp_wmslayerpanel";
 
 				var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
 				contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
@@ -352,7 +351,6 @@ function RssPopupAddActions()
 		{
 			selectedLayer = record;
 			removeLayerAction.setDisabled(this.target.mapPanel.layers.getCount() <= 1 || !record);
-		}
         }, this);
 	var enforceOne = function(store)
 		{
@@ -419,22 +417,6 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 				}
 				child.on("move", this.onChildMove, this);
 			}
-		if (child)
-		{
-			var sibling = node.item(index);
-			if (sibling) 
-			{
-				if (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME)
-				{
-					var isPresent = false;
-					if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
-					{
-						for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
-						{
-							if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
-							{
-								isPresent = true;
-								break;
 		}
 	}
 }

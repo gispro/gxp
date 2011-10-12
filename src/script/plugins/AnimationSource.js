@@ -194,7 +194,7 @@ gxp.plugins.AnimationSource = Ext.extend(gxp.plugins.LayerSource,
             name       : record.get("name"    ),
             title      : record.get("title"   ),
             group      : record.get("group"   ),
-            selected   : record.get("selected"),
+            selected   : record.get("selected")
         };
     }
 });

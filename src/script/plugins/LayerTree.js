@@ -178,7 +178,6 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 							}else
 							   return false;
 							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-							//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         };
                     })(group),
                     createNode: function(attr) {

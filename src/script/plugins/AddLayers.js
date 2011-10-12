@@ -211,7 +211,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		// RSS
 		data.push(['rss'      , 'RSS'     ]);
-		data.push(['animation', 'Àíèìàöèÿ']);
+		data.push(['animation', 'ÐÐ½Ð¸Ð¼Ð°Ñ†Ð¸Ñ']);
+
 		// ArcGIS
 		if (arcgisStore && arcgisStore.reader.jsonData.arcgis.servers.length > 0)
 		{
@@ -343,7 +344,6 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 							capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
 							capGridPanel.getView().focusRow(0);
 						}						
-					}
 					}
 					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					else if (record.get("id") === 'animation')
