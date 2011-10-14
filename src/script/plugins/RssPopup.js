@@ -1,10 +1,13 @@
-﻿var wmsTool          = null;
-var rssVectors       = [];
-var selectControl    = null;
-var selectedFeature  = null;
+var rssVar = {};
+rssVar.dataLoaded      = false;
+rssVar.downloadStart   = false;
+rssVar.rssVectors      = [];
+rssVar.selectControl   = null;
+rssVar.selectedFeature = null;
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function parseRSSContentHTML (text)
+var wmsTool = null;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function parseRSSContentHTML(text)
 {
 	if (text)
 	{
@@ -29,7 +32,7 @@ function parseRSSContentHTML (text)
 
 function onFeatureSelect(feature)
 {
-	selectedFeature = feature;
+	rssVar.selectedFeature = feature;
 }
 
 function createRssVector (title, location, icon_url) 
@@ -108,9 +111,9 @@ function RssPopupParseData (ajaxRequest)
 		if (rssVector && record)
 			record.data.layer = rssVector;
 					
-		rssVectors.push(rssVector)
-		if (selectControl != null)
-			this.map.removeControl(selectControl);
+		rssVar.rssVectors.push(rssVector)
+		if (rssVar.selectControl != null)
+			this.map.removeControl(rssVar.selectControl);
 	} else {
 		for (var i=0, len=features.length; i<len; i++)
 		{
@@ -168,13 +171,13 @@ function RssPopupParseData (ajaxRequest)
 					if (rssVector && record)
 						record.data.layer = rssVector;
 					
-					rssVectors.push(rssVector)
-					if (selectControl != null)
-						this.map.removeControl(selectControl);
+					rssVar.rssVectors.push(rssVector)
+					if (rssVar.selectControl != null)
+						this.map.removeControl(rssVar.selectControl);
 
-					selectControl = new OpenLayers.Control.SelectFeature(rssVectors, {onSelect: onFeatureSelect});
-					this.map.addControl(selectControl);
-					selectControl.activate();
+					rssVar.selectControl = new OpenLayers.Control.SelectFeature(rssVar.rssVectors, {onSelect: onFeatureSelect});
+					this.map.addControl(rssVar.selectControl);
+					rssVar.selectControl.activate();
 				}
 				var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
 				var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
@@ -188,12 +191,13 @@ function RssPopupParseData (ajaxRequest)
 // extend OpenLayers.Control.WMSGetFeatureInfo.getInfoForClick
 function RssPopupGetInfoForClick(evt)
 {
-	if (selectedFeature != null)
+	if (rssVar.selectedFeature != null)
 	{
-		wmsTool.displayPopup({xy : evt.xy}, 'RSS : ' + selectedFeature.attributes.data['title'], 
-							parseRSSContentHTML( selectedFeature.attributes.data['contentHTML']), false);
-		selectControl.unselect(selectedFeature);
-		selectedFeature = null;
+		text  = parseRSSContentHTML (rssVar.selectedFeature.attributes.data['contentHTML']);
+		title = 'RSS : ' + rssVar.selectedFeature.attributes.data['title'];
+		wmsTool.displayPopup({xy : evt.xy}, title, text, false);
+		rssVar.selectControl.unselect(rssVar.selectedFeature);
+		rssVar.selectedFeature = null;
 	}
 
 	this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
@@ -309,11 +313,11 @@ function RssPopupAddActions()
 
                     this.target.mapPanel.layers.remove(record);
 
-					for (var i = 0; i < rssVectors.length; i++)
+					for (var i = 0; i < rssVar.rssVectors.length; i++)
 					{
-						if (rssVectors[i].name === title)
+						if (rssVar.rssVectors[i].name === title)
 						{
-							rssVectors      .splice(i,1);
+							rssVar.rssVectors.splice(i,1);
 							break;
 						}
 					}
@@ -379,7 +383,7 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 					layer: layerRecord.getLayer(),
 					layerStore: this.store
 				});
-			} else {
+			} else if (node.attributes.group == 'animation') {
 				child = this.createNode({
 					checked : false,
 					nodeType: 'gx_layer',

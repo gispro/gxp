@@ -163,7 +163,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
              *  * source - :class:`gxp.plugins.LayerSource` The selected source.
              */
             "sourceselected"
-        );
+            );
         gxp.plugins.AddLayers.superclass.constructor.apply(this, arguments);        
     },
     
@@ -203,27 +203,27 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var source, data = [];        
         for (var id in this.target.layerSources) {
             source = this.target.layerSources[id];
-			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if (source.store && (id != 'rss') && (id != 'arcgis93') && ((id != 'animation'))) {
                 data.push([id, source.title || id]);
             }
         }
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		// RSS
-		data.push(['rss'      , 'RSS'     ]);
-		data.push(['animation', 'Анимация']);
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // RSS
+        data.push(['rss'      , 'RSS'     ]);
+        data.push(['animation', 'Анимация']);
 
-		// ArcGIS
-		if (arcgisStore && arcgisStore.reader.jsonData.arcgis.servers.length > 0)
-		{
-			for (var idx=0; idx < arcgisStore.reader.jsonData.arcgis.servers.length; ++idx) 
-			{
-				title = arcgisStore.reader.jsonData.arcgis.servers[idx].title;
-				data.push(['arcgis93_' + idx, title]);
-//				console.log ('arcgis93_' + idx + ', ' + title);
-			}
-		}
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // ArcGIS
+        if (arcgisStore && arcgisStore.reader.jsonData.arcgis.servers.length > 0)
+        {
+            for (var idx=0; idx < arcgisStore.reader.jsonData.arcgis.servers.length; ++idx) 
+            {
+                title = arcgisStore.reader.jsonData.arcgis.servers[idx].title;
+                data.push(['arcgis93_' + idx, title]);
+            //				console.log ('arcgis93_' + idx + ', ' + title);
+            }
+        }
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         var sources = new Ext.data.ArrayStore({
             fields: ["id", "title"],
             data: data
@@ -232,67 +232,73 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var expander = this.createExpander();
         var addLayers = function() {
             var key = sourceComboBox.getValue();
-			var records = capGridPanel.getSelectionModel().getSelections();
+            var records = capGridPanel.getSelectionModel().getSelections();
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            if (key == 'rss')
+            {
+                var source = this.target.layerSources['rss'];
+                if (!source)
+                    source = new gxp.plugins.RssSource();
+                var layerStore = this.target.mapPanel.layers;
+                for (var i=0, ii = records.length; i<ii; ++i) 
+                {
+                    record = source.createRecord(records[i].get("title"), records[i].get("name"));
+                    if (record)
+                        layerStore.add([record]);
+                }
+            }
+            else if (key == 'animation')
+            {
+                var source = this.target.layerSources['animation'];
+                if (!source)
+                    source = new gxp.plugins.AnimationSource();
+                var layerStore = this.target.mapPanel.layers;
+                for (var i=0, ii = records.length; i<ii; ++i) 
+                {
+                    record = source.createRecord(records[i].get("title" ), records[i].get("name"), 
+                        records[i].get("url"   ), records[i].get("x_axis"),
+                        records[i].get("layers"));
+                    if (record)
+                        layerStore.add([record]);
+                }
+            }
+            else if (key.indexOf ('arcgis93_') == 0)
+            {
+                var source = this.target.layerSources['arcgis93']; 
+                if (!source)
+                    source = new gxp.plugins.ArcGIS93Source();
+                var url = source.getServerURL(sourceComboBox.getRawValue());
+                var layerStore = this.target.mapPanel.layers;
+                for (var i=0; i < records.length; i++) 
+                {
+                    var curl  = url + '?layers=show:' + records[i].get("id");
+                    var layer = source.createLayer(records[i].get("title"), curl);
+                    record = source.createRecord(sourceComboBox.getRawValue(), layer);
+                    if (record)
+                        layerStore.add([record]);
+                }
+			}
 			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			if (key == 'rss')
-			{
-				var source     = this.target.layerSources['rss'];
-				var layerStore = this.target.mapPanel.layers;
-				for (var i=0, ii = records.length; i<ii; ++i) 
-				{
-					record = source.createRecord(records[i].get("title"), records[i].get("name"));
-					if (record)
-						layerStore.add([record]);
-				}
-			}
-			else if (key == 'animation')
-			{
-				var source     = this.target.layerSources['animation'];
-				var layerStore = this.target.mapPanel.layers;
-				for (var i=0, ii = records.length; i<ii; ++i) 
-				{
-					record = source.createRecord(records[i].get("title" ), records[i].get("name"), 
-					                             records[i].get("url"   ), records[i].get("x_axis"),
-												 records[i].get("layers"));
-					if (record)
-						layerStore.add([record]);
-				}
-			}
-			else if (key.indexOf ('arcgis93_') == 0)
-			{
-				var source     = this.target.layerSources['arcgis93']; 
-				var url        = source.getServerURL(sourceComboBox.getRawValue());
-				var layerStore = this.target.mapPanel.layers;
-				for (var i=0; i < records.length; i++) 
-				{
-					var curl  = url + '?layers=show:' + records[i].get("id");
-					var layer = source.createLayer(records[i].get("title"), curl);
-					record = source.createRecord(sourceComboBox.getRawValue(), layer);
-					if (record)
-						layerStore.add([record]);
-				}
-			}
-			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			else
-			{
-				var source     = this.target.layerSources[key];
-				var layerStore = this.target.mapPanel.layers;
-				var record;
-				for (var i=0, ii=records.length; i<ii; ++i) 
-				{
-					record = source.createLayerRecord({
-						name: records[i].get("name"),
-						source: key
-					});
-					if (record) {
-						if (record.get("group") === "background") {
-							layerStore.insert(0, [record]);
-						} else {
-							layerStore.add([record]);
-						}
-					}
-				}
-			}
+            else
+            {
+                var source     = this.target.layerSources[key];
+                var layerStore = this.target.mapPanel.layers;
+                var record;
+                for (var i=0, ii=records.length; i<ii; ++i) 
+                {
+                    record = source.createLayerRecord({
+                        name: records[i].get("name"),
+                        source: key
+                    });
+                    if (record) {
+                        if (record.get("group") === "background") {
+                            layerStore.insert(0, [record]);
+                        } else {
+                            layerStore.add([record]);
+                        }
+                    }
+                }
+            }
         };
 
         var idx = 0;
@@ -314,7 +320,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 expander,
                 {id: "title", header: this.panelTitleText, dataIndex: "title", sortable: true},
                 {header: "Id", dataIndex: "name", width: 150, sortable: true}
-            ]),
+                ]),
             listeners: {
                 rowdblclick: addLayers,
                 scope: this
@@ -334,45 +340,54 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             value: data[idx][0],
             listeners: {
                 select: function(combo, record, index)
-				{
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					if (record.get("id") === 'rss')
-					{
-						var source = this.target.layerSources['rss'];
-						if (source)
-						{
-							capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
-							capGridPanel.getView().focusRow(0);
-						}						
-					}
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					else if (record.get("id") === 'animation')
-					{
-						var source = this.target.layerSources['animation'];
-						if (source)
-						{
-							capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
-							capGridPanel.getView().focusRow(0);
-						}						
-					}
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					else if (record.get("id").indexOf ('arcgis93_') == 0)
-					{
-						var source = this.target.layerSources['arcgis93'];
-                        var url = source.getLayersURL(record.get("title"));
-						capGridPanel.reconfigure(source.getLayersStore(url), capGridPanel.getColumnModel());
-						capGridPanel.getView().focusRow(0);
-					}
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                {
+                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    if (record.get("id") === 'rss')
+                    {
+                        var source = this.target.layerSources['rss'];
+                        if (!source)
+                            source = new gxp.plugins.RssSource();
+                        if (source)
+                        {
+                            capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
+                            capGridPanel.getView().focusRow(0);
+                        }      
+                    }
+                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    else if (record.get("id") === 'animation')
+                    {
+                        var source = this.target.layerSources['animation'];
+                        if (!source)
+                            source = new gxp.plugins.AnimationSource();
+                        if (source)
+                        {
+                            capGridPanel.reconfigure(source.getLayersStore(), capGridPanel.getColumnModel());
+                            capGridPanel.getView().focusRow(0);
+                        }      
+                    }
+                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    else if (record.get("id").indexOf ('arcgis93_') == 0)
+                    {
+                        var source = this.target.layerSources['arcgis93'];
+                        if (!source)
+                            source = new gxp.plugins.ArcGIS93Source();
+                        if (source)
+                        {
+                            var url = source.getLayersURL(record.get("title"));
+                            capGridPanel.reconfigure(source.getLayersStore(url), capGridPanel.getColumnModel());
+                            capGridPanel.getView().focusRow(0);
+                        }
+                    }
+                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					else
 					{
-						var source = this.target.layerSources[record.get("id")];
-						capGridPanel.reconfigure(source.store, capGridPanel.getColumnModel());
-						// TODO: remove the following when this Ext issue is addressed
-						// http://www.extjs.com/forum/showthread.php?100345-GridPanel-reconfigure-should-refocus-view-to-correct-scroller-height&p=471843
-						capGridPanel.getView().focusRow(0);
-						this.setSelectedSource(source);
-					}
+                        var source = this.target.layerSources[record.get("id")];
+                        capGridPanel.reconfigure(source.store, capGridPanel.getColumnModel());
+                        // TODO: remove the following when this Ext issue is addressed
+                        // http://www.extjs.com/forum/showthread.php?100345-GridPanel-reconfigure-should-refocus-view-to-correct-scroller-height&p=471843
+                        capGridPanel.getView().focusRow(0);
+                        this.setSelectedSource(source);
+                    }
                 },
                 scope: this
             }
@@ -381,10 +396,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var capGridToolbar = null;
         if (this.target.proxy || data.length > 1) {
             capGridToolbar = [
-                new Ext.Toolbar.TextItem({
-                    text: this.layerSelectionText
-                }),
-                sourceComboBox
+            new Ext.Toolbar.TextItem({
+                text: this.layerSelectionText
+            }),
+            sourceComboBox
             ];
         }
         
@@ -404,7 +419,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 "server-added": function(url, titleCustom) {
                     newSourceWindow.setLoading();
                     
-                    var conf = {url: url};
+						var conf = {url: url};
                     if(titleCustom){
                         conf.title = titleCustom;
                     }
@@ -423,8 +438,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                         },
                         fallback: function(source, msg) {
                             newSourceWindow.setError(
-                                new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
-                            );
+									new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+                                );
                         },
                         scope: this
                     });
@@ -456,20 +471,20 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         }
         
         var bbarItems = [
-            "->",
-            new Ext.Button({
-                text: this.addButtonText,
-                iconCls: "gxp-icon-addlayers",
-                handler: addLayers,
-                scope : this
-            }),
-            new Ext.Button({
-                text: this.doneText,
-                handler: function() {
-                    this.capGrid.hide();
-                },
-                scope: this
-            })
+        "->",
+        new Ext.Button({
+            text: this.addButtonText,
+            iconCls: "gxp-icon-addlayers",
+            handler: addLayers,
+            scope : this
+        }),
+        new Ext.Button({
+            text: this.doneText,
+            handler: function() {
+                this.capGrid.hide();
+            },
+            scope: this
+        })
         ];
         
         var uploadButton = this.createUploadButton();
@@ -647,7 +662,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             source.url &&
             (this.relativeUploadOnly ? (source.url.charAt(0) === "/") : true) &&
             (this.nonUploadSources || []).indexOf(source.id) === -1
-        );
+            );
     },
     
     /** api: config[createExpander]

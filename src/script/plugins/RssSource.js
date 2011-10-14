@@ -7,9 +7,6 @@
  */
 Ext.namespace("gxp.plugins");
 
-var	dataLoaded = false;
-var downloadStart = false;
-
 var	rssStore = new Ext.data.JsonStore({ 
 	url       : 'rss.json',
 	root      : 'layers',
@@ -18,8 +15,8 @@ var	rssStore = new Ext.data.JsonStore({
 	{
 		load : function()
 		{
-			dataLoaded    = true;
-			downloadStart = false;
+			rssVar.dataLoaded    = true;
+			rssVar.downloadStart = false;
 		},
 		loadexception : function(o, arg, nul, e)
 		{
@@ -30,10 +27,10 @@ var	rssStore = new Ext.data.JsonStore({
 
 function downloadRSS()
 {
-	if (!dataLoaded && !downloadStart)
+	if (!rssVar.dataLoaded && !rssVar.downloadStart)
 	{
 		rssStore.load();
-		downloadStart = true;
+		rssVar.downloadStart = true;
 	}
 };
 
@@ -80,6 +77,8 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 			if (title === this.layersStore.data.items[idx].get('title'))
 			{
 				icon  = new OpenLayers.Icon(this.layersStore.data.items[idx].get('icon'), new OpenLayers.Size(21,25));
+                                icon.imageDiv={};
+				//icon  = this.layersStore.data.items[idx].get('icon');
 				url   = this.layersStore.data.items[idx].get('url');
 				var parts = (this.layersStore.data.items[idx].get('url') ? this.layersStore.data.items[idx].get('url').split("/") : null);
 				if (parts)

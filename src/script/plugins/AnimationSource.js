@@ -7,9 +7,10 @@
  */
 Ext.namespace("gxp.plugins");
 
-var animLoaded    = false;
-var animDownload  = false;
-var animationNode = false;
+var animVar = {};
+animVar.animLoaded    = false;
+animVar.animDownload  = false;
+animVar.animationNode = false;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var animationStore = new Ext.data.JsonStore({ 
 	url       : 'animation.json',
@@ -19,8 +20,8 @@ var animationStore = new Ext.data.JsonStore({
     {
    		load : function()
    		{
-			animLoaded   = true;
-			animDownload = false;
+			animVar.animLoaded   = true;
+			animVar.animDownload = false;
 			parseAnimationStore();
    		},
 		loadexception : function(o, arg, nul, e)
@@ -54,10 +55,10 @@ function parseAnimationStore()
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function downloadAnimation()
 {
-	if (!animLoaded && !animDownload)
+	if (!animVar.animLoaded && !animVar.animDownload)
 	{
 		animationStore.load();
-		animDownload = true;
+		animVar.animDownload = true;
 	}
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,16 +122,16 @@ function animationLayerLoaderOnStoreAdd(store, records, index, node)
 			else if ((nodeIndex >= 0) && (records[i].data.group === 'animation'))
 			{
 				isAdded = false;
-				for(var j = 0; j < animationNode.childNodes.length; ++j)
+				for(var j = 0; j < animVar.animationNode.childNodes.length; ++j)
 				{
-					if (animationNode.childNodes[j].text == records[i].data.title)
+					if (animVar.animationNode.childNodes[j].text == records[i].data.title)
 					{
 						isAdded = true;
 						break;
 					}
 				}
-				if ((animationNode.childNodes.length === 0) || !isAdded)
-					this.addLayerNode(animationNode, records[i], nodeIndex);
+				if ((animVar.animationNode.childNodes.length === 0) || !isAdded)
+					this.addLayerNode(animVar.animationNode, records[i], nodeIndex);
 			}                                                                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		}
 	}

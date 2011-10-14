@@ -7,8 +7,9 @@
  */
 Ext.namespace("gxp.plugins");
 
-var arcgisLoaded   = false;
-var arcgisDownload = false;
+var arcgisVar = {};
+arcgisVar.arcgisLoaded   = false;
+arcgisVar.arcgisDownload = false;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var arcgisStore = new Ext.data.JsonStore({ 
 	url       : 'arcgis.json',
@@ -18,8 +19,8 @@ var arcgisStore = new Ext.data.JsonStore({
     {
    		load : function()
    		{
-			arcgisLoaded   = true;
-			arcgisDownload = false;
+			arcgisVar.arcgisLoaded   = true;
+			arcgisVar.arcgisDownload = false;
    		},
 		loadexception : function(o, arg, nul, e)
 		{
@@ -30,10 +31,10 @@ var arcgisStore = new Ext.data.JsonStore({
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function downloadArcgis()
 {
-	if (!arcgisLoaded && !arcgisDownload)
+	if (!arcgisVar.arcgisLoaded && !arcgisVar.arcgisDownload)
 	{
 		arcgisStore.load();
-		arcgisDownload = true;
+		arcgisVar.arcgisDownload = true;
 	}
 };
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
