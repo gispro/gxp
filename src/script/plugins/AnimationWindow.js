@@ -1,4 +1,4 @@
-var animLayers         = []        ;
+﻿var animLayers         = []        ;
 var animServices       = []        ;
 var selectedNode       = null      ; 
 
@@ -228,9 +228,9 @@ function showAnimWindow(rootNode, selectedNode)
 		});
 		getScenarioIDX = function (selectedNode)
 		{
-			for (i = 0; i < animationStore.data.items.length; i++)
+			for (i = 0; i < animServices.length; i++)
 			{
-				if (animationStore.data.items[i].data.title === selectedNode.text)
+				if (animServices[i].title === selectedNode.text)
 					return i;
 			}
 			return -1;

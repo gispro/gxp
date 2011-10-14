@@ -89,7 +89,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				"animation" : 
 				{
-					title : animationNodeTitle // Анимация
+					title : animationNodeTitle //
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             };
@@ -274,7 +274,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
         var layerTree = gxp.plugins.LayerTree.superclass.addOutput.call(this, config);
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		if ((layerTree.root.childNodes.length == 3) && (layerTree.root.childNodes[2].text === animationNodeTitle))
-			animationNode = layerTree.root.childNodes[2];
+			animVar.animationNode = layerTree.root.childNodes[2];
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return layerTree;
     }        

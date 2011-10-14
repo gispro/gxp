@@ -19,6 +19,9 @@ Ext.namespace("gxp");
  *     An Ext.Window with some defaults that better lend themselves toward use 
  *     as a quick query to get a service URL from a user.
  */
+ 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
 gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
     /** api: config[title]
@@ -79,84 +82,152 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
     initComponent: function() {
 
         this.addEvents("server-added");
-
-
-        this.serversStore = new Ext.data.SimpleStore({
-            fields: ['serverName', 'url'],
-            data : [
-                ["Прогноз метеорологических полей с высоким пространственным разрешением для Мирового океана, включая моря России, от 00 часов (ASCII файлы)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_42/wms"],
-                ["Прогноз параметров ветрового волнения в Мировом океане от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_46/wms"],
-                ["Глобальный анализ поля атмосферного давления на уровне моря от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_60/wms"],
-                ["Глобальный анализ поля атмосферного давления на уровне моря от 12 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_61/wms"],
-                ["Краткосрочный прогноз полей скорости ветра и течений Баренцева моря от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_62/wms"],
-                ["Краткосрочный прогноз полей скорости ветра и течений Баренцева моря от 12 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_63/wms"],
-                ["Краткосрочный прогноз метеорологических  полей для Черного моря от 00 час (сетка 10х10 км)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_64/wms"],
-                ["Краткосрочный прогноз метеорологических  полей для Каспийского моря от 00 час (сетка 10х10 км)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_65/wms"],
-                ["Краткосрочный прогноз метеорологических  полей для Азовского моря от 00 час (сетка 3х3 км)", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_66/wms"],
-                ["Прогноз параметров ветрового волнения в Азовском море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_68/wms"],
-                ["Прогноз параметров ветрового волнения в Черном море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_69/wms"],
-                ["Прогноз параметров ветрового волнения в Каспийском море от 00 час", "http://gisbox.ru:8080/geoserver/ru_hydrometcentre_70/wms"]
-                ,["Анализ и прогноз класса пожарной опасности по территории Росии от 04 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_114/wms"],
-                ["Анализ и прогноз класса пожарной опасности по территории Росии от 06 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_115/wms"],
-                ["Анализ и прогноз класса пожарной опасности по территории Росии от 12 час ВСВ","http://gisbox.ru:8080/geoserver/ru_hydrometcentre_116/wms"]
-                ,["Местоположение судов","http://gisbox.ru:8080/geoserver/ru_morsvjazsputnik_act/wms"]
-
-
-
-                ,["Пользовательские слои","/geoserver/wms"]
-        
-    
-]
-        });
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		this.serversStore =  new Ext.data.JsonStore({ 
+			url       : 'wms.json',
+			root      : 'services',
+			fields    : [ 'serverName', 'url'],
+			listeners :
+			{
+				loadexception : function(o, arg, nul, e)
+				{
+					alert ("gxp.NewSourceWindow :  serversStore.listeners - LoadException : " + e);         
+				} 
+			}  
+		});
+		this.serversStore.load();
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
+		this.iconStore = new Ext.data.SimpleStore({
+			fields: ['name', 'url'],
+			data : [ 
+				['голубой'   , 'script/images/marker-blue.gif'  ],
+				['коричневый', 'script/images/marker-brown.gif' ],
+				['желтый'    , 'script/images/marker-gold.png'  ],
+				['зеленый'   , 'script/images/marker-green.png' ],
+				['фиолетовый', 'script/images/marker-purple.gif'],
+				['красный'   , 'script/images/marker-red.png'   ]]
+		});
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
         this.serversSelector = new Ext.form.ComboBox({
-            emptyText: "Введите или выберите",
+		    fieldLabel: "WMS",
+            emptyText: "Введите или выберите сервис WMS",
             displayField: 'serverName',
             valueField: 'url',
             editable: true,
             triggerAction: 'all',
             mode: 'local',
             store: this.serversStore,
+            width: 500,
+			getServerName : function(url)
+			{
+				var result = "";
+				if (this.store.data.length > 0)
+				{
+					for (var i = 0; i < this.store.data.length; i++)
+					{
+						if (this.store.data.items[i].data.url === url)
+						{
+							result = this.store.data.items[0].data.serverName;
+							break;
+						}
+					}
+				}
+				return result;
+			}
+        });
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
+        this.iconSelector = new Ext.form.ComboBox({
+		    fieldLabel: "Иконка",
+            emptyText: "Введите или выберите иконку для RSS",
+            displayField: 'name',
+            valueField: 'url',
+            editable: true,
+            triggerAction: 'all',
+            mode: 'local',
+            store: this.iconStore,
             width: 500
         });
+
         this.serversSelector.on({
             //click: this.stopMouseEvents,
             //mousedown: this.stopMouseEvents,
-            select: function(combo, record, index) {
-                this.urlTextField.setValue(record.data.url);
-                this.titleTextField.setValue(record.data.serverName);
+            select: function(combo, record, index)
+			{
+                this.urlTextField  .setValue (record.data.url       );
+//              this.titleTextField.setValue (record.data.serverName);
             },
             scope: this
         });
-        
 
         this.urlTextField = new Ext.form.TextField({
             fieldLabel: "URL",
-            allowBlank: false,
-            width: 240,
+//          allowBlank: false,
+            editable: false,
+            width: 500,
             msgTarget: "under",
-            validator: this.urlValidator.createDelegate(this),
-            hidden: true
+//          validator: this.urlValidator.createDelegate(this),
+            hidden: false // true
         });
 
         this.titleTextField = new Ext.form.TextField({
-            fieldLabel: "Title",
-            allowBlank: false,
-            width: 240,
+            fieldLabel: "Наименование", // "Title",
+//          allowBlank: false,
+            width: 500,
             msgTarget: "under",
-            hidden: true
+            hidden: false // true
+        });
+
+	   this.radioGroup = new Ext.form.RadioGroup({
+//			xtype: 'fieldset',
+			fieldLabel: "Сервис",
+			width : 350,
+			defaults: {
+				labelStyle: 'padding-left:4px;'
+			},
+			collapsible: true,
+			xtype: 'radiogroup',
+			cls: 'x-check-group-alt',
+//			columnWidth: .75,
+			items: [
+				{name: 'service', boxLabel: 'WMS'   , inputValue: 1, checked: true},
+				{name: 'service', boxLabel: 'ArcGIS', inputValue: 2},
+				{name: 'service', boxLabel: 'RSS'   , inputValue: 3}
+			]
+		});
+        this.radioGroup.on({
+            change: function(radiogroup, radio)
+			{
+				this.lockFields(radio.inputValue);
+            }, scope: this
         });
 
         this.form = new Ext.form.FormPanel({
             items: [
+                this.serversSelector,
                 this.titleTextField,
                 this.urlTextField,
-                this.serversSelector
+				this.iconSelector,
+				this.radioGroup
             ],
             border: false,
-            labelWidth: 30,
             bodyStyle: "padding: 5px",
-            autoWidth: true,
-            autoHeight: true
+            labelWidth: 90,
+			height : 150,
+			width : 820,
+            autoWidth: false, // true, // 
+            autoHeight: false
+//			listeners:
+//				{
+//					"show": function ()
+//						{
+//							console.log ('show...');
+//						},
+//					"activate": function ()
+//						{
+//							console.log ('"activate"...');
+//						}
+//				}
         });
 
         this.bbar = [
@@ -171,12 +242,42 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             new Ext.Button({
                 text: "Добавить сервис",// this.addServerText,
                 iconCls: "add",
-                handler: function() {
+                handler: function()
+				{
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					var getServerName;
+					if ((this.getServiceIDX() == 0) && (this.serversSelector.getValue().length == 0))
+					{
+//						console.log ('idx = ' + this.getServiceIDX() + ', ' + this.serversSelector + ', ' +
+//						                                                      this.serversSelector.getValue());
+						return;
+					} else if ((this.getServiceIDX() == 0) && (this.serversSelector.getValue().length > 0) )
+					{
+						if (this.serversSelector.getValue() === this.serversSelector.emptyText)
+							return;
+						getServerName = this.serversSelector.getServerName();
+						this.urlTextField.setValue(this.serversSelector.getValue());
+					} else if (this.getServiceIDX() == 1) {
+					    if ((this.titleTextField.getValue() == 0) || (this.iconSelector.getValue() == 0))
+							return;
+						else
+							getServerName = this.titleTextField.getValue();
+					} else if (this.getServiceIDX() == 2) {
+					    if ((this.titleTextField.getValue() == 0) || (this.iconSelector.getValue() == 0))
+							return;
+						else
+							getServerName = this.titleTextField.getValue();
+					}
+					// this.serversSelector.store.data.length
+					// this.serversSelector.store.data.items[0].data.serverName
+					// this.serversSelector.store.data.items[0].data.url
                     // Clear validation before trying again.
                     this.error = null;
                     if (this.urlTextField.validate()) {
-                        this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue());
-                    }else{
+//                        this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue());
+//                      this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue());
+                        this.fireEvent("server-added", this.urlTextField.getValue(), getServerName, this.iconSelector.getValue());
+                    } else {
                         this.urlTextField.setValue(this.serversSelector.lastSelectionText);
                         if (this.urlTextField.validate()) {
                             this.fireEvent("server-added", this.urlTextField.getValue());
@@ -198,27 +299,90 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.on("hide", function() {
             // Reset values so it looks right the next time it pops up.
             this.error = null;
-            this.urlTextField.validate(); // Remove error text.
+//          this.urlTextField.validate(); // Remove error text. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             this.urlTextField.setValue("");
             this.loadMask.hide();
         }, this);
 
-        this.on("server-added", function(url) {
-            this.setLoading();
-            var success = function(record) {
-                this.hide();
-            };
+        this.on("server-added", function(url)
+		{
+//			console.log ('server-added : url = ' + url + ', ' + this.getServiceIDX());
+			if (this.getServiceIDX() == 0)
+			{
+				this.setLoading();
+				var success = function(record) {
+					this.hide();
+				};
 
-            var failure = function() {
-                this.setError(this.sourceLoadFailureMessage);
-            };
-
-            // this.explorer.addSource(url, null, success, failure, this);
-            this.addSource(url, success, failure, this);
+				var failure = function() {
+					this.setError(this.sourceLoadFailureMessage);
+				};
+				// this.explorer.addSource(url, null, success, failure, this);
+				this.addSource(url, success, failure, this);
+			} else {
+//				if (this.getServiceIDX() == 1)
+//				{
+//					this.setLoading();
+//					var success = function(record) {
+//						this.hide();
+//					};
+//					console.log ('server-added : ArcGIS - url = ' + url + ', name = ' + this.titleTextField.getValue());
+//				}
+				this.hide();
+			}
         }, this);
 
     },
-    
+	getServiceIDX: function()
+	{
+		result = 0;
+		for (var i = 0; i < this.radioGroup.items.length; i++)
+		{
+			if (this.radioGroup.items.items[i].checked)
+			{
+				result = i;
+				break;
+			}
+		}
+		return result;
+	},
+	lockFields: function(idx)
+	{
+		if (idx === 1)
+		{
+			this.serversSelector.setValue(this.serversSelector.emptyText);
+			this.iconSelector   .setValue(this.iconSelector   .emptyText);
+			this.titleTextField .setValue('');
+			this.urlTextField   .setValue('');
+
+			this.serversSelector.setDisabled (false);
+			this.titleTextField .setDisabled ( true);
+			this.urlTextField   .setDisabled ( true);
+			this.iconSelector   .setDisabled ( true);
+		} else if (idx === 2) {
+			this.serversSelector.setValue(this.serversSelector.emptyText);
+			this.iconSelector   .setValue(this.iconSelector   .emptyText);
+			this.titleTextField.setValue('');
+			this.urlTextField  .setValue('');
+
+			this.serversSelector.setDisabled( true);
+			this.titleTextField.setDisabled (false);
+			this.urlTextField  .setDisabled (false);
+			this.iconSelector  .setDisabled ( true);
+		} else if (idx === 3) {
+			this.serversSelector.setValue(this.serversSelector.emptyText);
+			this.iconSelector   .setValue(this.iconSelector   .emptyText);
+			this.titleTextField.setValue('');
+			this.urlTextField  .setValue('');
+
+			this.serversSelector.setDisabled( true);
+			this.titleTextField.setDisabled (false);
+			this.urlTextField  .setDisabled (false);
+			this.iconSelector  .setDisabled (false);
+		}
+//		console.log ('idx = ' + idx);
+	},
+
     /** private: property[urlRegExp]
      *  `RegExp`
      *
@@ -282,6 +446,5 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
      *
      * TODO this can probably be extracted to an event handler
      */
-    addSource: function(url, success, failure, scope) {
-    }
+    addSource: function(url, success, failure, scope) { }
 });
