@@ -87,6 +87,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			url       : 'wms.json',
 			root      : 'services',
 			fields    : [ 'serverName', 'url'],
+			autoLoad  : true,
 			listeners :
 			{
 				loadexception : function(o, arg, nul, e)
@@ -95,11 +96,23 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 				} 
 			}  
 		});
-		this.serversStore.load();
-		
+//		this.serversStore.load();		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		this.iconStore = new Ext.data.SimpleStore({
-			fields: ['name', 'url'],
+/*		
+			url       : 'rss_icons.json',
+			root      : 'icons',
+			fields    : [ 'color', 'url'],
+			autoLoad: true,
+			listeners :
+			{
+				loadexception : function(o, arg, nul, e)
+				{
+					alert ("gxp.NewSourceWindow :  iconStore.listeners - LoadException : " + e);         
+				} 
+			}  
+*/			
+			fields: ['color', 'url'],
 			data : [ 
 				['голубой'   , 'script/images/marker-blue.gif'  ],
 				['коричневый', 'script/images/marker-brown.gif' ],
@@ -118,21 +131,18 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             triggerAction: 'all',
             mode: 'local',
             store: this.serversStore,
-            width: 500,
-			getServerName : function(url)
+			anchor: '100%',
+			getServerName : function()
 			{
 				var result = "";
-				if (this.store.data.length > 0)
-				{
 					for (var i = 0; i < this.store.data.length; i++)
 					{
-						if (this.store.data.items[i].data.url === url)
+					if (this.store.data.items[i].data.url === this.getValue())
 						{
-							result = this.store.data.items[0].data.serverName;
+						result = this.store.data.items[i].data.serverName;
 							break;
 						}
 					}
-				}
 				return result;
 			}
         });
@@ -140,13 +150,14 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.iconSelector = new Ext.form.ComboBox({
 		    fieldLabel: "Иконка",
             emptyText: "Введите или выберите иконку для RSS",
-            displayField: 'name',
+            displayField: 'color',
             valueField: 'url',
             editable: true,
+	    disabled:true,
             triggerAction: 'all',
             mode: 'local',
             store: this.iconStore,
-            width: 500
+			anchor: '100%',
         });
 
         this.serversSelector.on({
@@ -164,18 +175,18 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             fieldLabel: "URL",
 //          allowBlank: false,
             editable: false,
-            width: 500,
+			anchor: '100%',
             msgTarget: "under",
 //          validator: this.urlValidator.createDelegate(this),
-            hidden: false // true
+            hidden: false
         });
 
         this.titleTextField = new Ext.form.TextField({
             fieldLabel: "Наименование", // "Title",
 //          allowBlank: false,
-            width: 500,
+			anchor: '100%',
             msgTarget: "under",
-            hidden: false // true
+            hidden: false
         });
 
 	   this.radioGroup = new Ext.form.RadioGroup({
@@ -214,8 +225,8 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             bodyStyle: "padding: 5px",
             labelWidth: 90,
 			height : 150,
-			width : 820,
-            autoWidth: false, // true, // 
+			width : 620,
+            autoWidth: true,
             autoHeight: false
 //			listeners:
 //				{
@@ -268,9 +279,6 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 						else
 							getServerName = this.titleTextField.getValue();
 					}
-					// this.serversSelector.store.data.length
-					// this.serversSelector.store.data.items[0].data.serverName
-					// this.serversSelector.store.data.items[0].data.url
                     // Clear validation before trying again.
                     this.error = null;
                     if (this.urlTextField.validate()) {
@@ -356,8 +364,8 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			this.urlTextField   .setValue('');
 
 			this.serversSelector.setDisabled (false);
-			this.titleTextField .setDisabled ( true);
-			this.urlTextField   .setDisabled ( true);
+			this.titleTextField .setDisabled (false);
+			this.urlTextField   .setDisabled (false);
 			this.iconSelector   .setDisabled ( true);
 		} else if (idx === 2) {
 			this.serversSelector.setValue(this.serversSelector.emptyText);

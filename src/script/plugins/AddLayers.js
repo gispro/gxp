@@ -382,6 +382,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 				}
 				}
 				return result;
+			},
+			getServiceRecord : function (idx)
+			{
+				return this.store.data.items[idx];
 			},                                                  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             listeners: {
                 select: function(combo, record, index)
@@ -465,6 +469,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 					// console.log ('newSourceWindow.listeners : ' + newSourceWindow.getServiceIDX());
 					if (newSourceWindow.getServiceIDX() === 0)          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					{
+						var idx = sourceComboBox.getServiceIDX (titleCustom);
+						if (idx === -1)
+						{
 						newSourceWindow.setLoading();
                     
 						var conf = {url: url};
@@ -491,6 +498,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 							},
 							scope: this
 						});
+						} else {                                         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							newSourceWindow.hide();
+							sourceComboBox.setSelection (idx);
+							sourceComboBox.onSelect(sourceComboBox.getServiceRecord(idx), idx);
+						}
 					} else if (newSourceWindow.getServiceIDX() === 1) {  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 						if (!sourceComboBox.isServiceLoaded(titleCustom))
 						{
