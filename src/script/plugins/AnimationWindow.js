@@ -37,27 +37,40 @@ function showAnimWindow(rootNode, selectedNode)
 					if (!timer.isRunning())
 						timer.setTimeInSeconds(value, TIMER_INTERVAL);
 
-					var n = Math.floor (value / this.scale_length); 
-					for (var i = 0; i < animLayers.length; i++)
-					{
-						if (i < n)
+                                        // affected layers:
+                                        var layerUnit = this.maxValue / (animLayers.length-1);
+                                        var halfLayerUnit = layerUnit / 2.0;
+                                        var curLayer = Math.floor(value/layerUnit);
+                                        var transition = value - curLayer*layerUnit;
+                                        var nextLayerOpacity = (transition >= halfLayerUnit ? 
+                                            maxAnimeOpacity - (0.3 * ((layerUnit - transition) / halfLayerUnit )) : 
+                                            ((maxAnimeOpacity*0.7) * (transition / halfLayerUnit ) )
+                                        );
+                                        
+                                        var thisLayerOpacity = (transition < halfLayerUnit ? 
+                                            maxAnimeOpacity - (0.3 * (transition / halfLayerUnit ) ): 
+                                            ((maxAnimeOpacity*0.7) * ((layerUnit - transition) / halfLayerUnit ) )
+                                        );
+                                        
+					for (var i = 0; i < animLayers.length; i++){
+						if (i < curLayer)
 						{
 							if (animLayers[i] != null)
 								animLayers[i].setOpacity (0);
-						} else if (i == n)
+						} else if (i == curLayer)
 						{
 							if (animLayers[i] != null)
-								animLayers[i].setOpacity ((this.scale_length * (i + 1)- value) / this.scale_length);
-						} else if (i == (n + 1))
+								animLayers[i].setOpacity (thisLayerOpacity);
+						} else if (i == (curLayer + 1))
 						{
 							if (animLayers[i] != null)
-								animLayers[i].setOpacity ((value - (this.scale_length * (i - 1))) / this.scale_length);
-						} else if (i >= (n + 2))
+								animLayers[i].setOpacity (nextLayerOpacity);
+						} else if (i > (curLayer + 1))
 						{
 							if (animLayers[i] != null)
 								animLayers[i].setOpacity (0);
 						}
-					}
+                                        }
 				}
 			}
 		});
@@ -394,8 +407,9 @@ function showAnimWindow(rootNode, selectedNode)
 		animWindow.node = selectedNode; 
 		animWindow.node = selectedNode; 
 
-	animWindow.setPosition(5, 580, null);
+	//animWindow.setPosition(5, 580, null);
 	animWindow.show();
+        animWindow.alignTo(app.mapPanel.body, "bl-bl?", [10, -10]);
 } // end showAnimWindow(rootNode, selectedNode)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // extend GeoExt.LegendPanel.addLegend
