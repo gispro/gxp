@@ -269,7 +269,7 @@ function showAnimWindow(rootNode, selectedNode)
 				{
 					layers        : layer_names [item],
 					srs           : new OpenLayers.Projection('EPSG:900913'),
-					format        : 'image/gif',
+					format        : 'image/png',
 					tiled         : 'true',
 					minZoomLevel  : 4,
 					maxZoomLevel  : 17,

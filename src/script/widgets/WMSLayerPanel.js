@@ -139,6 +139,19 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             }
             this.items.push(this.createStylesPanel(url));
         }
+        
+        var colonPos = this.layerRecord.get("name").indexOf(":");
+        if(colonPos>0)
+        {
+            var esimoServiceParam = this.layerRecord.get("name").substring(0, colonPos);
+             this.items.push({
+                xtype: 'panel',
+                title: "Метаданные",
+                style: {"padding": "5px"},
+                //height: "auto",
+                html: "<iframe width=\"100%\" height=\"300\" src=\"http://www.esimo.ru/srbd_data/resource?id="+esimoServiceParam+"\"/>"
+             });
+        }
 
         gxp.WMSLayerPanel.superclass.initComponent.call(this);
     },
