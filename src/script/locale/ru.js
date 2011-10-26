@@ -281,7 +281,7 @@ GeoExt.Lang.add("ru", {
         displayText: "Отображение",
         opacityText: "Прозрачность",
         formatText: "Формат",
-        transparentText: "Прозрачность",
+        transparentText: "Без фона",
         cacheText: "Кэш",
         cacheFieldText: "Использовать кэш",
         stylesText: "Стили"
