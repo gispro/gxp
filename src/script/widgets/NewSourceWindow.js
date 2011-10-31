@@ -20,8 +20,7 @@ Ext.namespace("gxp");
  *     as a quick query to get a service URL from a user.
  */
  
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
     /** api: config[title]
@@ -96,7 +95,6 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 				} 
 			}  
 		});
-//		this.serversStore.load();		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		this.iconStore = new Ext.data.SimpleStore({
 /*		
@@ -135,14 +133,14 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			getServerName : function()
 			{
 				var result = "";
-					for (var i = 0; i < this.store.data.length; i++)
-					{
+				for (var i = 0; i < this.store.data.length; i++)
+				{
 					if (this.store.data.items[i].data.url === this.getValue())
-						{
+					{
 						result = this.store.data.items[i].data.serverName;
-							break;
-						}
+						break;
 					}
+				}
 				return result;
 			}
         });
@@ -153,7 +151,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             displayField: 'color',
             valueField: 'url',
             editable: true,
-	    disabled:true,
+			disabled:true,
             triggerAction: 'all',
             mode: 'local',
             store: this.iconStore,
@@ -190,7 +188,6 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         });
 
 	   this.radioGroup = new Ext.form.RadioGroup({
-//			xtype: 'fieldset',
 			fieldLabel: "Сервис",
 			width : 350,
 			defaults: {
@@ -228,17 +225,6 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			width : 620,
             autoWidth: true,
             autoHeight: false
-//			listeners:
-//				{
-//					"show": function ()
-//						{
-//							console.log ('show...');
-//						},
-//					"activate": function ()
-//						{
-//							console.log ('"activate"...');
-//						}
-//				}
         });
 
         this.bbar = [

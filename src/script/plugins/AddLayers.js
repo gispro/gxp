@@ -353,7 +353,6 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 			setSelection : function (idx)                       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			{
 				this.setValue (this.store.data.items[idx].data.title);
-//				this.setSelectedSource(this.store.data.items[idx].data.title);
 				this.fireEvent("select", this, this.store.data.items[idx]);
 			},                                                  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			getServiceIDX : function (title, group)
@@ -466,38 +465,37 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             modal: true,
             listeners: {
                 "server-added": function(url, titleCustom, icon) {
-					// console.log ('newSourceWindow.listeners : ' + newSourceWindow.getServiceIDX());
 					if (newSourceWindow.getServiceIDX() === 0)          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					{
 						var idx = sourceComboBox.getServiceIDX (titleCustom);
 						if (idx === -1)
 						{
-						newSourceWindow.setLoading();
+							newSourceWindow.setLoading();
                     
-						var conf = {url: url};
-						if(titleCustom){
-							conf.title = titleCustom;
-						}
+							var conf = {url: url};
+							if(titleCustom){
+								conf.title = titleCustom;
+							}
                     
-						this.target.addLayerSource({
-							config: conf, // assumes default of gx_wmssource
-							callback: function(id) {
-								// add to combo and select
-								var record = new sources.recordType({
-									id: id,
-									title: this.target.layerSources[id].title || this.untitledText
-								});
-								sources.insert(0, [record]);
-								sourceComboBox.onSelect(record, 0);
-								newSourceWindow.hide();
-							},
-							fallback: function(source, msg) {
-								newSourceWindow.setError(
-									new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
-								);
-							},
-							scope: this
-						});
+							this.target.addLayerSource({
+								config: conf, // assumes default of gx_wmssource
+								callback: function(id) {
+									// add to combo and select
+									var record = new sources.recordType({
+										id: id,
+										title: this.target.layerSources[id].title || this.untitledText
+									});
+									sources.insert(0, [record]);
+									sourceComboBox.onSelect(record, 0);
+									newSourceWindow.hide();
+								},
+								fallback: function(source, msg) {
+									newSourceWindow.setError(
+										new Ext.Template(this.addLayerSourceErrorText).apply({msg: msg})
+									);
+								},
+								scope: this
+							});
 						} else {                                         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 							newSourceWindow.hide();
 							sourceComboBox.setSelection (idx);
@@ -522,6 +520,16 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								sourceComboBox.setSelection (idx);
 								sourceComboBox.onSelect(record, idx);
 							}
+							OpenLayers.Request.issue({
+								method: "POST",
+								url: "save",
+								async: true,
+								params:{
+								    service : "arcgis"   ,
+									title   : titleCustom,
+									url     : url
+								}
+							});
 						}
 					} else if (newSourceWindow.getServiceIDX() === 2) {  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //						console.log ('newSourceWindow.listeners : RSS - titleCustom = ' + titleCustom + ', url = ' + url);
@@ -555,6 +563,19 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								}); 
 							
 								rssStore.add(data);
+								// send to server => write to file
+								OpenLayers.Request.issue({
+									method: "POST",
+									url: "save",
+									async: true,
+									params:{
+									    service : "rss"      ,
+										name    : fname      ,
+										title   : titleCustom,
+										icon    : icon       ,
+										url     : url
+									}
+								});
 							}
 							sourceComboBox.onSelect (sourceComboBox.store.data.items[idx], idx);
 						}
