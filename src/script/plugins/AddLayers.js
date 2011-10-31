@@ -204,7 +204,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         for (var id in this.target.layerSources) {
             source = this.target.layerSources[id];
 			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            if (source.store && (id != 'rss') && (id != 'arcgis93') && ((id != 'animation'))) {
+            if (source.store && (id != 'rss') && (id != 'arcgis93') && ((id != 'animation')))
+			{
                 data.push([id, source.title || id]);
             }
         }
@@ -290,7 +291,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 						source: key
 					});
 					if (record) {
-						if (record.get("group") === "background") {
+						if (record.get("group") === "background")
+						{
 							layerStore.insert(0, [record]);
 						} else {
 							layerStore.add([record]);
@@ -501,7 +503,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 							sourceComboBox.setSelection (idx);
 							sourceComboBox.onSelect(sourceComboBox.getServiceRecord(idx), idx);
 						}
-					} else if (newSourceWindow.getServiceIDX() === 1) {  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					} else if (newSourceWindow.getServiceIDX() === 1) {
 						if (!sourceComboBox.isServiceLoaded(titleCustom))
 						{
 							arcgisStore.reader.jsonData.arcgis.servers.push({'title': titleCustom, 'url' : url});
@@ -531,7 +533,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								}
 							});
 						}
-					} else if (newSourceWindow.getServiceIDX() === 2) {  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					} else if (newSourceWindow.getServiceIDX() === 2) {
 //						console.log ('newSourceWindow.listeners : RSS - titleCustom = ' + titleCustom + ', url = ' + url);
 						var idx = sourceComboBox.getServiceIDX ('', 'rss');
 						if (idx >= 0)

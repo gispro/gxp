@@ -237,7 +237,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             }),
             new Ext.Toolbar.Fill(),
             new Ext.Button({
-                text: "Добавить сервис",// this.addServerText,
+                text: "Добавить сервис",
                 iconCls: "add",
                 handler: function()
 				{
@@ -277,6 +277,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                             this.fireEvent("server-added", this.urlTextField.getValue());
                         }
                     }
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 },
                 scope: this
             })
