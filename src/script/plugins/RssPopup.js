@@ -295,11 +295,14 @@ function RssPopupGetState()
 					} else if (id === 'rss') {
 						source = new gxp.plugins.RssSource();
 						source.initialConfig = {id:"rss", projection: "EPSG:4326", ptype: "gxp_rsssource"};
-						this.layerSources.animation = source;
-					} else if (id === 'arcgis') {
+						this.layerSources.rss = source;
+					} else if (id === 'arcgis93') {
 						source = new gxp.plugins.ArcGIS93Source();
-						source.initialConfig = {id:"arcgis", projection: "EPSG:900913", ptype: "gxp_arcgis93source"};
-						this.layerSources.animation = source;
+						source.id         = "arcgis93";
+						source.ptype      = "gxp_arcgis93source";
+						source.projection = "EPSG:900913";
+						source.initialConfig = {id:"arcgis93", projection: "EPSG:900913", ptype: "gxp_arcgis93source"};
+						this.layerSources.arcgis93 = source;
 					}
 					source = this.layerSources[id];
 				}               //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -392,6 +395,14 @@ function RssPopupAddActions()
 // extend GeoExt.tree.LayerLoader
 function RsspopupAddLayerNode (node, layerRecord, index)
 {
+	if (node.childNodes.length > 0)
+	{
+		for (var idx = 0; idx < node.childNodes.length; idx++)
+		{
+			if (node.childNodes[idx].text === layerRecord.data.title)
+				return;
+		}
+	}
 	index = index || 0;
 	if (this.filter(layerRecord) === true)
 	{
@@ -417,6 +428,8 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 			{
 				if (!child.text)
 					child.text = layerRecord.data.title;
+				if ((child.layer.CLASS_NAME === 'OpenLayers.Layer.ArcGIS93Rest') && (child.draggable == false))
+					child.draggable = true;
 				var sibling = node.item(index);
 				if (sibling) 
 				{

@@ -158,17 +158,21 @@ gxp.plugins.ArcGIS93Source = Ext.extend(gxp.plugins.LayerSource,
 			if ("visibility" in config) {
 				layer.visibility = config.visibility;
 			}
+//			record.draggable = true;
             
-			record.set("selected", config.selected || false);
-			record.set("source"  , config.source);
-			record.set("name"    , config.name  );
-			record.set("url"     , layer.url    );
+			record.setLayer(layer);
+			record.set("selected"  , config.selected || true);
+//			record.set("selected"  , true               );
+			record.set("source"    , 'arcgis93'         ); // config.source      );
+			record.set("name"      , config.name        );
+			record.set("url"       , layer.url          );
+			record.set("properties", "gxp_wmslayerpanel");
+			record.data.layer = layer;
+
 			if ("group" in config) {
 				record.set("group", config.group);
 			} else 
 				record.set("group", null);
-
-			record.data.layer = layer;
 			
 			record.commit();
 		};
@@ -179,28 +183,28 @@ gxp.plugins.ArcGIS93Source = Ext.extend(gxp.plugins.LayerSource,
 		var record = new GeoExt.data.LayerRecord();
 		record.setLayer(layer);
 
-		record.set("title"   , layer.name );
-		record.set("name"    , server + ' : ' + layer.name);
-		record.set("selected", true       );
-		record.set("source"  , 'arcgis93' );
-        record.set("url"     , layer.url  );
+		record.set("title"     , layer.name         );
+		record.set("selected"  , true               );
+		record.set("source"    , 'arcgis93'         );
+        record.set("url"       , layer.url          );
+		record.set("properties", "gxp_wmslayerpanel");
+		record.set("name"      , server + ' : ' + layer.name);
 		record.data.layer = layer;
 		record.commit();
 		
-		record.set("properties", "gxp_wmslayerpanel");
 		return record;
     },
     getConfigForRecord: function(record) {
         var layer = record.getLayer();
         return {
-            source     : record.get("source"  ),
-            name       : record.get("name"    ),
-            title      : record.get("title"   ),
-            group      : record.get("group"   ),
-            fixed      : record.get("fixed"   ),
-            selected   : record.get("selected"),
-            url        : record.get("url"     ),
-            visibility : layer.getVisibility(),
+            source     : record.get("source"    ),
+            name       : record.get("name"      ),
+            title      : record.get("title"     ),
+            group      : record.get("group"     ),
+            fixed      : record.get("fixed"     ),
+            selected   : record.get("selected"  ),
+            url        : record.get("url"       ),
+            visibility : layer.getVisibility()   ,
             opacity    : layer.opacity || undefined
         };
     }
