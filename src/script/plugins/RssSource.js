@@ -17,6 +17,7 @@ var	rssStore = new Ext.data.JsonStore({
 		{
 			rssVar.dataLoaded    = true;
 			rssVar.downloadStart = false;
+//			console.log ('rssStore : length = ' + this.data.length);
 		},
 		loadexception : function(o, arg, nul, e)
 		{

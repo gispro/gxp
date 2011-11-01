@@ -103,6 +103,8 @@ function RssPopupParseData (ajaxRequest)
 
 	var rssVector  = null;
 	var style_mark = null;
+
+//	console.log ('rssPopup : features.length = ' + features.length);
 	
 	if (features.length == 0)
 	{
@@ -282,7 +284,27 @@ function RssPopupGetState()
 			if (id)
 			{
 				var source = this.layerSources[id];
-				if (!source) {
+
+				if (!source)    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				{
+					if (id === 'animation')
+					{
+						source = new gxp.plugins.AnimationSource();
+						source.initialConfig = {id:"animation", projection: "EPSG:4326", ptype: "gxp_animationsource"};
+						this.layerSources.animation = source;
+					} else if (id === 'rss') {
+						source = new gxp.plugins.RssSource();
+						source.initialConfig = {id:"rss", projection: "EPSG:4326", ptype: "gxp_rsssource"};
+						this.layerSources.animation = source;
+					} else if (id === 'arcgis') {
+						source = new gxp.plugins.ArcGIS93Source();
+						source.initialConfig = {id:"arcgis", projection: "EPSG:900913", ptype: "gxp_arcgis93source"};
+						this.layerSources.animation = source;
+					}
+					source = this.layerSources[id];
+				}               //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				if (!source)
+				{
 					throw new Error("Could not find source for layer '" + record.get("name") + "'");
 				}
 				// add layer
