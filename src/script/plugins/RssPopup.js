@@ -104,8 +104,6 @@ function RssPopupParseData (ajaxRequest)
 	var rssVector  = null;
 	var style_mark = null;
 
-//	console.log ('rssPopup : features.length = ' + features.length);
-	
 	if (features.length == 0)
 	{
 		// Добавляем в ветку наименование RSS
@@ -160,11 +158,11 @@ function RssPopupParseData (ajaxRequest)
 
 					if (records.data.items.length > 0)
 					{
-						for (var i = 0; i < records.data.items.length; i++)
+						for (var j = 0; j < records.data.items.length; j++)
 						{
-							if (records.data.items[i].data['title'] === name)
+							if (records.data.items[j].data['title'] === name)
 							{
-								record = records.data.items[i];
+								record = records.data.items[j];
 								break;
 							}
 						}
@@ -395,17 +393,17 @@ function RssPopupAddActions()
 // extend GeoExt.tree.LayerLoader
 function RsspopupAddLayerNode (node, layerRecord, index)
 {
-	if (node.childNodes.length > 0)
-	{
-		for (var idx = 0; idx < node.childNodes.length; idx++)
-		{
-			if (node.childNodes[idx].text === layerRecord.data.title)
-				return;
-		}
-	}
 	index = index || 0;
 	if (this.filter(layerRecord) === true)
 	{
+		if (node.childNodes.length > 0)
+		{
+			for (var idx = 0; idx < node.childNodes.length; idx++)
+			{
+				if (node.childNodes[idx].text === layerRecord.data.title)
+					return;
+			}
+		}
 		if (layerRecord.data.title.length > 0)
 		{
 			var child;
@@ -430,30 +428,22 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 					child.text = layerRecord.data.title;
 				if ((child.layer.CLASS_NAME === 'OpenLayers.Layer.ArcGIS93Rest') && (child.draggable == false))
 					child.draggable = true;
+				
 				var sibling = node.item(index);
-				if (sibling) 
-				{
-					if (child.layer && sibling.layer && (child.layer.CLASS_NAME === sibling.layer.CLASS_NAME))
-					{
-						var isPresent = false;
-						if (sibling.parentNode && (sibling.parentNode.childNodes.length > 0))
-						{
-							for (var i = 0, len = sibling.parentNode.childNodes.length; i < len; i++)
-							{
-								if (sibling.parentNode.childNodes[i].layer.name === child.layer.name)
-								{
-									isPresent = true;
-									break;
-							}
-							}
-						}
-						if (!isPresent)
-							node.insertBefore(child, sibling);
-					} else
+//				if (node.previousSibling === null)
+//				{
+					if (sibling)
 						node.insertBefore(child, sibling);
-				} else {
-					node.appendChild(child);
-				}
+					else
+						node.appendChild(child);
+//					console.log ('0. node.childNodes.length = ' + node.childNodes.length + ', title = ' + layerRecord.data.title + 
+//								', rssVar.onConfigCreate = ' + rssVar.onConfigCreate + ', index = ' + index);
+//				} else {
+//					if (sibling) 
+//						node.insertBefore(child, sibling);
+//					else
+//						node.appendChild(child);
+//				}
 				child.on("move", this.onChildMove, this);
 			}
 		}

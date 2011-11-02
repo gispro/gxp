@@ -158,12 +158,11 @@ gxp.plugins.ArcGIS93Source = Ext.extend(gxp.plugins.LayerSource,
 			if ("visibility" in config) {
 				layer.visibility = config.visibility;
 			}
-//			record.draggable = true;
             
 			record.setLayer(layer);
 			record.set("selected"  , config.selected || true);
 //			record.set("selected"  , true               );
-			record.set("source"    , 'arcgis93'         ); // config.source      );
+			record.set("source"    , config.source      );
 			record.set("name"      , config.name        );
 			record.set("url"       , layer.url          );
 			record.set("properties", "gxp_wmslayerpanel");

@@ -77,6 +77,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 		record.data.layer = layer;
 		
 		record.commit();
+//		console.log ('RSS.createLayerRecord = ' + config.name + ', ' + config.title);
 		return record;
 	},
 	
