@@ -7,10 +7,6 @@
  */
 Ext.namespace("gxp.plugins");
 
-var animVar = {};
-animVar.animLoaded    = false;
-animVar.animDownload  = false;
-animVar.animationNode = false;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var animationStore = new Ext.data.JsonStore({ 
 	url       : 'animation.json',

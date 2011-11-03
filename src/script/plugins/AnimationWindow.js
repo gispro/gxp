@@ -1,4 +1,6 @@
-﻿var animLayers         = []        ;
+﻿var animVar = {};
+
+var animLayers         = []        ;
 var animServices       = []        ;
 var selectedNode       = null      ; 
 
@@ -8,14 +10,27 @@ var	slider    ;
 var animationNodeTitle    = 'Анимация'        ;
 var TEMPL_LAYER_ANIMATION = 'Scale'           ;
 
-var wmsMaxResolution      = 1.4054492187499998;
-var maxAnimeOpacity       = .71               ;
-var TIMER_INTERVAL        = 25                ;
-var len                   = 400               ;
-var SLIDER_TICK_LEFT      = 6                 ;
-var SLIDER_TICK_TOP       = 12                ;
-var SLIDER_TITLE_TOP      = 18                ;
-var SLIDER_TITLE_LEFT     = 4                 ;
+// var wmsMaxResolution      = 1.4054492187499998;
+// var maxAnimeOpacity       = .71               ;
+// var TIMER_INTERVAL        = 25                ;
+// var len                   = 400               ;
+// var SLIDER_TICK_LEFT      = 6                 ;
+// var SLIDER_TICK_TOP       = 12                ;
+// var SLIDER_TITLE_TOP      = 18                ;
+// var SLIDER_TITLE_LEFT     = 4                 ;
+
+animVar.animLoaded            = false;
+animVar.animDownload          = false;
+animVar.animationNode         = false;
+
+animVar.wmsMaxResolution      = 1.4054492187499998;
+animVar.maxAnimeOpacity       = .71               ;
+animVar.TIMER_INTERVAL        = 25                ;
+animVar.len                   = 400               ;
+animVar.SLIDER_TICK_LEFT      = 6                 ;
+animVar.SLIDER_TICK_TOP       = 12                ;
+animVar.SLIDER_TITLE_TOP      = 18                ;
+animVar.SLIDER_TITLE_LEFT     = 4                 ;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function showAnimWindow(rootNode, selectedNode)
 { 
@@ -35,7 +50,7 @@ function showAnimWindow(rootNode, selectedNode)
 				change: function(el, value)
 				{
 					if (!timer.isRunning())
-						timer.setTimeInSeconds(value, TIMER_INTERVAL);
+						timer.setTimeInSeconds(value, animVar.TIMER_INTERVAL);
 
                                         // affected layers:
                                         var layerUnit = this.maxValue / (animLayers.length-1);
@@ -43,13 +58,13 @@ function showAnimWindow(rootNode, selectedNode)
                                         var curLayer = Math.floor(value/layerUnit);
                                         var transition = value - curLayer*layerUnit;
                                         var nextLayerOpacity = (transition >= halfLayerUnit ? 
-                                            maxAnimeOpacity - (0.3 * ((layerUnit - transition) / halfLayerUnit )) : 
-                                            ((maxAnimeOpacity*0.7) * (transition / halfLayerUnit ) )
+                                            animVar.maxAnimeOpacity - (0.3 * ((layerUnit - transition) / halfLayerUnit )) : 
+                                            ((animVar.maxAnimeOpacity*0.7) * (transition / halfLayerUnit ) )
                                         );
                                         
                                         var thisLayerOpacity = (transition < halfLayerUnit ? 
-                                            maxAnimeOpacity - (0.3 * (transition / halfLayerUnit ) ): 
-                                            ((maxAnimeOpacity*0.7) * ((layerUnit - transition) / halfLayerUnit ) )
+                                            animVar.maxAnimeOpacity - (0.3 * (transition / halfLayerUnit ) ): 
+                                            ((animVar.maxAnimeOpacity*0.7) * ((layerUnit - transition) / halfLayerUnit ) )
                                         );
                                         
 					for (var i = 0; i < animLayers.length; i++){
@@ -78,8 +93,8 @@ function showAnimWindow(rootNode, selectedNode)
 		drawSliderScale = function (slider, component, scale)
 		{
 			var cell  = document.getElementById(component);
-			var x1    = SLIDER_TITLE_LEFT;
-			var y     = slider.y + SLIDER_TITLE_TOP;
+			var x1    = animVar.SLIDER_TITLE_LEFT;
+			var y     = slider.y + animVar.SLIDER_TITLE_TOP;
 			var count = scale.length;
 			var coord_div = document.createElement('div');
 			coord_div.setAttribute('id', 'coordDiv');
@@ -89,7 +104,7 @@ function showAnimWindow(rootNode, selectedNode)
 			cell.appendChild(coord_div);
 
 			var cnt  = (count - 1);
-			var offs = len / cnt;
+			var offs = animVar.len / cnt;
 			x1 = x1 - 3;
 
 //			alert ('drawScale : cnt = ' + cnt + ', len = ' + len + ', offs = ' + offs);
@@ -115,8 +130,8 @@ function showAnimWindow(rootNode, selectedNode)
 		{
 			var cell  = document.getElementById(component);
 
-			var x1    = SLIDER_TICK_LEFT;
-			var y     = slider.y  + SLIDER_TICK_TOP;
+			var x1    = animVar.SLIDER_TICK_LEFT;
+			var y     = slider.y  + animVar.SLIDER_TICK_TOP;
 
 			var img1_div = document.createElement('div');
 			img1_div.setAttribute('id', 'imgDiv');
@@ -126,8 +141,8 @@ function showAnimWindow(rootNode, selectedNode)
 			var xn = x1 + slider.width - 14;
 
 			var cnt = (count - 1) * 2;
-			len = xn - x1;
-			var offs = len / cnt;
+			animVar.len = xn - x1;
+			var offs = animVar.len / cnt;
 			for (var i = 0; i < cnt; i++)
 			{
 				var img_div = document.createElement('div');
@@ -273,7 +288,7 @@ function showAnimWindow(rootNode, selectedNode)
 					tiled         : 'true',
 					minZoomLevel  : 4,
 					maxZoomLevel  : 17,
-					maxResolution : wmsMaxResolution,
+					maxResolution : animVar.wmsMaxResolution,
 					transparent   : 'true'
 				},
 				{
@@ -351,7 +366,7 @@ function showAnimWindow(rootNode, selectedNode)
 		function runAnimation()
 		{
 			if (slider.getValue() === 0)
-				timer.init (TIMER_INTERVAL);
+				timer.init (animVar.TIMER_INTERVAL);
 			timer.setRunCallBack (timerRunCB   );
 			timer.setEndCallBack (stopAnimation);
 			timer.start();
@@ -375,7 +390,7 @@ function showAnimWindow(rootNode, selectedNode)
 					if (j > 0)
 						animLayers [j].setOpacity(0);
 					else
-						animLayers [j].setOpacity(maxAnimeOpacity);
+						animLayers [j].setOpacity(animVar.maxAnimeOpacity);
 				}
 			}
 			slider.setValue(0);
@@ -405,7 +420,7 @@ function showAnimWindow(rootNode, selectedNode)
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	} else
 		animWindow.node = selectedNode; 
-		animWindow.node = selectedNode; 
+//		animWindow.node = selectedNode; 
 
 	//animWindow.setPosition(5, 580, null);
 	animWindow.show();
