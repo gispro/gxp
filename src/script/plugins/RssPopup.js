@@ -1,20 +1,60 @@
-﻿var rssVar = {};
+var rssVar = {};
 rssVar.dataLoaded      = false;
 rssVar.downloadStart   = false;
 rssVar.rssVectors      = [];
 rssVar.selectControl   = null;
 rssVar.selectedFeature = null;
+rssVar.show            = 0;
 
 var wmsTool = null;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function onFeatureSelect1(evt)
+ {
+	if (rssVar.show === 1)
+	{
+		rssVar.feature = evt.feature;
+		var popup = new OpenLayers.Popup("featureRssPopup",
+										 rssVar.feature.geometry.getBounds().getCenterLonLat(),
+										new OpenLayers.Size(250, 180),
+										parseRSSContentHTML(evt.feature.data.data.contentHTML),
+										false, onPopupClose);
+		rssVar.feature.popup = popup;
+		popup.feature = rssVar.feature;
+		app.mapPanel.map.addPopup(popup, true);
+	}
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
+function onFeatureUnselect1(evt)
+ {
+	var feature = evt.feature;
+	if (feature.popup) {
+		rssVar.feature.popup.feature = null;
+		app.mapPanel.map.removePopup(rssVar.feature.popup);
+		rssVar.feature.popup.destroy();
+		rssVar.feature.popup = null;
+	}
+}
+*/
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function onPopupClose(evt) 
+{
+	if (rssVar.feature.layer)
+		rssVar.selectControl.unselect(rssVar.feature);
+	rssVar.feature.popup.destroy();
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function parseRSSContentHTML(text)
 {
 	if (text)
 	{
-		if ((text.indexOf ("<b>Дата:") === -1) && (text.indexOf ("Дата:") > 0))
+		if ((text.indexOf ('<b>Дата:') === -1) && (text.indexOf ('Дата:') > 0))
 		{
-			text = text.replace ("Дата:"     , "<b>Дата:</b>"             );
-			text = text.replace ("Сообщение:", "<br><b>Сообщение:</b><br>");
+//			text = text.replace ("Дата:"     , "<b>Дата:</b>"             );
+//			text = text.replace ("Сообщение:", "<br><b>Сообщение:</b><br>");
+			text = text.replace ('Дата:'     , '<b style="font-size:1.1em">Дата:</b>' );
+			text = text.replace ('Сообщение:', '<br><b style="font-size:1.1em">Сообщение: </b>');
+//			console.log (text);
 		} else if ((text.indexOf ("<b>Дата</b>:") > 0) && ((text.indexOf ("<b>Видимость, км:</b>") > 0) || (text.indexOf ("<b>Ветер, м/c:</b>") > 0)))
 		{
 			text = text.replace ("<b>Дата</b>:"             ,  "<table style=\"margin:5px\"><tr><td width=130px><b>Дата</b></td><td>");
@@ -26,6 +66,7 @@ function parseRSSContentHTML(text)
 			
 			text = text + '</td></tr></table>';
 		}
+//		text += '<button>Закрыть</button>'
 	}
 	return text;
 }
@@ -143,11 +184,14 @@ function RssPopupParseData (ajaxRequest)
 				data.description = description;
 				data.properties = "gxp_wmslayerpanel";
 
-				var contentHTML = '<div style="float:left;font-size:1.2em;width:100%">';
+				var contentHTML = '<div style="float:left;font-size:1.0em;width:99%;height:99%;background-color:#fafafa;border:solid 1px #909090">';
+				contentHTML += '<div style="float:right;margin:5px 5px 0px 0px"><a style="width:18px;height:18x;" onclick="onPopupClose()"><img src="script/images/cross.png"></a></div>'
+				contentHTML += '<div>';
 				contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
 				contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
 				contentHTML += '</div>';
-				contentHTML += '<div style="float:left;margin:0px 5px 5px 5px">' + description + '</div>';
+				contentHTML += '<div style="font-size:0.7em;margin:0px 5px 5px 5px;>' + description + '</div>';
+				contentHTML += '</div>';
 
 				data['contentHTML'] = contentHTML;
 
@@ -175,13 +219,18 @@ function RssPopupParseData (ajaxRequest)
 					if (rssVar.selectControl != null)
 						this.map.removeControl(rssVar.selectControl);
 
-					rssVar.selectControl = new OpenLayers.Control.SelectFeature(rssVar.rssVectors, {onSelect: onFeatureSelect});
+//					rssVar.selectControl = new OpenLayers.Control.SelectFeature(rssVar.rssVectors, {onSelect: onFeatureSelect});
+					rssVar.selectControl = new OpenLayers.Control.SelectFeature(rssVar.rssVectors, {hover : true});
 					this.map.addControl(rssVar.selectControl);
 					rssVar.selectControl.activate();
 				}
 				var markerStyle = {externalGraphic: data.icon.url, graphicWidth: 21, graphicHeight: 25, graphicXOffset : -10.5, graphicYOffset: -25, graphicOpacity: 0.7};
 				var point       = new OpenLayers.Geometry.Point(location.lon, location.lat);
 				rssVector.addFeatures([new OpenLayers.Feature.Vector(point, {title: name, data : data}, markerStyle)]);
+				rssVector.events.on({
+					'featureselected': onFeatureSelect1
+////				'featureunselected' : onFeatureUnselect1
+				});
 			}
 		}
 	}
