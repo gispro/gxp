@@ -190,7 +190,7 @@ function RssPopupParseData (ajaxRequest)
 				contentHTML += '<table><tr><td><img src="' + this.icon.url + '" style="margin-top:5px;margin-left:5px"></td>';
 				contentHTML += '<td><b style="margin:3px 5px 0px 5px">' + title + '</b></td></tr></table><hr>';
 				contentHTML += '</div>';
-				contentHTML += '<div style="font-size:0.7em;margin:0px 5px 5px 5px;>' + description + '</div>';
+				contentHTML += '<div style="font-size:0.7em;margin:0px 5px 5px 5px;">' + description + '</div>';
 				contentHTML += '</div>';
 
 				data['contentHTML'] = contentHTML;
