@@ -80,6 +80,14 @@ GeoExt.Lang.add("ru", {
         measureTooltip: "Измерения"
     },
 
+    "gxp.plugins.GISMeasure.prototype": {
+       lengthMenuText: "Длина",
+       areaMenuText: "Площадь",
+       lengthTooltip: "Измерение длины",
+       areaTooltip: "Измерение площади",
+       measureTooltip: "Измерения"
+     },
+
     "gxp.plugins.Navigation.prototype": {
         menuText: "Панорамировать карту",
         tooltip: "Панорамировать карту"
