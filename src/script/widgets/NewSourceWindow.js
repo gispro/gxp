@@ -155,7 +155,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             triggerAction: 'all',
             mode: 'local',
             store: this.iconStore,
-			anchor: '100%',
+			anchor: '100%'
         });
 
         this.serversSelector.on({
