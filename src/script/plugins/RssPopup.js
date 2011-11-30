@@ -493,7 +493,8 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 //					else
 //						node.appendChild(child);
 //				}
-                                child.ui.textNode.setAttribute('ext:qtip', layerRecord.data['abstract']);
+                                if(child.ui && child.ui.textNode && child.ui.textNode.setAttribute)
+                                    child.ui.textNode.setAttribute('ext:qtip', layerRecord.data['abstract']);
 				child.on("move", this.onChildMove, this);
 			}
 		}
