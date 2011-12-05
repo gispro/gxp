@@ -20,6 +20,31 @@ Ext.namespace("gxp");
  *     as a quick query to get a service URL from a user.
  */
  
+var	wmsStore =  new Ext.data.JsonStore({ 
+	url       : 'wms.json',
+	root      : 'services',
+	fields    : ['serverName', 'url', 'owner', 'access'],
+	listeners :
+	{
+		loadexception : function(o, arg, nul, e)
+		{
+			alert ("gxp.NewSourceWindow :  serversStore.listeners - LoadException : " + e);         
+		} 
+	},
+	isRecordPresent : function (url)
+	{
+		var result = false;
+		for (var i = 0; i < this.data.length; i++)
+		{
+			if (url === this.data.items[i].get('url'))
+			{
+				result = true;
+				break;
+	}  
+		}
+		return result;
+	}
+});
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
@@ -82,6 +107,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
         this.addEvents("server-added");
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*		
 		this.serversStore =  new Ext.data.JsonStore({ 
 			url       : 'wms.json',
 			root      : 'services',
@@ -95,21 +121,9 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 				} 
 			}  
 		});
+*/		
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
 		this.iconStore = new Ext.data.SimpleStore({
-/*		
-			url       : 'rss_icons.json',
-			root      : 'icons',
-			fields    : [ 'color', 'url'],
-			autoLoad: true,
-			listeners :
-			{
-				loadexception : function(o, arg, nul, e)
-				{
-					alert ("gxp.NewSourceWindow :  iconStore.listeners - LoadException : " + e);         
-				} 
-			}  
-*/			
 			fields: ['color', 'url'],
 			data : [ 
 				['голубой'   , 'script/images/marker-blue.gif'  ],
@@ -128,7 +142,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             editable: true,
             triggerAction: 'all',
             mode: 'local',
-            store: this.serversStore,
+            store: wmsStore, // this.serversStore,
 			anchor: '100%',
 			getServerName : function()
 			{
@@ -155,7 +169,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             triggerAction: 'all',
             mode: 'local',
             store: this.iconStore,
-			anchor: '100%'
+			anchor: '100%',
         });
 
         this.serversSelector.on({

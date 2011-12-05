@@ -10,7 +10,7 @@ Ext.namespace("gxp.plugins");
 var	rssStore = new Ext.data.JsonStore({ 
 	url       : 'rss.json',
 	root      : 'layers',
-	fields    : ['timer', 'name', 'title', 'icon', 'url'],
+	fields    : ['timer', 'name', 'title', 'icon', 'url', 'owner', 'access'],
 	listeners :
 	{
 		load : function()
@@ -35,7 +35,19 @@ var	rssStore = new Ext.data.JsonStore({
 				break;
 			}
 		}
-//		console.log ('isResordPresent : result = ' + result + ', url = ' + url);
+		return result;
+	},
+	getRecordName : function (url)
+	{
+		var result;
+		for (var i = 0; i < this.data.length; i++)
+		{
+			if (url === this.data.items[i].get('url'))
+			{
+				result = this.data.items[i].get('title');
+				break;
+			}
+		}
 		return result;
 	}
 });
@@ -81,7 +93,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 		return record;
 	},
 	
-    createRecord: function(title, name)
+    createRecord: function(title)
 	{
 		var record = new GeoExt.data.LayerRecord();
 		var layer  = null;

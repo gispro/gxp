@@ -14,13 +14,14 @@ arcgisVar.arcgisDownload = false;
 var arcgisStore = new Ext.data.JsonStore({ 
 	url       : 'arcgis.json',
 	root      : 'arcgis',
-	fields    : [ 'params', 'options', 'servers'],
+	fields    : ['params', 'options', 'servers'],
 	listeners :
     {
    		load : function()
    		{
 			arcgisVar.arcgisLoaded   = true;
 			arcgisVar.arcgisDownload = false;
+			
    		},
 		loadexception : function(o, arg, nul, e)
 		{

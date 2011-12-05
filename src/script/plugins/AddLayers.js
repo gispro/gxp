@@ -242,7 +242,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 				var layerStore = this.target.mapPanel.layers;
 				for (var i=0, ii = records.length; i<ii; ++i) 
 				{
-					record = source.createRecord(records[i].get("title"), records[i].get("name"));
+					record = source.createRecord(records[i].get("title")); 
 					if (record)
 						layerStore.add([record]);
 				}
@@ -479,7 +479,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								conf.title = titleCustom;
 							}
                     
-							this.target.addLayerSource({
+							this.target.addLayerSource({                // !!!!!!! target !!!!!!!!
 								config: conf, // assumes default of gx_wmssource
 								callback: function(id) {
 									// add to combo and select

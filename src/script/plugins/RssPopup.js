@@ -118,13 +118,25 @@ function RssPopupParseData (ajaxRequest)
 		doc = OpenLayers.Format.XML.prototype.read(ajaxRequest.responseText);
 	}
         
-	if (this.useFeedTitle) {
-		var name = null;
-		try {
-			name = doc.getElementsByTagNameNS('*', 'title')[0].firstChild.nodeValue;
-		}
-		catch (e) {
-			name = doc.getElementsByTagName('title')[0].firstChild.nodeValue;
+	if (this.useFeedTitle)
+	{
+		var idx = ajaxRequest._object.responseXML.documentURI.indexOf("?url=") + 5;
+		var url = ajaxRequest._object.responseXML.documentURI.substring (idx);
+		url = url.replace("%3A", ":");
+		while (url.indexOf("%2F") > 0)
+			url = url.replace("%2F", "/");
+//		console.log ('RssPopupParseData : documentURI = ' + ajaxRequest._object.responseXML.documentURI);
+//		console.log ('RssPopupParseData : referrer = ' + ajaxRequest._object.responseXML.referrer);
+//		console.log ('RssPopupParseData : url = ' + url);
+		var name = rssStore.getRecordName (url); // null;
+		if (!name)
+		{
+			try {
+				name = doc.getElementsByTagNameNS('*', 'title')[0].firstChild.nodeValue;
+			}
+			catch (e) {
+				name = doc.getElementsByTagName('title')[0].firstChild.nodeValue;
+			}
 		}
 		if (name) {
 			this.setName(name);
@@ -493,8 +505,8 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 //					else
 //						node.appendChild(child);
 //				}
-                                if(child.ui && child.ui.textNode && child.ui.textNode.setAttribute)
-                                    child.ui.textNode.setAttribute('ext:qtip', layerRecord.data['abstract']);
+				if(child.ui && child.ui.textNode && child.ui.textNode.setAttribute)
+					child.ui.textNode.setAttribute('ext:qtip', layerRecord.data['abstract']);
 				child.on("move", this.onChildMove, this);
 			}
 		}
