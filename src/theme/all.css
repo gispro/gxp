@@ -134,6 +134,11 @@
     background-image: url(img/silk/information.png);
 }
 
+/* gxp_prickertool */
+.x-btn .gxp-icon-pricker, .x-tree-node .gxp-icon-pricker {
+    background-image: url(img/silk/chart.png);
+}
+
 /* gxp_featureeditor */
 .x-btn .gxp-icon-addfeature, .x-menu-item .gxp-icon-addfeature {
     background-image: url(img/silk/pencil_add.png);
