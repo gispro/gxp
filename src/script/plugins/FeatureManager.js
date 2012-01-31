@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2008-2011 The Open Planning Project
  * 
- * Published under the BSD license.
+ * Published under the GPL license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
  */
@@ -123,6 +123,11 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  ``String`` The geometry type of the featureLayer
      */
     geometryType: null,
+    
+    /** api: config[multi]
+     *  ``Boolean`` If set to true, geometries will be casted to Multi
+     *  geometries before writing. No casting will be done for reading.
+     */
     
     /** private: property[toolsShowingLayer]
      *  ``Object`` keyed by tool id - tools that currently need to show the
@@ -378,6 +383,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             ready: function() {
                 this.target.mapPanel.map.addLayer(this.featureLayer);
             },
+            //TODO add featureedit listener; update the store
             scope: this
         });
         this.on({
@@ -402,7 +408,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 this.target.on("beforelayerselectionchange", this.setLayer, this);
             }
             if (this.layer) {
-                this.target.createLayerRecord(this.layer, this.setLayer, this);
+                var config = Ext.apply({}, this.layer);
+                this.target.createLayerRecord(config, this.setLayer, this);
             }
             this.on("layerchange", this.setSchema, this);
             return true;
@@ -441,15 +448,20 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
     },
     
     /** api: method[setLayer]
-     *  :arg layerRecord: ``GeoExt.data.LayerRecord``
+     *  :arg layerRecord: ``GeoExt.data.LayerRecord``. If not provided, the
+     *      current layer will be unset.
      *  :returns: ``Boolean`` The layer was changed.
      *
      *  Sets the layer for this tool
      */
     setLayer: function(layerRecord) {
         var change = this.fireEvent("beforelayerchange", this, layerRecord);
-        this.featureLayer.projection = this.getProjection(layerRecord);
         if (change !== false) {
+            if (layerRecord) {
+                // do not use getProjection here since we never want to use the 
+                // map's projection on the feature layer
+                this.featureLayer.projection = layerRecord.getLayer().projection;
+            }
             if (layerRecord !== this.layerRecord) {
                 this.clearFeatureStore();
                 this.layerRecord = layerRecord;
@@ -628,6 +640,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  :returns: ``OpenLayers.Projection``
      *
      *  Gets the appropriate projection to use for feature requests.
+     *  Use layer projection if it equals the map projection, and use the 
+     *  map projection otherwise.
      */
     getProjection: function(record) {
         var projection = this.target.mapPanel.map.getProjectionObject();
@@ -635,7 +649,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         if (layerProj && layerProj.equals(projection)) {
             projection = layerProj;
         }
-        return layerProj;
+        return projection;
     },
     
     /** private: method[setFeatureStore]
@@ -700,7 +714,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         fields: fields,
                         proxy: {
                             protocol: {
-                                outputFormat: this.format 
+                                outputFormat: this.format,
+                                multi: this.multi
                             }
                         },
                         maxFeatures: this.maxFeatures,
@@ -710,13 +725,13 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         autoSave: false,
                         listeners: {
                             "beforewrite": function(store, action, rs, options) {
-                                this.fireEvent("beforesave", this, this.featureStore, options.params);
+                                this.fireEvent("beforesave", this, store, options.params);
                             },
-                            "write": function() {
+                            "write": function(store, action, result, res, rs) {
                                 this.redrawMatchingLayers(record);
                             },
-                            "load": function() {
-                                this.fireEvent("query", this, this.featureStore, this.filter);
+                            "load": function(store, rs, options) {
+                                this.fireEvent("query", this, store, this.filter);
                             },
                             scope: this
                         }
