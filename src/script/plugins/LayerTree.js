@@ -73,26 +73,26 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      *  used when none is specified. Defaults to ``default``.
      */
     defaultGroup: "default",
+
+    denyDefaultTree: false,
     
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
     constructor: function(config) {
         gxp.plugins.LayerTree.superclass.constructor.apply(this, arguments);
-        if (!this.groups) {
-            this.groups = {
-                "default": this.overlayNodeText,
-                "background": {
+        if (!this.denyDefaultTree) {
+            this.groups["default"] = this.overlayNodeText
+            this.groups["background"] = {
                     title: this.baseNodeText,
                     exclusive: true
-				},
+				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-				"animation" : 
+				this.groups["animation"] =
 				{
 					title : animationNodeTitle //
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            };
         }
     },
     
@@ -101,7 +101,10 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function(config) {
 
+        //target is gxp.Viewer instance
         var target = this.target, me = this;
+        //intance of LayerStore: target.mapPanel.layers
+
         var addListeners = function(node, record) {
             if (record) {
                 target.on("layerselectionchange", function(rec) {
