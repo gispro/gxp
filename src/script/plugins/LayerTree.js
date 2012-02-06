@@ -82,17 +82,23 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
         gxp.plugins.LayerTree.superclass.constructor.apply(this, arguments);
         if (!this.denyDefaultTree) {
-            this.groups["default"] = this.overlayNodeText
-            this.groups["background"] = {
-                    title: this.baseNodeText,
-                    exclusive: true
-				}
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-				this.groups["animation"] =
-				{
-					title : animationNodeTitle //
-				}
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            var groups = {}
+
+            groups["default"] = this.overlayNodeText
+            groups["background"] = { title: this.baseNodeText, exclusive: true }
+
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Added by gispro (before me)
+            this.groups["animation"] = {
+              title : animationNodeTitle //
+            }
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            //Add groups from config to the end of layer list
+            for(k in this.groups){
+              groups[k] = this.groups[k]
+            }
+            this.groups = groups
+            console.log(this.groups)
         }
     },
     
