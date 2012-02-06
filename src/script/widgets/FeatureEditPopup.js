@@ -57,6 +57,12 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
      *  ``OpenLayers.Feature.Vector`` The feature being edited/displayed.
      */
     feature: null,
+
+    bodyAttribute: null,
+
+    usernameAttribute: null,
+
+    username: null,
     
     /** api: config[schema]
      *  ``GeoExt.data.AttributeStore`` Optional. If provided, available
@@ -123,7 +129,8 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
      *  for form-based editing.
      */
     editorPluginConfig: {
-        ptype: "gxp_editorgrid"
+        ptype: "gxp_editormessagebox"
+        //ptype: "gxp_editorgrid"
     },
 
     /** private: property[modifyControl]
@@ -169,6 +176,9 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
 
         //TODO Ask about
         this.panIn = true
+
+        this.setHeight(220)
+        this.setWidth(220)
 
         this.addEvents(
 
@@ -289,6 +299,9 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
             fields: this.fields,
             excludeFields: this.excludeFields,
             propertyNames: this.propertyNames,
+            bodyAttribute: this.bodyAttribute,
+            usernameAttribute: this.usernameAttribute,
+            username: this.username,
             readOnly: this.readOnly
         }, this.editorPluginConfig)];
 
