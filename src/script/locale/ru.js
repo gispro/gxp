@@ -360,6 +360,11 @@ GeoExt.Lang.add("ru", {
 
     "gxp.ScaleOverlay.prototype": { 
         zoomLevelText: "Уровень"
-    }
+    },
+
+    "gxp.plugins.PrickerTool.prototype": {
+        tooltip: 'Pricker',
+        menuText: 'Pricker'
+    },
 
 });
