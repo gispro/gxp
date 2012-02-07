@@ -98,7 +98,6 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
               groups[k] = this.groups[k]
             }
             this.groups = groups
-            console.log(this.groups)
         }
     },
     
