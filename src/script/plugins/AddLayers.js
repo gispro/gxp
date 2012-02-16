@@ -466,7 +466,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var newSourceWindow = new gxp.NewSourceWindow({
             modal: true,
             listeners: {
-                "server-added": function(url, titleCustom, icon) {
+                "server-added": function(url, restUrl, titleCustom, icon) {
 					if (newSourceWindow.getServiceIDX() === 0)          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 					{
 						var idx = sourceComboBox.getServiceIDX (titleCustom);
@@ -474,7 +474,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 						{
 							newSourceWindow.setLoading();
                     
-							var conf = {url: url};
+							var conf = {url: url, restUrl: restUrl};
 							if(titleCustom){
 								conf.title = titleCustom;
 							}

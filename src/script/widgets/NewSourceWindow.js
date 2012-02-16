@@ -23,7 +23,7 @@ Ext.namespace("gxp");
 var	wmsStore =  new Ext.data.JsonStore({ 
 	url       : 'wms.json',
 	root      : 'services',
-	fields    : ['serverName', 'url', 'owner', 'access'],
+	fields    : ['serverName', 'url', 'owner', 'access', 'restUrl'],
 	listeners :
 	{
 		loadexception : function(o, arg, nul, e)
@@ -77,7 +77,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
      *  Text for server contact (i18n).
      */
     contactingServerText: "Contacting Server...",
-    
+
     /** api: config[bodyStyle]
      * The default bodyStyle sets the padding to 0px
      */
@@ -177,7 +177,8 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             //mousedown: this.stopMouseEvents,
             select: function(combo, record, index)
 			{
-                this.urlTextField  .setValue (record.data.url       );
+                this.urlTextField.setValue(record.data.url);
+                this.restUrlTextField.setValue(record.data.restUrl);
 //              this.titleTextField.setValue (record.data.serverName);
             },
             scope: this
@@ -185,6 +186,16 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
         this.urlTextField = new Ext.form.TextField({
             fieldLabel: "URL",
+//          allowBlank: false,
+            editable: false,
+			anchor: '100%',
+            msgTarget: "under",
+//          validator: this.urlValidator.createDelegate(this),
+            hidden: false
+        });
+
+        this.restUrlTextField = new Ext.form.TextField({
+            fieldLabel: "Rest Url",
 //          allowBlank: false,
             editable: false,
 			anchor: '100%',
@@ -229,13 +240,14 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                 this.serversSelector,
                 this.titleTextField,
                 this.urlTextField,
+                this.restUrlTextField,
 				this.iconSelector,
 				this.radioGroup
             ],
             border: false,
             bodyStyle: "padding: 5px",
             labelWidth: 90,
-			height : 150,
+			height : 200,
 			width : 620,
             autoWidth: true,
             autoHeight: false
@@ -284,7 +296,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                     if (this.urlTextField.validate()) {
 //                        this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue());
 //                      this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue());
-                        this.fireEvent("server-added", this.urlTextField.getValue(), getServerName, this.iconSelector.getValue());
+                        this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), getServerName, this.iconSelector.getValue());
                     } else {
                         this.urlTextField.setValue(this.serversSelector.lastSelectionText);
                         if (this.urlTextField.validate()) {
