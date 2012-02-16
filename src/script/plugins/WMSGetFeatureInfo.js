@@ -64,27 +64,41 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  ``Array`` List of param names that should be taken from the layer and
      *  added to the GetFeatureInfo request (e.g. ["CQL_FILTER"]).
      */
-     
+
+    autoActivate: false,
+
+    init: function(target)
+      {
+        gxp.plugins.WMSGetFeatureInfo.superclass.init.apply(this, arguments)
+        this.on('activate', this.vectorLayerOn, this)
+        this.on('deactivate', this.vectorLayerOff, this)
+      },
+
     /** api: method[addActions]
      */
     addActions: function() {
+
         this.popupCache = {};
-        
+
         var actions = gxp.plugins.WMSGetFeatureInfo.superclass.addActions.call(this, [{
-            tooltip: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
             toggleGroup: this.toggleGroup,
             enableToggle: true,
             allowDepress: true,
+
+            scope:this,
             toggleHandler: function(button, pressed) {
+                var isPassed = true
                 for (var i = 0, len = info.controls.length; i < len; i++){
                     if (pressed) {
-                        info.controls[i].activate();
+                        isPassed &= info.controls[i].activate();
                     } else {
-                        info.controls[i].deactivate();
+                        isPassed &= info.controls[i].deactivate();
                     }
                 }
+                if(isPassed) if (pressed) { this.activate() } else { this.deactivate() }
              }
+
         }]);
         var infoButton = this.actions[0].items[0];
 
@@ -153,6 +167,10 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      * :arg text: ``String`` Body text.
      */
     displayPopup: function(evt, title, text) {
+
+        //TODO by event popupShowed
+        this.addMarker(evt.xy)
+
         var popup;
         var popupKey = evt.xy.x + "." + evt.xy.y;
 
@@ -174,6 +192,9 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     scope: this
                 }
             });
+            this.on('deactivate',function(){
+              popup.close()
+            },this,{single:true})
             this.popupCache[popupKey] = popup;
         } else {
             popup = this.popupCache[popupKey];
@@ -189,8 +210,42 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             collapsible: true
         });
         popup.doLayout();
+    },
+
+    addMarker: function(xy)
+      {
+        this.target.mapPanel.map.setLayerIndex(this.vectorLayer, this.target.mapPanel.map.layers.length)
+        this.vectorLayer.destroyFeatures()
+
+        var lonlat = this.target.mapPanel.map.getLonLatFromPixel(xy)
+        var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat)
+        this.mark = new OpenLayers.Feature.Vector( point
+          ,{some:'data'}
+          ,{externalGraphic: 'externals/gispro/pricker/images/pricker.png'
+          ,graphicHeight: 24
+          ,graphicWidth: 24
+          ,graphicXOffset: -9
+          ,graphicYOffset: -22}
+        )
+
+        this.vectorLayer.addFeatures(this.mark)
+      },
+
+
+    vectorLayerOn: function() {
+      //TODO init on mapload
+      if(!this.vectorLayer){
+        this.vectorLayer = new OpenLayers.Layer.Vector("GetFeatureInfo marker", { displayInLayerSwitcher: false, visibility: false })
+        this.target.mapPanel.map.addLayer(this.vectorLayer)
+      }
+      this.vectorLayer.setVisibility(true)
+    },
+
+    vectorLayerOff: function() {
+      this.vectorLayer.setVisibility(false)
+      this.vectorLayer.destroyFeatures()
     }
-    
+
 });
 
 Ext.preg(gxp.plugins.WMSGetFeatureInfo.prototype.ptype, gxp.plugins.WMSGetFeatureInfo);
