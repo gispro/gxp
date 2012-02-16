@@ -73,6 +73,7 @@ gxp.FillSymbolizer = Ext.extend(Ext.FormPanel, {
         
         this.items = [{
             xtype: "fieldset",
+            labelWidth: 100,
             title: this.fillText,
             autoHeight: true,
             checkboxToggle: this.checkboxToggle,

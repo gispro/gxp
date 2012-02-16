@@ -424,7 +424,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 },
                 scope: this
             },
-            width: 60 // TODO: move to css
+            width: 80 // TODO: move to css
         };
     },
     

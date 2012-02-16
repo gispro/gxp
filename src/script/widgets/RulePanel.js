@@ -24,11 +24,11 @@ Ext.namespace("gxp");
 
 /** api: constructor
  *  .. class:: RulePanel(config)
- *   
+ *
  *      Create a panel for assembling SLD rules.
  */
 gxp.RulePanel = Ext.extend(Ext.TabPanel, {
-    
+
     /** api: property[fonts]
      *  ``Array(String)`` List of fonts for the font combo.  If not set,
      *      defaults  to the list provided by the <Styler.FontComboBox>.
@@ -48,13 +48,13 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
      *  rule.
      */
     rule: null,
-    
+
     /** private: property[attributes]
      *  ``GeoExt.data.AttributeStore`` A configured attributes store for use
      *  in the filter property combo.
      */
     attributes: null,
-    
+
     /** private: property[pointGraphics]
      *  ``Array`` A list of objects to be used as the root of the data for a
      *  JsonStore.  These will become records used in the selection of
@@ -79,7 +79,7 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
      *  allowGroups property of the filter builder.  Default is true.
      */
     nestedFilters: true,
-    
+
     /** private: property[minScaleDenominatorLimit]
      *  ``Number`` Lower limit for scale denominators.  Default is what you get
      *  when  you assume 20 zoom levels starting with the world in Spherical
@@ -95,19 +95,19 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
      *  corresponds to zoom level 0 in Google Maps).
      */
     maxScaleDenominatorLimit: 40075016.68 * 39.3701 * OpenLayers.DOTS_PER_INCH / 256,
-    
+
     /** private: property [scaleLevels]
      *  ``Number`` Number of scale levels to assume.  This is only for scaling
      *  values exponentially along the slider.  Scale values are not
      *  required to one of the discrete levels.  Default is 20.
      */
     scaleLevels: 20,
-    
+
     /** private: property[scaleSliderTemplate]
      *  ``String`` Template for the tip displayed by the scale threshold slider.
      *
      *  Can be customized using the following keywords in curly braces:
-     *  
+     *
      *  * zoom - the zoom level
      *  * scale - the scale denominator
      *  * type - "Max" or "Min" denominator
@@ -116,7 +116,7 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
      *  Default is "{scaleType} Scale 1:{scale}".
      */
     scaleSliderTemplate: "{scaleType} Scale 1:{scale}",
-    
+
     /** private: method[modifyScaleTipContext]
      *  Called from the multi-slider tip's getText function.  The function
      *  will receive two arguments - a reference to the panel and a data
@@ -125,7 +125,7 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
      *  are available to the <scaleSliderTemplate>.
      */
     modifyScaleTipContext: Ext.emptyFn,
-    
+
     /** i18n */
     labelFeaturesText: "Label Features",
     labelsText: "Labels",
@@ -138,13 +138,13 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
 
     /** private */
     initComponent: function() {
-        
+
         var defConfig = {
             plain: true,
             border: false
         };
         Ext.applyIf(this, defConfig);
-        
+
         if(!this.rule) {
             this.rule = new OpenLayers.Rule({
                 name: this.uniqueRuleName()

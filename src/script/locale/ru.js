@@ -200,12 +200,12 @@ GeoExt.Lang.add("ru", {
     },
     
     "gxp.FilterBuilder.prototype": {
-        builderTypeNames: ["any", "all", "none", "not all"],
-        preComboText: "Match",
-        postComboText: "of the following:",
-        addConditionText: "add condition",
-        addGroupText: "add group",
-        removeConditionText: "remove condition"
+        builderTypeNames: ["любые", "все", "ни одно", "не все"],
+        preComboText: "Совпадают",
+        postComboText: "из следующих условий:",
+        addConditionText: "добавить условие",
+        addGroupText: "добавить группу",
+        removeConditionText: "удалить условие"
     },
     
     "gxp.grid.CapabilitiesGrid.prototype": {
@@ -241,31 +241,31 @@ GeoExt.Lang.add("ru", {
     
     "gxp.RulePanel.prototype": {
         scaleSliderTemplate: "{scaleType} Scale 1:{scale}",
-        labelFeaturesText: "Label Features",
-        labelsText: "Labels",
-        basicText: "Basic",
-        advancedText: "Advanced",
-        limitByScaleText: "Limit by scale",
-        limitByConditionText: "Limit by condition",
-        symbolText: "Symbol",
-        nameText: "Name"
+        labelFeaturesText: "Использовать надписи",
+        labelsText: "Надписи",
+        basicText: "Общее",
+        advancedText: "Фильтры",
+        limitByScaleText: "По масштабу",
+        limitByConditionText: "По условию",
+        symbolText: "Стиль",
+        nameText: "Название"
     },
     
     "gxp.ScaleLimitPanel.prototype": {
-        scaleSliderTemplate: "{scaleType} Scale 1:{scale}",
-        minScaleLimitText: "Min scale limit",
-        maxScaleLimitText: "Max scale limit"
+        scaleSliderTemplate: "{scaleType} Масштаб 1:{scale}",
+        minScaleLimitText: "Максимальный",
+        maxScaleLimitText: "Минимальный"
     },
     
     "gxp.StrokeSymbolizer.prototype": {
-        solidStrokeName: "solid",
-        dashStrokeName: "dash",
-        dotStrokeName: "dot",
-        titleText: "Stroke",
-        styleText: "Style",
-        colorText: "Color",
-        widthText: "Width",
-        opacityText: "Opacity"
+        solidStrokeName: "сплошная",
+        dashStrokeName: "пунктирная",
+        dotStrokeName: "точечная",
+        titleText: "Обводка",
+        styleText: "Стиль",
+        colorText: "Цвет",
+        widthText: "Толщина",
+        opacityText: "Прозрачность"
     },
     
     "gxp.StylePropertiesDialog.prototype": {   
@@ -276,7 +276,7 @@ GeoExt.Lang.add("ru", {
     },
     
     "gxp.TextSymbolizer.prototype": {
-        labelValuesText: "Label values",
+        labelValuesText: "Атрибут",
         haloText: "Гало",
         sizeText: "Размер"
     },
@@ -312,18 +312,18 @@ GeoExt.Lang.add("ru", {
          chooseStyleText: "Выбрать стиль",
          deleteStyleText: "Удалить",
          deleteStyleTip: "Удалить выбранный стиль",
-         editStyleText: "Редактирование",
+         editStyleText: "Редактировать",
          editStyleTip: "Редактировать выбранный стиль",
-         duplicateStyleText: "Дублирование",
+         duplicateStyleText: "Дублировать",
          duplicateStyleTip: "Дублировать стиль",
          addRuleText: "Добавить",
          addRuleTip: "Добавить правило",
          newRuleText: "Новое правило",
-         deleteRuleText: "Удаление",
+         deleteRuleText: "Удалить",
          deleteRuleTip: "Удалить правило",
-         editRuleText: "Редактирование",
+         editRuleText: "Редактировать",
          editRuleTip: "Редактировать правило",
-         duplicateRuleText: "Дублирование",
+         duplicateRuleText: "Дублировать",
          duplicateRuleTip: "Дублировать правило",
          cancelText: "Отмена",
          saveText: "Сохранить",
@@ -360,6 +360,50 @@ GeoExt.Lang.add("ru", {
 
     "gxp.ScaleOverlay.prototype": { 
         zoomLevelText: "Уровень"
+    },
+
+    "Styler.ColorManager.prototype": {
+        colorPickerText: 'Выбор цвета'
+    },
+
+    "Ext.ux.ColorPicker.prototype": {
+        colorText: 'Цвет',
+        websafeText: 'Сохраненный',
+        inverseText: 'Инвентировать'
+    },
+
+    "gxp.form.ColorField.prototype": {
+        cssColors: {
+          'голубой': "#00FFFF",
+          'черный': "#000000",
+          'синий': "#0000FF",
+          fuchsia: "#FF00FF",
+          'серый': "#808080",
+          'зеленый': "#008000",
+          lime: "#00FF00",
+          maroon: "#800000",
+          navy: "#000080",
+          olive: "#808000",
+          'фиолетовый': "#800080",
+          'красный': "#FF0000",
+          silver: "#C0C0C0",
+          teal: "#008080",
+          'белый': "#FFFFFF",
+          'желтый': "#FFFF00"
+        }
+    },
+
+    "gxp.form.ComparisonComboBox.prototype": {
+      allowedTypes: [
+          [OpenLayers.Filter.Comparison.EQUAL_TO, "="],
+          [OpenLayers.Filter.Comparison.NOT_EQUAL_TO, ">"],
+          [OpenLayers.Filter.Comparison.LESS_THAN, "<"],
+          [OpenLayers.Filter.Comparison.GREATER_THAN, ">"],
+          [OpenLayers.Filter.Comparison.LESS_THAN_OR_EQUAL_TO, "<="],
+          [OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO, ">="],
+          [OpenLayers.Filter.Comparison.LIKE, "содержит"],
+          [OpenLayers.Filter.Comparison.BETWEEN, "между"]
+      ]
     }
 
 });

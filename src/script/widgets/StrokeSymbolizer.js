@@ -91,6 +91,7 @@ gxp.StrokeSymbolizer = Ext.extend(Ext.FormPanel, {
         this.items = [{
             xtype: "fieldset",
             title: this.titleText,
+            labelWidth: 100,
             autoHeight: true,
             checkboxToggle: this.checkboxToggle,
             collapsed: this.checkboxToggle === true &&

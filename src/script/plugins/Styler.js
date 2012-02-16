@@ -72,7 +72,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
         if (!this.outputConfig) {
             this.outputConfig = {
                 autoHeight: true,
-                width: 265
+                width: 395
             };
         }
         Ext.applyIf(this.outputConfig, {
