@@ -123,6 +123,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  custom ``actions``.
      */
     outputAction: 0,
+
     
     constructor: function(config) {
         Ext.applyIf(config, {
@@ -247,7 +248,15 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }]
         }, config || {});
+        if(!this.outputConfig) this.outputConfig = {
+              title: this.queryActionText,
+              width: 350,
+              y: 100
+          }
+
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
+
+        console.log(queryForm.ownerCt.ownerCt)
 
         var addFilterBuilder = function(mgr, rec, schema) {
             queryForm.attributeFieldset.removeAll();
