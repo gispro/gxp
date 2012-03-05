@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2008-2011 The Open Planning Project
  * 
- * Published under the BSD license.
+ * Published under the GPL license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
  */
@@ -199,6 +199,31 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
                 text: this.queryActionText,
                 iconCls: "gxp-icon-find",
                 handler: function() {
+
+                    var c = Ext.getCmp(this.featureGrid).gridContainer
+                    if(c.hidden) c.show()
+                    if(c.collapsed) c.expand()
+
+                    featureManager.on({
+                        "query": function(tool, store) {
+                            if (store) {
+                                store.getCount() || Ext.Msg.show({
+                                    title: this.noFeaturesTitle,
+                                    msg: this.noFeaturesMessage,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.Msg.INFO
+                                });
+                                if (this.autoHide) {
+                                    var ownerCt = this.outputTarget ? queryForm.ownerCt :
+                                        queryForm.ownerCt.ownerCt;
+                                    ownerCt instanceof Ext.Window && ownerCt.hide();
+                                }
+                            }
+                        },
+                        scope: this,
+                        single: true
+                    });
+
                     var filters = [];
                     if (queryForm.spatialFieldset.collapsed !== true) {
                         filters.push(new OpenLayers.Filter.Spatial({
@@ -223,7 +248,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
             }]
         }, config || {});
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
-        
+
         var addFilterBuilder = function(mgr, rec, schema) {
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
@@ -259,32 +284,32 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
                     msg: this.queryMsg
                 }).show();
             },
-            "query": function(tool, store) {
-                if (store) {
-                    store.getCount() || Ext.Msg.show({
-                        title: this.noFeaturesTitle,
-                        msg: this.noFeaturesMessage,
-                        buttons: Ext.Msg.OK,
-                        icon: Ext.Msg.INFO
-                    });
-                    if (this.autoHide) {
-                        var ownerCt = this.outputTarget ? queryForm.ownerCt :
-                            queryForm.ownerCt.ownerCt;
-                        ownerCt instanceof Ext.Window && ownerCt.hide();
-                    }
-                }
-            },
+            //"query": function(tool, store) {
+                //if (store) {
+                    //store.getCount() || Ext.Msg.show({
+                        //title: this.noFeaturesTitle,
+                        //msg: this.noFeaturesMessage,
+                        //buttons: Ext.Msg.OK,
+                        //icon: Ext.Msg.INFO
+                    //});
+                    //if (this.autoHide) {
+                        //var ownerCt = this.outputTarget ? queryForm.ownerCt :
+                            //queryForm.ownerCt.ownerCt;
+                        //ownerCt instanceof Ext.Window && ownerCt.hide();
+                    //}
+                //}
+            //},
             scope: this
         });
-        
+
         return queryForm;
     },
-    
+
     getFormattedMapExtent: function() {
         var extent = this.target.mapPanel.map.getExtent();
         return extent && extent.toArray().join(", ");
     }
-        
+
 });
 
 Ext.preg(gxp.plugins.QueryForm.prototype.ptype, gxp.plugins.QueryForm);
