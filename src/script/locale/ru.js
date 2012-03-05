@@ -396,7 +396,7 @@ GeoExt.Lang.add("ru", {
     "gxp.form.ComparisonComboBox.prototype": {
       allowedTypes: [
           [OpenLayers.Filter.Comparison.EQUAL_TO, "="],
-          [OpenLayers.Filter.Comparison.NOT_EQUAL_TO, ">"],
+          [OpenLayers.Filter.Comparison.NOT_EQUAL_TO, "<>"],
           [OpenLayers.Filter.Comparison.LESS_THAN, "<"],
           [OpenLayers.Filter.Comparison.GREATER_THAN, ">"],
           [OpenLayers.Filter.Comparison.LESS_THAN_OR_EQUAL_TO, "<="],
