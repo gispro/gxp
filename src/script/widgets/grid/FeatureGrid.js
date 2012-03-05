@@ -76,6 +76,10 @@ gxp.grid.FeatureGrid = Ext.extend(Ext.grid.GridPanel, {
      *  ``Ext.form.TimeField.prototype.format``.
      */
 
+    /** private: property[gridContainer]
+     *  ``Ext.Component`` component which contain this grid
+     */
+
     /** private: property[layer]
      *  ``OpenLayers.Layer.Vector`` layer displaying features from this grid's
      *  store
@@ -118,6 +122,13 @@ gxp.grid.FeatureGrid = Ext.extend(Ext.grid.GridPanel, {
         }
 
         gxp.grid.FeatureGrid.superclass.initComponent.call(this);       
+    },
+
+    listeners: {
+      //scope: this,
+      added: function(a,b){ 
+        a.gridContainer = b
+      }
     },
     
     /** private: method[onDestroy]
