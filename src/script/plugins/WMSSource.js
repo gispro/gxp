@@ -342,6 +342,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     opacity: ("opacity" in config) ? config.opacity : 1,
                     buffer: ("buffer" in config) ? config.buffer : 1,
                     //wrapDateLine: true,
+                    isBaseLayer: false,
                     projection: layerProjection
                 }
             );
