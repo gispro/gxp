@@ -393,6 +393,17 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this
         });
+        this.target.mapPanel.on('projectionchanged', function(srsName){
+          if(this.hitCountProtocol) this.hitCountProtocol.srsName = srsName
+          if(this.featureStore && this.featureStore.proxy ){
+            this.featureStore.srsName = srsName
+            this.featureStore.proxy.srsName = srsName
+            this.featureStore.proxy.protocol.srsName = srsName
+            this.featureStore.proxy.protocol.options.srsName = srsName
+            this.featureStore.proxy.protocol.format.srsName = srsName
+            this.featureStore.proxy.protocol.format.options.srsName = srsName
+          }
+        }, this)
     },
     
     /** api: method[activate]
