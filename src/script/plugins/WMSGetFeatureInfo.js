@@ -235,7 +235,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
     vectorLayerOn: function() {
       //TODO init on mapload
       if(!this.vectorLayer){
-        this.vectorLayer = new OpenLayers.Layer.Vector("GetFeatureInfo marker", { displayInLayerSwitcher: false, visibility: false })
+        this.vectorLayer = new OpenLayers.Layer.Vector("GetFeatureInfo marker", { displayInLayerSwitcher: false, visibility: false, isBaseLayer: false })
         this.target.mapPanel.map.addLayer(this.vectorLayer)
       }
       this.vectorLayer.setVisibility(true)
