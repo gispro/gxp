@@ -181,13 +181,14 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 );
             }
 
+            var printlegend = new GeoExt.LegendPanel();
             function createPrintWindow() {
                 printWindow = new Ext.Window({
                     title: this.previewText,
                     modal: true,
                     border: false,
                     resizable: false,
-                    width: 360,
+                    width: 500,
                     items: [
                         new GeoExt.ux.PrintPreview({
                             autoHeight: true,
@@ -216,7 +217,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             },
                             printProvider: printProvider,
                             includeLegend: false,
-                            sourceMap: mapPanel
+                            sourceMap: mapPanel,
+                            legend: printlegend
                         })
                     ],
                     listeners: {

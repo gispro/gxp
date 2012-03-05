@@ -107,9 +107,9 @@ GeoExt.Lang.add("ru", {
     },
 
     "gxp.plugins.Print.prototype": {
-        menuText: "Напечатать карту",
-        tooltip: "Напечатать карту",
-        previewText: "Напечатать предпросмотр",
+        menuText: "Печать карты",
+        tooltip: "Печать карты",
+        previewText: "Предварительный просмотр",
         notAllNotPrintableText: "Не все слои могут быть напечатаны",
         nonePrintableText: "Не все слои вашей карты могут быть напечатаны"
     },
