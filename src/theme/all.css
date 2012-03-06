@@ -274,3 +274,18 @@ div.map-overlay div.overlay-element {
     left: 0px;
     margin-top: 0px;
 }
+/* GIS Measure */
+.olControlGISFeatureOver{
+	cursor:move;
+}
+
+.olGISDragDown{
+	cursor: default;
+}
+
+.GISActiveImage {
+	cursor:pointer;
+}
+.GISCloseImage {
+    background-image: url(img/MiniRectClose.gif);
+}

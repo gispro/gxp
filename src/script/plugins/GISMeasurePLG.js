@@ -1,12 +1,4 @@
 /**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the BSD license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
-
-/**
  * @requires plugins/Tool.js
  */
 
@@ -140,7 +132,7 @@ gxp.plugins.GISMeasure = Ext.extend(gxp.plugins.Tool, {
                             },
                             map: this.target.mapPanel.map,
                             control: this.createMeasureControl(
-                                {measureType:'distance', map:this.target.mapPanel.map, handlerOptions: {"single": true}}, this.lengthTooltip)
+                                {measureType:'distance', CreatePopupFn: createGISToolTip, map:this.target.mapPanel.map, handlerOptions: {"single": true}}, this.lengthTooltip)
                         })
                     ),
                     new Ext.menu.CheckItem(
@@ -162,7 +154,7 @@ gxp.plugins.GISMeasure = Ext.extend(gxp.plugins.Tool, {
                             },
                             map: this.target.mapPanel.map,
                             control: this.createMeasureControl(
-								{measureType:'square', map:this.target.mapPanel.map, handlerOptions: {"single": true}},	//distance/square								
+								{measureType:'square', CreatePopupFn: createGISToolTip, map:this.target.mapPanel.map, handlerOptions: {"single": true}},	//distance/square								
                                  this.areaTooltip)
                         })
                     )
