@@ -107,6 +107,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     transparentText: "Transparent",
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
+    getFeatureInfoPanelText: "GFI Query",
+    getFeatureInfoPanelFieldText: "Participate in GFI Query",
     stylesText: "Styles",
     
     initComponent: function() {
@@ -126,6 +128,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         // which has been integrated with GWC.
         if (this.layerRecord.get("layer").params.TILED != null) {
             this.items.push(this.createCachePanel());
+            this.items.push( this.createGetFeatureInfoPanel() )
         }
         
         // only add the Styles panel if we know for sure that we have styles
@@ -160,7 +163,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
             items: [{
                 xtype: "checkbox",
                 fieldLabel: this.cacheFieldText,
-                checked: (this.layerRecord.get("layer").params.TILED === true),
+                checked: (this.layerRecord.getLayer().params.TILED === true),
                 listeners: {
                     check: function(checkbox, checked) {
                         var layer = this.layerRecord.get("layer");
@@ -172,6 +175,29 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     scope: this
                 }
             }]    
+        };
+    },
+
+    /** private: createGetFeatureInfoPanel
+     *  Creates the Cache panel.
+     */
+    createGetFeatureInfoPanel: function() {
+        return {
+            title: this.getFeatureInfoPanelText,
+            layout: "form",
+            style: "padding: 10px",
+            items: [{
+                xtype: "checkbox",
+                fieldLabel: this.getFeatureInfoPanelFieldText,
+                checked: (this.layerRecord.get("queryable") === true),
+                listeners: {
+                    check: function(checkbox, checked) {
+                        var layer = this.layerRecord.set("queryable",checked);
+                        this.fireEvent("change");
+                    },
+                    scope: this
+                }
+            }]
         };
     },
     

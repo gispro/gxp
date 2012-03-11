@@ -292,6 +292,8 @@ GeoExt.Lang.add("ru", {
         transparentText: "Без фона",
         cacheText: "Кэш",
         cacheFieldText: "Использовать кэш",
+        getFeatureInfoPanelText: "Запросы",
+        getFeatureInfoPanelFieldText: "Участвовать в запросах",
         stylesText: "Стили"
     },
 
