@@ -8,7 +8,7 @@
 
 /**
  * @requires plugins/LayerSource.js
- * @requires OpenLayers/Layer/Google/v3.js
+ * there is no openlayers mf @requires OpenLayers/Layer/Google/v3.js
  */
 
 /** api: (define)
