@@ -103,6 +103,13 @@ gxp.plugins.WMSCSource = Ext.extend(gxp.plugins.WMSSource, {
 
             var resolutions = {}, minResolution = {}, maxResolution = {}, wgsMaxExtentArray = null
 
+            for (var i=0, len=caps.layers.length; i<len; i++) {
+                var layer = caps.layers[i];
+                if( ( config.name == layer.name ) && layer.bbox["EPSG:4326"] ){
+                  wgsMaxExtentArray = layer.bbox["EPSG:4326"].bbox
+                }
+            }
+
             for (var i=0, len=tileSets.length; i<len; i++) {
                 var tileSet = tileSets[i];
                 if( config.name == tileSet.layers ){
@@ -112,13 +119,7 @@ gxp.plugins.WMSCSource = Ext.extend(gxp.plugins.WMSSource, {
                   minResolution[srs] = tileSet.resolutions[0]
                   maxResolution[srs] = tileSet.resolutions[tileSet.resolutions.length-1]
                   //maxExtent[srs] = new OpenLayers.Bounds.fromArray( tileSet.bbox[srs].bbox )
-                }
-            }
-
-            for (var i=0, len=caps.layers.length; i<len; i++) {
-                var layer = caps.layers[i];
-                if( config.name == layer.name ){
-                  wgsMaxExtentArray = layer.bbox["EPSG:4326"].bbox
+                  if(!wgsMaxExtentArray && srs == "EPSG:4326" && tileSet.bbox["EPSG:4326"]) wgsMaxExtentArray = tileSet.bbox["EPSG:4326"].bbox
                 }
             }
 
