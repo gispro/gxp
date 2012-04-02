@@ -692,19 +692,22 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                 // remove existing record - this way we replace styles from
                 // userStyles with inline styles.
                 index = this.stylesStore.findExact("name", userStyle.name);
-                index !== -1 && this.stylesStore.removeAt(index);
-                record = new this.stylesStore.recordType({
-                    "name": userStyle.name,
-                    "title": userStyle.title,
-                    "abstract": userStyle.description,
-                    "userStyle": userStyle
-                });
-                record.phantom = false;
-                this.stylesStore.add(record);
-                // set the default style if no STYLES param is set on the layer
-                if (!this.selectedStyle && (initialStyle === userStyle.name ||
-                            (!initialStyle && userStyle.isDefault === true))) {
-                    this.selectedStyle = record;
+                // !!!
+                if(!( index !== -1 && userStyles[index].isDefault )){
+                  index !== -1 && this.stylesStore.removeAt(index);
+                  record = new this.stylesStore.recordType({
+                      "name": userStyle.name,
+                      "title": userStyle.title,
+                      "abstract": userStyle.description,
+                      "userStyle": userStyle
+                  });
+                  record.phantom = false;
+                  this.stylesStore.add(record);
+                  // set the default style if no STYLES param is set on the layer
+                  if (!this.selectedStyle && (initialStyle === userStyle.name ||
+                              (!initialStyle && userStyle.isDefault === true))) {
+                      this.selectedStyle = record;
+                  }
                 }
             }
             
