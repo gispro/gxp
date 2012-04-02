@@ -98,7 +98,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  Text for query load mask (i18n).
      */
     queryMsg: "Querying...",
-    
+
     /** api: config[noFeaturesTitle]
      *  ``String``
      *  Text for no features alert title (i18n)
@@ -116,7 +116,7 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      *  the output of this tool's form. Set to null if you want to include
      *  the form permanently in your layout.
      */
-    
+
     /** api: config[outputAction]
      *  ``Number`` By default, the "Query" action will trigger this tool's
      *  form output. There is no need to change this unless you configure
@@ -124,24 +124,18 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
      */
     outputAction: 0,
 
-    
-    constructor: function(config) {
-        Ext.applyIf(config, {
-            actions: [{
-                text: this.queryActionText,
-                menuText: this.queryMenuText,
-                iconCls: "gxp-icon-find",
-                tooltip: this.queryActionTip,
-                disabled: true
-            }]
-        });
-        gxp.plugins.QueryForm.superclass.constructor.apply(this, arguments);
-    },
-    
     /** api: method[addActions]
      */
     addActions: function(actions) {
-        gxp.plugins.QueryForm.superclass.addActions.apply(this, arguments);
+        var actions = [{
+            text: this.queryActionText,
+            menuText: this.queryMenuText,
+            iconCls: "gxp-icon-find",
+            tooltip: this.queryActionTip,
+            disabled: true
+        }]
+
+        gxp.plugins.QueryForm.superclass.addActions.apply(this, [ actions ]);
         // support custom actions
         if (this.actions) {
             this.target.tools[this.featureManager].on("layerchange", function(mgr, rec, schema) {
