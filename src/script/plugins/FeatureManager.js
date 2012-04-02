@@ -172,6 +172,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  WFS paging mode.
      */
     pageIndex: null,
+
+    gettingScemaInProcess: false,
     
     /** private: method[constructor]
      */
@@ -671,6 +673,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         var record = this.layerRecord;
         var source = this.target.getSource(record);
         if (source && source instanceof gxp.plugins.WMSSource) {
+            this.gettingScemaInProcess = true
             source.getSchema(record, function(schema) {
                 if (schema === false) {
                     this.clearFeatureStore();
@@ -748,6 +751,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         }
                     }, protocolOptions));
                 }
+                this.gettingScemaInProcess = false
                 this.fireEvent("layerchange", this, record, schema);
             }, this);
         } else {
