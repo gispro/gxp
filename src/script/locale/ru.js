@@ -146,7 +146,7 @@ GeoExt.Lang.add("ru", {
 
     },
 
-    "gxp.plugins.WMSGetFeatureInfo.prototype": {
+    "gxp.plugins.GridWmsFeatureInfo.prototype": {
         infoActionTip: "Информация",
         popupTitle: "Информация"
     },
@@ -292,9 +292,16 @@ GeoExt.Lang.add("ru", {
         transparentText: "Без фона",
         cacheText: "Кэш",
         cacheFieldText: "Использовать кэш",
-        getFeatureInfoPanelText: "Запросы",
+        getFeatureInfoPanelText: "Поля",
+        createGetFeatureInfoFieldsPanelText: 'Отображение полей в окне информации',
+        getFeatureInfoPanelFieldNameHeader: 'Код',
+        getFeatureInfoPanelFieldTranslateHeader: 'Название',
+        getFeatureInfoPanelFieldShowHeader: 'Отображать',
         getFeatureInfoPanelFieldText: "Участвовать в запросах",
-        stylesText: "Стили"
+        stylesText: "Стили",
+        singleTileText: 'Загружать по частям',
+        getFeatureInfoPanelFieldStatisticWindowTitle: 'Статистика',
+        getFeatureInfoPanelFieldStatisticHeader: 'Статистика'
     },
 
     "gxp.EmbedMapDialog.prototype": {
