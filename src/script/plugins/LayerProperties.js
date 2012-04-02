@@ -58,7 +58,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         
         if (!this.outputConfig) {
             this.outputConfig = {
-                width: 365,
+                width: 390,
                 autoHeight: true
             };
         }
@@ -98,6 +98,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         //TODO create generic gxp_layerpanel
         var xtype = record.get("properties") || "gxp_layerpanel";
         var panelConfig = this.layerPanelConfig;
+        var featureManager = this.target.tools[this.featureManager];
         if (panelConfig && panelConfig[xtype]) {
             Ext.apply(config, panelConfig[xtype]);
         }
@@ -106,6 +107,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
             authorized: this.target.isAuthorized(),
             layerRecord: record,
             source: this.target.getSource(record),
+            featureManager: featureManager,
             defaults: {
                 style: "padding: 10px",
                 autoHeight: this.outputConfig.autoHeight
