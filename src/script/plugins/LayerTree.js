@@ -112,16 +112,30 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 
         var addListeners = function(node, record) {
             if (record) {
-                target.on("layerselectionchange", function(rec) {
-                    if (!me.selectionChanging && rec === record) {
-                        node.select();
-                    }
-                });
-                if (record === target.selectedLayer) {
-                    node.on("rendernode", function() {
-                        node.select();
-                    });
+              target.on("layerselectionchange", function(rec) {
+                if (!me.selectionChanging && rec === record) {
+                  node.select();
                 }
+              });
+              if (record === target.selectedLayer) {
+                node.on("rendernode", function() {
+                  node.select();
+                });
+              }
+
+              var source = target.sources[record.data.source]
+              if(source)
+                if(['gxp_googlesource', 'gxp_osmsource'].indexOf( source.ptype ) != -1)
+                  target.mapPanel.on('projectionchanged', function(projection)
+                    {
+                        if(projection != "EPSG:900913"){
+                          node.disable()
+                        }else{
+                          node.enable()
+                        }
+                    })
+
+
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				if (record.get("group") === "animation")
 				{
@@ -147,6 +161,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
 				}
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             }
+
         };
         
         // create our own layer node UI class, using the TreeNodeUIEventMixin
@@ -278,14 +293,14 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 items: []
             })
         }, config || {});
-        
+
         var layerTree = gxp.plugins.LayerTree.superclass.addOutput.call(this, config);
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		if ((layerTree.root.childNodes.length == 3) && (layerTree.root.childNodes[2].text === animationNodeTitle))
-			animVar.animationNode = layerTree.root.childNodes[2];
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        animVar.animationNode = layerTree.root.findChild('group','animation')
+        if(!animVar.animationNode) animVar.animationNode = layerTree.root.childNodes[layerTree.root.childNodes.length-1]
+
         return layerTree;
-    }        
+    }
 });
 
 Ext.preg(gxp.plugins.LayerTree.prototype.ptype, gxp.plugins.LayerTree);
