@@ -250,8 +250,6 @@ gxp.plugins.QueryForm = Ext.extend(gxp.plugins.Tool, {
 
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
 
-        console.log(queryForm.ownerCt.ownerCt)
-
         var addFilterBuilder = function(mgr, rec, schema) {
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
