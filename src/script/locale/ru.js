@@ -301,7 +301,16 @@ GeoExt.Lang.add("ru", {
         stylesText: "Стили",
         singleTileText: 'Загружать по частям',
         getFeatureInfoPanelFieldStatisticWindowTitle: 'Статистика',
-        getFeatureInfoPanelFieldStatisticHeader: 'Статистика'
+        getFeatureInfoPanelFieldStatisticHeader: 'Статистика',
+        wpsLiterals: {
+          Count: 'Количество',
+          Average: 'Average',
+          Max: 'Максимум',
+          Median: 'В среднем',
+          Min: 'Минимум',
+          StandardDeviation: 'StdDev',
+          Sum: 'Сумма'
+        }
     },
 
     "gxp.EmbedMapDialog.prototype": {
