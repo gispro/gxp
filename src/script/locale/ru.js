@@ -1,5 +1,4 @@
-﻿
-GeoExt.Lang.add("ru", {
+﻿GeoExt.Lang.add("ru", {
 
     "gxp.menu.LayerMenu.prototype": {
         layerText: "Слой"
@@ -38,7 +37,7 @@ GeoExt.Lang.add("ru", {
         previousPageTip: "Предыдущая страница",
         zoomPageExtentTip: "Показать границы слоя",
         nextPageTip: "Следующая страница",
-        nextPageTip: "Последняя страница",
+        lastPageTip: "Последняя страница",
         totalMsg: "Всего: {0} записей"
     },
 
@@ -303,14 +302,15 @@ GeoExt.Lang.add("ru", {
         getFeatureInfoPanelFieldStatisticWindowTitle: 'Статистика',
         getFeatureInfoPanelFieldStatisticHeader: 'Статистика',
         wpsLiterals: {
-          Count: 'Количество',
-          Average: 'Average',
+          Count: 'Количество объектов',
+          Average: 'Среднее арифметическое',
           Max: 'Максимум',
-          Median: 'В среднем',
+          Median: 'Медиана',
           Min: 'Минимум',
-          StandardDeviation: 'StdDev',
+          StandardDeviation: 'Отклонение',
           Sum: 'Сумма'
-        }
+        },
+        statisticNotAvailableText: 'Статистика не доступна.'
     },
 
     "gxp.EmbedMapDialog.prototype": {
