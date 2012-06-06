@@ -100,6 +100,20 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             this.groups = groups
         }
     },
+
+    showProjectionError: function(node,record,projection){
+      var icoEl = node.ui.getEl()
+      if(!record.get('srs') || record.get('srs')[projection]){
+        node.attributes.iconCls = node.attributes.correctProjectionIconCls
+        if( icoEl ) icoEl.firstChild.getElementsByClassName('x-tree-node-icon')[0].setAttribute('class','x-tree-node-icon ' + node.attributes.correctProjectionIconCls)
+        node.enable()
+      }else{
+        node.attributes.iconCls = 'gxp-tree-projectionerror-icon'
+        if( icoEl ) icoEl.firstChild.getElementsByClassName('x-tree-node-icon')[0].setAttribute('class','x-tree-node-icon gxp-tree-projectionerror-icon')
+        if(record.get('isHardProjection')) node.disable()
+      }
+    },
+
     
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -123,18 +137,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 });
               }
 
-              var source = target.sources[record.data.source]
-              if(source)
-                if(['gxp_googlesource', 'gxp_osmsource'].indexOf( source.ptype ) != -1)
-                  target.mapPanel.on('projectionchanged', function(projection)
-                    {
-                        if(projection != "EPSG:900913"){
-                          node.disable()
-                        }else{
-                          node.enable()
-                        }
-                    })
-
+              me.showProjectionError(node,record,target.map.projection)
+              target.mapPanel.on('projectionchanged', function(projection){ this.showProjectionError(node,record,projection); },me);
 
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				if (record.get("group") === "animation")
@@ -219,6 +223,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                                 if (!record.get("queryable")) {
                                     attr.iconCls = "gxp-tree-rasterlayer-icon";
                                 }
+                                attr.correctProjectionIconCls = attr.iconCls
                                 if (record.get("fixed")) {
                                     attr.allowDrag = false;
                                 }
