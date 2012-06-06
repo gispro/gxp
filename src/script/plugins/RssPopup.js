@@ -14,7 +14,7 @@ function onFeatureSelect1(evt)
 	{
 		rssVar.feature = evt.feature;
 		var popup = new OpenLayers.Popup("featureRssPopup",
-										 rssVar.feature.geometry.getBounds().getCenterLonLat(),
+										rssVar.feature.geometry.getBounds().getCenterLonLat(),
 										new OpenLayers.Size(250, 180),
 										parseRSSContentHTML(evt.feature.data.data.contentHTML),
 										false, onPopupClose);
@@ -176,6 +176,7 @@ function RssPopupParseData (ajaxRequest)
 			if (!feature.geometry) {
 				continue;
 			}
+
 			var title       = feature.attributes.title       ? feature.attributes.title       : "Untitled";
 			var description = feature.attributes.description ? feature.attributes.description : "No description.";
 
@@ -372,13 +373,13 @@ function RssPopupGetState()
 				// add layer
 				state.map.layers.push(source.getConfigForRecord(record));
 				if (!state.sources[id]) {
-					state.sources[id] = Ext.apply({}, source.initialConfig);
+					state.sources[id] = Ext.apply({}, source.getState());
 				}
 			}
 		}
 	}, this);
 	return state;
-};
+}
 // extend gxp.plugins.RemoveLayer.addActions
 function RssPopupAddActions()
 {
