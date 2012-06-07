@@ -4,6 +4,17 @@
         layerText: "Слой"
     },
 
+    "gxp.plugins.LayerSource.prototype.errorMessages": {
+        404: 'Ресурс не найден.',
+        403: 'В доступе к ресурсу отказано.',
+        302: 'Ресурс был перемещен.',
+        500: 'Сервер не доступен.'
+    },
+
+    "gxp.plugins.LayerSource.prototype": {
+      errorMessageTitle: 'Во время добавления ресурса возникли ошибки.'
+    },
+
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Добавить слои",
         addActionTip: "Добавить слои",
@@ -24,7 +35,7 @@
         roadTitle: "Bing Roads",
         aerialTitle: "Bing Aerial",
         labeledAerialTitle: "Bing Aerial With Labels"
-    },     
+    },
 
     "gxp.plugins.FeatureEditor.prototype": {
         createFeatureActionTip: "Создать новый объект",
@@ -32,13 +43,14 @@
     },
     
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Показать на карте",
+        displayFeatureText: "Отобразить на карте",
         firstPageTip: "Первая страница",
         previousPageTip: "Предыдущая страница",
         zoomPageExtentTip: "Показать границы слоя",
         nextPageTip: "Следующая страница",
         lastPageTip: "Последняя страница",
-        totalMsg: "Всего: {0} записей"
+        totalMsg: "Всего: {0} записей",
+        zoomToFeaturesTip: "Показать всю геометрию выборки"
     },
 
     "gxp.plugins.GoogleEarth.prototype": {
@@ -85,7 +97,7 @@
        lengthTooltip: "Измерение длины",
        areaTooltip: "Измерение площади",
        measureTooltip: "Измерения"
-     },
+    },
 
     "gxp.plugins.Navigation.prototype": {
         menuText: "Панорамировать карту",
@@ -122,16 +134,23 @@
     },
 
     "gxp.plugins.QueryForm.prototype": {
-        queryActionText: "Запрос",
+        queryActionText: "Выборка",
         queryMenuText: "Запросить слой",
         queryActionTip: "Запросить выбранный слой",
         queryByLocationText: "Геозапрос",
         currentTextText: "Текущая видимая область",
         queryByAttributesText: "Запрос по атрибуту",
-        queryMsg: "Запрос...",
+        queryMsg: "Запрос",
         cancelButtonText: "Отмена",
         noFeaturesTitle: "Нет совпадений",
-        noFeaturesMessage: "Ваш запрос ничего не вернул."
+        noFeaturesMessage: "Ваш запрос ничего не вернул.",
+        geometryText: "Тип геометрии",
+        drawPointText: "Точки",
+        drawLineText: "Линии",
+        drawPolygonText: "Полигоны",
+        cleanGeomText: "Очистить геометрию",
+        stopQuery: "Отменить запрос",
+        downloadText: 'Скачать'
     },
 
     "gxp.plugins.RemoveLayer.prototype": {
@@ -320,8 +339,8 @@
         mapSizeLabel: 'Размер карты',
         miniSizeLabel: 'Мини',
         smallSizeLabel: 'Маленький',
-        premiumSizeLabel: 'Средний',
-        largeSizeLabel: 'Большой'
+        premiumSizeLabel: 'Большой',
+        largeSizeLabel: 'Средний'
     },
     
     "gxp.WMSStylesDialog.prototype": {
@@ -348,7 +367,8 @@
          styleWindowTitle: "Пользовательский стиль: {0}",
          ruleWindowTitle: "Правило стиля: {0}",
          stylesFieldsetTitle: "Стили",
-         rulesFieldsetTitle: "Правила"
+         rulesFieldsetTitle: "Правила",
+         defaultStyle: 'По умолчанию'
     },
 
     "gxp.LayerUploadPanel.prototype": {
@@ -357,9 +377,9 @@
         abstractLabel: "Описание",
         abstractEmptyText: "Описание слоя",
         fileLabel: "Данные",
-        fieldEmptyText: "Обзор...",
+        fieldEmptyText: "Обзор",
         uploadText: "Загрузить",
-        waitMsgText: "Загрузить данные...",
+        waitMsgText: "Загрузить данные",
         invalidFileExtensionText: "Расширение файла должно быть одним из: ",
         optionsText: "Опции",
         workspaceLabel: "Рабочее окружение",
@@ -369,11 +389,12 @@
     },
     
     "gxp.NewSourceWindow.prototype": {
-        title: "Добавить новый сервис...",
+        title: "Добавить новый сервис",
         cancelText: "Отмена",
         addServerText: "Добавить сервис",
         invalidURLText: "Введите правильный путь к WMS (пример http://example.com/geoserver/wms)",
-        contactingServerText: "Соединение с сервером..."
+        contactingServerText: "Соединение с сервером",
+        blankText: "Поле не может быть пустым."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -406,7 +427,7 @@
           'красный': "#FF0000",
           silver: "#C0C0C0",
           teal: "#008080",
-          'белый': "#FFFFFF",
+          'беленький': "#FFFFFF",
           'желтый': "#FFFF00"
         }
     },
