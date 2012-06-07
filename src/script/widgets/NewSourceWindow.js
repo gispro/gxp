@@ -78,6 +78,8 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
      */
     contactingServerText: "Contacting Server...",
 
+    blankText: "Name should not be null",
+
     /** api: config[bodyStyle]
      * The default bodyStyle sets the padding to 0px
      */
@@ -160,35 +162,39 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         });
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
         this.iconSelector = new Ext.form.ComboBox({
-		    fieldLabel: "Иконка",
-            emptyText: "Введите или выберите иконку для RSS",
+            fieldLabel: "Иконка",
+            emptyText: "Введите или выберите иконку для GeoRSS",
             displayField: 'color',
             valueField: 'url',
             editable: true,
-			disabled:true,
+            disabled:true,
             triggerAction: 'all',
             mode: 'local',
             store: this.iconStore,
-			anchor: '100%'
+            anchor: '100%',
+            allowBlank: false,
+            blankText: this.blankText
+
         });
 
         this.serversSelector.on({
             //click: this.stopMouseEvents,
             //mousedown: this.stopMouseEvents,
             select: function(combo, record, index)
-			{
+            {
                 this.urlTextField.setValue(record.data.url);
                 this.restUrlTextField.setValue(record.data.restUrl);
-//              this.titleTextField.setValue (record.data.serverName);
+                this.titleTextField.setValue (record.data.serverName);
             },
             scope: this
         });
 
         this.urlTextField = new Ext.form.TextField({
             fieldLabel: "URL",
-//          allowBlank: false,
+            allowBlank: false,
+            blankText: this.blankText,
             editable: false,
-			anchor: '100%',
+            anchor: '100%',
             msgTarget: "under",
 //          validator: this.urlValidator.createDelegate(this),
             hidden: false
@@ -196,9 +202,10 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
         this.restUrlTextField = new Ext.form.TextField({
             fieldLabel: "Rest Url",
-//          allowBlank: false,
+            allowBlank: true,
+            blankText: this.blankText,
             editable: false,
-			anchor: '100%',
+            anchor: '100%',
             msgTarget: "under",
 //          validator: this.urlValidator.createDelegate(this),
             hidden: false
@@ -206,8 +213,9 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 
         this.titleTextField = new Ext.form.TextField({
             fieldLabel: "Наименование", // "Title",
-//          allowBlank: false,
-			anchor: '100%',
+            allowBlank: false,
+            blankText: this.blankText,
+            anchor: '100%',
             msgTarget: "under",
             hidden: false
         });
@@ -225,13 +233,12 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			items: [
 				{name: 'service', boxLabel: 'WMS'   , inputValue: 1, checked: true},
 				{name: 'service', boxLabel: 'ArcGIS', inputValue: 2},
-				{name: 'service', boxLabel: 'RSS'   , inputValue: 3}
+				{name: 'service', boxLabel: 'GeoRSS'   , inputValue: 3}
 			]
 		});
         this.radioGroup.on({
-            change: function(radiogroup, radio)
-			{
-				this.lockFields(radio.inputValue);
+            change: function(radiogroup, radio) {
+                this.lockFields(radio.inputValue);
             }, scope: this
         });
 
@@ -247,8 +254,8 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             border: false,
             bodyStyle: "padding: 5px",
             labelWidth: 90,
-			height : 200,
-			width : 620,
+            height : 220,
+            width : 620,
             autoWidth: true,
             autoHeight: false
         });
@@ -265,45 +272,27 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             new Ext.Button({
                 text: "Добавить сервис",
                 iconCls: "add",
-                handler: function()
-				{
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					var getServerName;
-					if ((this.getServiceIDX() == 0) && (this.serversSelector.getValue().length == 0))
-					{
-//						console.log ('idx = ' + this.getServiceIDX() + ', ' + this.serversSelector + ', ' +
-//						                                                      this.serversSelector.getValue());
-						return;
-					} else if ((this.getServiceIDX() == 0) && (this.serversSelector.getValue().length > 0) )
-					{
-						if (this.serversSelector.getValue() === this.serversSelector.emptyText)
-							return;
-						getServerName = this.serversSelector.getServerName();
-						this.urlTextField.setValue(this.serversSelector.getValue());
-					} else if (this.getServiceIDX() == 1) {
-					    if ((this.titleTextField.getValue() == 0) || (this.iconSelector.getValue() == 0))
-							return;
-						else
-							getServerName = this.titleTextField.getValue();
-					} else if (this.getServiceIDX() == 2) {
-					    if ((this.titleTextField.getValue() == 0) || (this.iconSelector.getValue() == 0))
-							return;
-						else
-							getServerName = this.titleTextField.getValue();
-					}
+                handler: function(){
+
+                    //TODO realise arcgis and rss source adding and remove this!
+                    //if( this.getServiceIDX() != 0 ) return;
+
                     // Clear validation before trying again.
                     this.error = null;
-                    if (this.urlTextField.validate()) {
-//                        this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue());
-//                      this.fireEvent("server-added", this.urlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue());
-                        this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), getServerName, this.iconSelector.getValue());
-                    } else {
-                        this.urlTextField.setValue(this.serversSelector.lastSelectionText);
-                        if (this.urlTextField.validate()) {
-                            this.fireEvent("server-added", this.urlTextField.getValue());
-                        }
+
+                    this.urlTextField.validationEvent=false
+                    this.restUrlTextField.validationEvent=false
+                    this.titleTextField.validationEvent=false
+
+                    var isValid = this.urlTextField.validate()
+                    isValid = this.restUrlTextField.validate() && isValid
+                    isValid = this.titleTextField.validate() && isValid
+                    isValid = this.iconSelector.validate() && isValid
+
+                    if (isValid) {
+                        this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue());
                     }
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
                 },
                 scope: this
             })
@@ -320,8 +309,15 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.on("hide", function() {
             // Reset values so it looks right the next time it pops up.
             this.error = null;
-//          this.urlTextField.validate(); // Remove error text. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
             this.urlTextField.setValue("");
+            this.restUrlTextField.setValue("");
+            this.titleTextField.setValue("");
+            this.iconSelector.setValue("");
+            this.urlTextField.clearInvalid()
+            this.restUrlTextField.clearInvalid()
+            this.titleTextField.clearInvalid()
+            this.iconSelector.clearInvalid()
             this.loadMask.hide();
         }, this);
 
@@ -354,54 +350,47 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         }, this);
 
     },
-	getServiceIDX: function()
-	{
-		result = 0;
-		for (var i = 0; i < this.radioGroup.items.length; i++)
-		{
-			if (this.radioGroup.items.items[i].checked)
-			{
-				result = i;
-				break;
-			}
-		}
-		return result;
-	},
-	lockFields: function(idx)
-	{
-		if (idx === 1)
-		{
-			this.serversSelector.setValue(this.serversSelector.emptyText);
-			this.iconSelector   .setValue(this.iconSelector   .emptyText);
-			this.titleTextField .setValue('');
-			this.urlTextField   .setValue('');
+  getServiceIDX: function() { return this.radioGroup.getValue().inputValue - 1 },
+  lockFields: function(idx)
+  {
+    if (idx === 1)
+    {
+      this.serversSelector.setValue(this.serversSelector.emptyText);
+      this.iconSelector   .setValue(this.iconSelector   .emptyText);
+      this.titleTextField .setValue('');
+      this.urlTextField   .setValue('');
 
-			this.serversSelector.setDisabled (false);
-			this.titleTextField .setDisabled (false);
-			this.urlTextField   .setDisabled (false);
-			this.iconSelector   .setDisabled ( true);
-		} else if (idx === 2) {
-			this.serversSelector.setValue(this.serversSelector.emptyText);
-			this.iconSelector   .setValue(this.iconSelector   .emptyText);
-			this.titleTextField.setValue('');
-			this.urlTextField  .setValue('');
+      this.serversSelector.setDisabled (false);
+      this.titleTextField .setDisabled (false);
+      this.urlTextField   .setDisabled (false);
+      this.restUrlTextField.setDisabled(false);
+      this.iconSelector   .setDisabled ( true);
+    } else if (idx === 2) {
+      this.serversSelector.setValue(this.serversSelector.emptyText);
+      this.iconSelector   .setValue(this.iconSelector   .emptyText);
+      this.titleTextField.setValue('');
+      this.urlTextField  .setValue('');
 
-			this.serversSelector.setDisabled( true);
-			this.titleTextField.setDisabled (false);
-			this.urlTextField  .setDisabled (false);
-			this.iconSelector  .setDisabled ( true);
-		} else if (idx === 3) {
-			this.serversSelector.setValue(this.serversSelector.emptyText);
-			this.iconSelector   .setValue(this.iconSelector   .emptyText);
-			this.titleTextField.setValue('');
-			this.urlTextField  .setValue('');
+      this.serversSelector.setDisabled( true);
+      this.titleTextField.setDisabled (false);
+      this.urlTextField  .setDisabled (false);
+      this.restUrlTextField.setDisabled(true);
+      this.iconSelector  .setDisabled ( true);
+    } else if (idx === 3) {
+      this.serversSelector.setValue(this.serversSelector.emptyText);
+      this.iconSelector   .setValue(this.iconSelector   .emptyText);
+      this.titleTextField.setValue('');
+      this.urlTextField  .setValue('');
 
-			this.serversSelector.setDisabled( true);
-			this.titleTextField.setDisabled (false);
-			this.urlTextField  .setDisabled (false);
-			this.iconSelector  .setDisabled (false);
-		}
-//		console.log ('idx = ' + idx);
+      this.serversSelector.setDisabled( true);
+      this.titleTextField.setDisabled (false);
+      this.urlTextField  .setDisabled (false);
+      this.restUrlTextField.setDisabled(true);
+      this.iconSelector  .setDisabled (false);
+    }
+    this.urlTextField.clearInvalid()
+    this.restUrlTextField.clearInvalid()
+    this.titleTextField.clearInvalid()
 	},
 
     /** private: property[urlRegExp]
