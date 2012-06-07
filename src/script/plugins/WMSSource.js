@@ -37,7 +37,7 @@
         }
         // here is the new part
         this.raw = data;
-    };
+    }
     Ext.intercept(GeoExt.data.WMSCapabilitiesReader.prototype, "readRecords", keepRaw);
     GeoExt.data.AttributeReader &&
         Ext.intercept(GeoExt.data.AttributeReader.prototype, "readRecords", keepRaw);
@@ -223,19 +223,12 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                             msg = "Invalid response from server.";
                             var status = response.status;
                             if (status >= 200 && status < 300) {
-                                // TODO: consider pushing this into GeoExt
-                                
-                                 //               var report = error.arg.exceptionReport;
-                                //               details = gxp.util.getOGCExceptionText(report);
-                                // It was n error in IE
-                 
-                                if( error.arg){ // Добавлена обработка случая, когда error.arg=undefined
-                                    var report = error.arg.exceptionReport; // IE!! В этом месте была ошибка ( не было определено error.arg)
-                                    details = gxp.util.getOGCExceptionText(report);
-                                   }
-                				else {
-                    				details = "Status: " + status + " ErrName: " + error.name + " Message: " + error.message + " Description: " + error.description;
-                				     }
+                              if( error.arg){ // Добавлена обработка случая, когда error.arg=undefined
+                                var report = error.arg.exceptionReport; // IE!! В этом месте была ошибка ( не было определено error.arg)
+                                details = gxp.util.getOGCExceptionText(report);
+                              } else {
+                                details = "Status: " + status + " ErrName: " + error.name + " Message: " + error.message + " Description: " + error.description;
+                              }
                             } else {
                                 details = "Status: " + status;
                             }
