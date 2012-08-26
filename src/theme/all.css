@@ -274,3 +274,23 @@ div.map-overlay div.overlay-element {
     left: 0px;
     margin-top: 0px;
 }
+
+.x-action-col-cell img {
+  height: 16px;
+  width: 16px;
+}
+/* gxp_actionbtn */
+.x-action-col-cell img.gxp-icon-include {
+	background-image: url(img/accept.png);
+}
+
+.x-action-col-cell img.gxp-icon-exclude {
+	background-image: url(img/silk/delete.png);
+}
+
+.x-action-col-cell img.gxp-icon-moveup{
+	background-image: url(img/silk/arrow_up.png);
+}
+.x-action-col-cell img.gxp-icon-movedown {
+	background-image: url(img/silk/arrow_down.png);
+}
