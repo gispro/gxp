@@ -11,7 +11,7 @@ Ext.namespace("gxp.plugins");
 var animationStore = new Ext.data.JsonStore({ 
 	url       : 'animation.json',
 	root      : 'layers',
-	fields    : [ {name: 'name', mapping: 'owner'}, 'url', 'title', 'x_axis', 'layers'],
+	fields    : [ {name: 'name', mapping: 'owner'}, 'animId', 'url', 'title', 'x_axis', 'layers'],
 	listeners :
     {
    		load : function()
@@ -36,6 +36,7 @@ function parseAnimationStore()
  		var object = animationStore.getAt(row).get('layers');
 		var service = {title  : animationStore.getAt(row).get('title'),
 		               url    : animationStore.getAt(row).get('url'  ),
+					   animId    : animationStore.getAt(row).get('animId'  ),
 					   names  : new Array(object.length),
 					   layers : new Array(object.length),
 					   scale  : new Array(object.length)};
