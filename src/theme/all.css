@@ -294,3 +294,6 @@ div.map-overlay div.overlay-element {
 .x-action-col-cell img.gxp-icon-movedown {
 	background-image: url(img/silk/arrow_down.png);
 }
+.x-action-col-cell img.gxp-icon-edit {
+    background-image: url(img/pencil.png);
+}
