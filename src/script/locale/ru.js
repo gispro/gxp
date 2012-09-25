@@ -286,7 +286,12 @@
 
     "gxp.plugins.GridWmsFeatureInfo.prototype": {
         infoActionTip: "Информация",
-        popupTitle: "Информация"
+        popupTitle: "Информация",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		groupByText: "Группировать по этому полю",
+		showGroupsText: "Показывать в группах"
     },
 
     "gxp.plugins.Zoom.prototype": {
