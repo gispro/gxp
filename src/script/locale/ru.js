@@ -89,6 +89,67 @@
 		noText: "Нет"
 	},
     
+	"gxp.plugins.ChartManager.prototype": {
+		windowTitle: "Менеджер графиков",
+		addChartText: "Добавить",
+		chartTitleText: "Название",
+		ownerTitleText: "Владелец",
+		actionText: "Действия",
+		editBtnText: "Редактировать",
+		deleteBtnText: "Удалить",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		doneText: "Готово",
+		askForDeleteHeaderText: "Удаление описания графика",
+		askForDeleteText: "Вы действительно хотите удалить выбранное описание графика?",
+		yesText: "Да",
+		noText: "Нет",
+		defaultUseText: "Использовать по умолчанию"
+	},
+    
+	"gxp.plugins.ChartEditor.prototype": {
+        addActionMenuText: "Добавить слои",
+        addActionTip: "Добавить слои",
+        addServerText: "Добавить сервис",
+        addButtonText: "Добавить слои",
+        untitledText: "Безымянный",
+        addLayerSourceErrorText: "Ошибка получения WMS ({msg}).\nПожалуйста проверьте ссылку и попробуйте еще раз.",
+        availableLayersText: "Доступные слои",
+        expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>",
+        panelTitleText: "Заголовок",
+        selectSourceText: "Сервис",
+        doneText: "Готово",
+		cancelText: "Отмена",
+        uploadText: "Загрузить данные",
+		windowTitle: "Настройка анимации",		
+		includeBtnText: "Включить",
+		excludeBtnText: "Исключить",
+		moveUpBtnText: "Вверх",
+		moveDownBtnText: "Вниз",
+		chosenLayersText: "Выбранные слои",
+		actionText: "Действия",
+		panelLabelText: "Подпись",
+		chartNameText: "Наименование",
+		nameRequiredErrorText: "Пожалуйста, введите наименование",
+		layersRequiredErrorText: "Выберите хотя бы один слой",
+		errorTitleText: "Ошибка",
+		xaxisRequiredErrorText: "Введите подписи для всех выбранных слоев",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		saveSucceedText: "Анимация успешно сохранена",
+		saveFailedText: "Произошла ошибка при сохранении анимации",
+		saveText: "Сохранение",
+		doubledRecordText: "Запись с такими полями уже существует",
+		errorText: "Ошибка",
+		aimationInvalidErrorText: "Невозможно открыть график. Возможно, отсутствует картографический сервис или график был поврежден",
+		windowTitle: "Настройка графика",
+		xAxisText: "Подпись оси X",
+		yAxisText: "Подпись оси Y",
+		isDefaultText: "Использовать по умолчанию"		
+    },
+	
     "gxp.plugins.BingSource.prototype": {
         title: "Bing Layers",
         roadTitle: "Bing Roads",
@@ -250,7 +311,12 @@
         tooltip: "Показать видимые границы слоя"
     },
     
-    "gxp.plugins.ZoomToSelectedFeatures.prototype": {
+    "gxp.plugins.WMSGetFeatureInfo.prototype": {
+        infoActionTip: "Информация",
+        popupTitle: "Информация"
+    },
+	
+	 "gxp.plugins.ZoomToSelectedFeatures.prototype": {
         menuText: "Показать выбранный объект",
         tooltip: "Показать выбранный объект"
     },
