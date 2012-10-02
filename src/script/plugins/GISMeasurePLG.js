@@ -96,6 +96,7 @@ gxp.plugins.GISMeasure = Ext.extend(gxp.plugins.Tool, {
         this.activeIndex = 0;
         this.button = new Ext.SplitButton({
             iconCls: "gxp-icon-measure-length",
+			id: "measureButton",
             tooltip: this.measureTooltip,
             enableToggle: true,
             toggleGroup: this.toggleGroup,

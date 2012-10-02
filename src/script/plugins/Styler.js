@@ -106,10 +106,12 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
     
     /** api: method[addActions]
      */
+	 // OVERRIDED - cmpId added
     addActions: function() {
         var layerProperties;
         var actions = gxp.plugins.Styler.superclass.addActions.apply(this, [{
             menuText: this.menuText,
+			id: "layerStyleButton",
             iconCls: "gxp-icon-palette",
             disabled: true,
             tooltip: this.tooltip,
@@ -134,9 +136,9 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      *  Handle changes to the target viewer's selected layer.
      */
     handleLayerChange: function(record) {
-        this.launchAction.disable();
+        if (this.launchAction) this.launchAction.disable();
         if (record && record.get("styles")) {
-            var source = this.target.getSource(record);
+            var source = app.getSource(record);
             if (source instanceof gxp.plugins.WMSSource) {
                 source.describeLayer(record, function(describeRec) {
                     this.checkIfStyleable(record, describeRec);
@@ -209,7 +211,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
     
     addOutput: function(config) {
         config = config || {};
-        var record = this.target.selectedLayer;
+        var record = app.selectedLayer;
 
         var origCfg = this.initialConfig.outputConfig || {};
         this.outputConfig.title = origCfg.title ||
