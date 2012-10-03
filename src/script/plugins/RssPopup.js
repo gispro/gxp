@@ -439,6 +439,7 @@ function RssPopupAddActions()
 	this.target.on("layerselectionchange", function(record)
 		{
 			selectedLayer = record;
+			app.tools.gxp_removelayer_ctl.selectedLayer = record;
 			removeLayerAction.setDisabled(this.target.mapPanel.layers.getCount() <= 1 || !record);
         }, this);
 	var enforceOne = function(store)
