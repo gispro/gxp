@@ -29,6 +29,7 @@ gxp.LayerUploadPanel = Ext.extend(Ext.FormPanel, {
     fieldEmptyText: "Browse for data archive...",
     uploadText: "Upload",
     waitMsgText: "Uploading your data...",
+	waitHeaderText: "Please wait",
     invalidFileExtensionText: "File extension must be one of: ",
     optionsText: "Options",
     workspaceLabel: "Workspace",
@@ -38,6 +39,8 @@ gxp.LayerUploadPanel = Ext.extend(Ext.FormPanel, {
     crsLabel: "CRS",
     crsEmptyText: "Coordinate Reference System ID",
     invalidCrsText: "CRS identifier should be an EPSG code (e.g. EPSG:4326)",
+	error: "Error",
+	uploadError: "Can't load the data",
 
     /** private: property[fileUpload]
      *  ``Boolean``
@@ -145,13 +148,9 @@ gxp.LayerUploadPanel = Ext.extend(Ext.FormPanel, {
                 var form = this.getForm();
                 if (form.isValid()) {
                     var fields = form.getFieldValues(),
-                        jsonData;
+                        jsonData = {'import': {}};
                     if (fields.workspace) {
-                        jsonData = {
-                            "import": {
-                                targetWorkspace: {workspace: {name: fields.workspace}}
-                            }
-                        };
+                        jsonData["import"].targetWorkspace = {workspace: {name: fields.workspace}};
                     }
                     if (fields.store) {
                         jsonData["import"].targetStore = {dataStore: {name: fields.store}};
@@ -166,11 +165,16 @@ gxp.LayerUploadPanel = Ext.extend(Ext.FormPanel, {
                             form.submit({
                                 url: this._import + "/tasks",
                                 waitMsg: this.waitMsgText,
+								waitTitle: this.waitHeaderText,
                                 waitMsgTarget: true,
                                 reset: true,
                                 scope: this
                             });
                         },
+						failure: function(response){
+							var text = response;
+							Ext.Msg.alert(this.error,this.uploadError);
+						},
                         scope: this
                     });
                 }
