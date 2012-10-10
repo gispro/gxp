@@ -25,7 +25,7 @@
         availableLayersText: "Доступные слои", 
         expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>",
         panelTitleText: "Заголовок",
-        layerSelectionText: "Просматривать данные с:",
+        layerSelectionText: "Просматривать слои с:",
         doneText: "Готово",
         uploadText: "Загрузить данные",
 		ascText: "Сортировать по возрастанию",
@@ -43,7 +43,7 @@
         availableLayersText: "Доступные слои",
         expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>",
         panelTitleText: "Заголовок",
-        layerSelectionText: "Просматривать данные с:",
+        layerSelectionText: "Просматривать слои с:",
         doneText: "Готово",
 		cancelText: "Отмена",
         uploadText: "Загрузить данные",
@@ -105,7 +105,8 @@
 		askForDeleteText: "Вы действительно хотите удалить выбранное описание графика?",
 		yesText: "Да",
 		noText: "Нет",
-		defaultUseText: "Использовать по умолчанию"
+		defaultUseText: "Использовать по умолчанию",
+		serviceURLText: "URL сервиса"
 	},
     
 	"gxp.plugins.ChartEditor.prototype": {
@@ -121,12 +122,16 @@
         selectSourceText: "Сервис",
         doneText: "Готово",
 		cancelText: "Отмена",
+		layerSelectionText: "Просматривать слои с: ",
+		errorText: "Ошибка",	
+		wrongAxisRequest: "Не удалось получить метаданные",
         uploadText: "Загрузить данные",
-		windowTitle: "Настройка анимации",		
+		queryLayerText: "Использовать",
 		includeBtnText: "Включить",
 		excludeBtnText: "Исключить",
-		moveUpBtnText: "Вверх",
+		moveUpBtnText: "Вверх",		
 		moveDownBtnText: "Вниз",
+		performFieldsText: "Получить описание полей",
 		chosenLayersText: "Выбранные слои",
 		actionText: "Действия",
 		panelLabelText: "Подпись",
@@ -138,15 +143,15 @@
 		ascText: "Сортировать по возрастанию",
 		descText: "Сортировать по убыванию",
 		colText: "Колонки",
-		saveSucceedText: "Анимация успешно сохранена",
-		saveFailedText: "Произошла ошибка при сохранении анимации",
+		saveSucceedText: "Данные успешно сохранены",
+		saveFailedText: "Произошла ошибка при сохранении",
 		saveText: "Сохранение",
 		doubledRecordText: "Запись с такими полями уже существует",
 		errorText: "Ошибка",
 		aimationInvalidErrorText: "Невозможно открыть график. Возможно, отсутствует картографический сервис или график был поврежден",
 		windowTitle: "Настройка графика",
-		xAxisText: "Подпись оси X",
-		yAxisText: "Подпись оси Y",
+		XText: "Ось X: ",
+		YText: "Ось Y: ",
 		isDefaultText: "Использовать по умолчанию"		
     },
 	
@@ -273,9 +278,16 @@
         downloadText: 'Скачать'
     },
 
-    "gxp.plugins.RemoveLayer.prototype": {
+    "gxp.plugins.UploadPlugin.prototype": {
+		uploadText: "Идет загрузка данных",
+		addActionTip: "Загрузить данные"
+    },
+	
+	"gxp.plugins.RemoveLayer.prototype": {
         removeMenuText: "Удалить слой",
-        removeActionTip: "Удалить слой"
+        removeActionTip: "Удалить слой",
+		errorHeader: "Слой не выбран",
+		errorText: "Пожалуйста, выберите слой"
     },
     
     "gxp.plugins.Styler.prototype": {
@@ -360,7 +372,7 @@
         nameHeaderText : "Название",
         titleHeaderText : "Заголовок",
         queryableHeaderText : "Queryable",
-        layerSelectionLabel: "Просматривать данные с:",
+        layerSelectionLabel: "Просматривать слои с:",
         layerAdditionLabel: "или добавить новый сервер.",
         expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>"
     },
@@ -509,13 +521,16 @@
         fileLabel: "Данные",
         fieldEmptyText: "Обзор",
         uploadText: "Загрузить",
-        waitMsgText: "Загрузить данные",
+        waitMsgText: "Идет загрузка данных",
         invalidFileExtensionText: "Расширение файла должно быть одним из: ",
         optionsText: "Опции",
         workspaceLabel: "Рабочее окружение",
         workspaceEmptyText: "Рабочее окружение по умолчанию",
         dataStoreLabel: "Хранилище",
-        dataStoreEmptyText: "Хранилище по умолчанию"
+        dataStoreEmptyText: "Хранилище по умолчанию",
+		error: "Ошибка",
+		uploadError: "Произошла ошибка при загрузке данных",
+		waitHeaderText: "Пожалуйста, подождите..."
     },
     
     "gxp.NewSourceWindow.prototype": {
