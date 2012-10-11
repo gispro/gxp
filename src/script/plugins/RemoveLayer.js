@@ -56,7 +56,10 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
             disabled: true,
             tooltip: this.removeActionTip,
             handler: function() {
-                var record = this.selectedLayer;
+                
+				i
+				
+				var record = this.selectedLayer;
                 if(record) {
                     this.target.mapPanel.layers.remove(record);
                 }
@@ -85,10 +88,15 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
     },
 	
 	tryRemoveCurrent: function() {
+		
 		var record = this.selectedLayer;
+		if (selectedNode) {
+					selectedNode.ui.checkbox.click();
+				}
 		if(record) {
 			this.target.mapPanel.layers.remove(record);
 		}
+		
 		else {
 			Ext.Msg.alert(this.errorHeader, this.errorText);
 		}
