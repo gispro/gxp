@@ -391,7 +391,10 @@ function RssPopupAddActions()
             tooltip: this.removeActionTip,
             handler: function()
 			{
-                var record = selectedLayer;
+                if (selectedNode) {
+					selectedNode.ui.checkbox.click();
+				}
+				var record = selectedLayer;
                 if(record)
 				{
 					var title = record.data['title'];
