@@ -138,7 +138,7 @@ function showAnimWindow(rootNode, selectedNode)
 			img1_div.innerHTML = createImageDesc (x1, y);
 			cell.appendChild(img1_div);
 	
-			var xn = x1 + slider.width - 14;
+			var xn = x1 + slider.getWidth() - 14;
 
 			var cnt = (count - 1) * 2;
 			animVar.len = xn - x1;
@@ -210,11 +210,12 @@ function showAnimWindow(rootNode, selectedNode)
 			layout        : 'absolute',
 			width         : 430,
 			height        : 90,
+			maxHeight	  : 90,
 			plain         : true,
 			modal         : false,
 			border        : true,
 //			resizable     : false,
-            collapsible   : true,
+            collapsible   : true,			
 			root          : rootNode,
 			node          : selectedNode,
 			animWinClosed : true,
@@ -246,10 +247,27 @@ function showAnimWindow(rootNode, selectedNode)
 					}
 					this.animWinClosed = false;
 				},
-				bodyresize : function (p, w, h)
+				resize : function (p, w, h)
 				{
-					slider.width = w - slider.x - 10;
-					this.doLayout;
+					slider.setWidth(w - slider.x - 30);
+					if (document.getElementById("slider")) {						
+						idx = getScenarioIDX (selectedNode);
+						if (animServices[idx].scale)
+						{
+							slider.scale_length = 100 / (animServices[idx].scale.length - 1);
+							removeSliderScale('slider', animServices[idx].scale.length);
+							removeSliderTicks('slider', animServices[idx].scale.length);							
+							drawSliderTicks(slider, 'slider', animServices[idx].scale.length);
+							drawSliderScale(slider, 'slider', animServices[idx].scale);
+						}
+						if (h>90) animWindow.setHeight(90);
+						//this.doLayout;					
+					}
+				},
+				afterRender: function(){
+					if (animWindow.getHeight() > animWindow.maxHeight) {
+						animWindow.setHeight(animWindow.maxHeight);
+					}
 				}
 			},
 			items : [btnReset, btnPlay, slider]
