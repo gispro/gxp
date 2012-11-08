@@ -33,6 +33,28 @@
 		colText: "Колонки"
     },
 	
+	"gxp.plugins.RubricatorTree.prototype": {
+		title: "Рубрики",
+		metadata: "Метаданные",
+		geoserviceMetadata: "Метаданные геосервиса",
+		resourceMetadata: "Метаданные ресурса",
+		nodeid: "Номер узла",
+		resourceid: "Ресурс",
+		workspace: "Рабочая область",
+		nodename: "Имя узла",
+		layername: "Имя слоя",
+		parentnode: "Родительский узел",
+		serverpath: "Адрес сервера",
+		servicepath: "Адрес сервиса",
+		servicetype: "Тип сервиса",
+		stylename: "Имя стиля",
+		defaultValue: "Значение не определено",
+		errorTitle: "Ошибка",
+		proxyException: "Невозможно добавить слой. Проверьте конфигурацию ресурса и настройки прокси-сервера",	
+		noRecordsFound: "Выбранный слой недоступен",
+		resourceLoadMask: "Подключение ресурса..."
+	},
+	
 	"gxp.plugins.AnimationManager.prototype": {
         addActionMenuText: "Добавить слои",
         addActionTip: "Добавить слои",
@@ -105,6 +127,8 @@
 		askForDeleteText: "Вы действительно хотите удалить выбранное описание графика?",
 		yesText: "Да",
 		noText: "Нет",
+		deleteErrorHeader: "Предупреждение",
+		deleteErrorText: "Невозможно удалить график, используемый по умолчанию",
 		defaultUseText: "Использовать по умолчанию",
 		serviceURLText: "URL сервиса"
 	},
@@ -140,6 +164,7 @@
 		layersRequiredErrorText: "Выберите хотя бы один слой",
 		errorTitleText: "Ошибка",
 		xaxisRequiredErrorText: "Введите подписи для всех выбранных слоев",
+		fieldsRequiredErrorText: "Выберите оси для создаваемого графика",
 		ascText: "Сортировать по возрастанию",
 		descText: "Сортировать по убыванию",
 		colText: "Колонки",
@@ -175,7 +200,30 @@
         nextPageTip: "Следующая страница",
         lastPageTip: "Последняя страница",
         totalMsg: "Всего: {0} записей",
-        zoomToFeaturesTip: "Показать всю геометрию выборки"
+        zoomToFeaturesTip: "Показать всю геометрию выборки",
+		statisticsText: "Статистика",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		createGetFeatureInfoFieldsPanelText: 'Отображение полей в окне информации',
+        getFeatureInfoPanelFieldNameHeader: 'Код',
+        getFeatureInfoPanelFieldTranslateHeader: 'Название',
+        getFeatureInfoPanelFieldShowHeader: 'Отображать',
+        getFeatureInfoPanelFieldText: "Участвовать в запросах",
+        stylesText: "Стили",
+        singleTileText: 'Загружать по частям',
+        getFeatureInfoPanelFieldStatisticWindowTitle: 'Статистика',
+        getFeatureInfoPanelFieldStatisticHeader: 'Статистика',
+        wpsLiterals: {
+          Count: 'Количество объектов',
+          Average: 'Среднее арифметическое',
+          Max: 'Максимум',
+          Median: 'Медиана',
+          Min: 'Минимум',
+          StandardDeviation: 'Отклонение',
+          Sum: 'Сумма'
+        },
+        statisticNotAvailableText: 'Статистика не доступна.'
     },
 
     "gxp.plugins.GoogleEarth.prototype": {

@@ -127,7 +127,8 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         // only add the Cache panel if we know for sure the WMS is GeoServer
         // which has been integrated with GWC.
         if (this.layerRecord.get("layer").params.TILED != null) {
-            this.items.push(this.createCachePanel());
+            //this.items.push(this.createCachePanel());
+			this.layerRecord.get("layer").layer.mergeNewParams({TILED: false});
             this.items.push( this.createGetFeatureInfoPanel() )
         }
         

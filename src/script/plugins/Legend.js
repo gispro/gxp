@@ -69,6 +69,7 @@ gxp.plugins.Legend = Ext.extend(gxp.plugins.Tool, {
         var actions = [{
             menuText: this.menuText,
             iconCls: "gxp-icon-legend",
+			autoScroll:true,
             tooltip: this.tooltip,
             handler: function() {
                 this.addOutput();
@@ -82,13 +83,41 @@ gxp.plugins.Legend = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-        return gxp.plugins.Legend.superclass.addOutput.call(this, Ext.apply({
-            xtype: 'gx_legendpanel',
-            ascending: false,
-            border: false,
-            layerStore: this.target.mapPanel.layers,
-            defaults: {cls: 'gxp-legend-item'}
-        }, config));
+        if (this.outputTarget)
+			return gxp.plugins.Legend.superclass.addOutput.call(this, Ext.apply({
+				xtype: 'gx_legendpanel',
+				autoScroll:true,
+				ascending: false,
+				border: false,
+				//width:400,
+				//height: 500,
+				layerStore: this.target.mapPanel.layers,
+				defaults: {cls: 'gxp-legend-item'}
+			}, config));
+		else {
+			var w = new  Ext.Window({
+			title: this.tooltip,
+			maximizable: true,
+			id: 'legendWindow',
+			height : 400,
+			width : 300,
+			layout: 'fit',
+			items: [
+						{
+							xtype: 'gx_legendpanel',
+							autoScroll:true,
+							ascending: false,
+							border: false,
+							//width:400,
+							//height: 375,
+							layerStore: this.target.mapPanel.layers,
+							defaults: {cls: 'gxp-legend-item'}
+						}
+				]
+			});
+			w.show();
+			return w;
+		}
     }
 
 });

@@ -389,12 +389,21 @@ function RssPopupAddActions()
             iconCls: "gxp-icon-removelayers",
             disabled: true,
             tooltip: this.removeActionTip,
-            handler: function()
+            handler: function(a,b,c)
 			{
+				/*var selectedNode = Ext.getCmp('layertree').selModel.selNode;
                 if (selectedNode) {
 					selectedNode.ui.checkbox.click();
-				}
+				}*/
+				var node = Ext.getCmp('rubricatorTree').items.items[0].getNodeById(selectedLayer.get('id'));
+				if (node) node.ui.checkbox.checked = false;
 				var record = selectedLayer;
+				
+				var layer = record.get('layer');
+				var animWin = Ext.getCmp('animationWindow');
+				if ((layer)&&animWin&&(layer.id==animWin.node.layer.id))
+					animWin.close();
+				
                 if(record)
 				{
 					var title = record.data['title'];
@@ -472,11 +481,14 @@ function RsspopupAddLayerNode (node, layerRecord, index)
 		}
 		if (layerRecord.data.title.length > 0)
 		{
+			//layerRecord.getLayer().singleTile = true;
+			
 			var child;
 			if (layerRecord.data.group !== 'animation')
 			{
 				child = this.createNode({
 					nodeType: 'gx_layer',
+					iconCls: "gxp-islayer",
 					layer: layerRecord.getLayer(),
 					layerStore: this.store
 				});

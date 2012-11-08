@@ -57,8 +57,6 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.removeActionTip,
             handler: function() {
                 
-				i
-				
 				var record = this.selectedLayer;
                 if(record) {
                     this.target.mapPanel.layers.remove(record);
@@ -87,12 +85,17 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 	
-	tryRemoveCurrent: function() {
+	tryRemoveCurrent: function(a,b,c) {
 		
 		var record = this.selectedLayer;
-		if (selectedNode) {
-					selectedNode.ui.checkbox.click();
-				}
+		var node = Ext.getCmp('rubricatorTree').items.items[0].getNodeById(this.selectedLayer.get('id'));
+		if (node) node.ui.checkbox.checked = false;
+		
+		var layer = record.get('layer');
+		var animWin = Ext.getCmp('animationWindow');
+		if ((layer)&&animWin&&(layer.id==animWin.node.layer.id))
+			animWin.close();
+			
 		if(record) {
 			this.target.mapPanel.layers.remove(record);
 		}
