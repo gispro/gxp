@@ -31,6 +31,16 @@ animVar.SLIDER_TICK_LEFT      = 6                 ;
 animVar.SLIDER_TICK_TOP       = 12                ;
 animVar.SLIDER_TITLE_TOP      = 18                ;
 animVar.SLIDER_TITLE_LEFT     = 4                 ;
+
+function getAnimationLength() {
+	var k =0;
+	for (var i=0; i<animLayers.length; i++) {
+		if (animLayers[i]) k++;
+		else return k;
+	}
+	return k;
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function showAnimWindow(rootNode, selectedNode)
 { 
@@ -52,22 +62,22 @@ function showAnimWindow(rootNode, selectedNode)
 					if (!timer.isRunning())
 						timer.setTimeInSeconds(value, animVar.TIMER_INTERVAL);
 
-                                        // affected layers:
-                                        var layerUnit = this.maxValue / (animLayers.length-1);
-                                        var halfLayerUnit = layerUnit / 2.0;
-                                        var curLayer = Math.floor(value/layerUnit);
-                                        var transition = value - curLayer*layerUnit;
-                                        var nextLayerOpacity = (transition >= halfLayerUnit ? 
-                                            animVar.maxAnimeOpacity - (0.3 * ((layerUnit - transition) / halfLayerUnit )) : 
-                                            ((animVar.maxAnimeOpacity*0.7) * (transition / halfLayerUnit ) )
-                                        );
+					// affected layers:
+					var layerUnit = this.maxValue / (getAnimationLength()-1);
+					var halfLayerUnit = layerUnit / 2.0;
+					var curLayer = Math.floor(value/layerUnit);
+					var transition = value - curLayer*layerUnit;
+					var nextLayerOpacity = (transition >= halfLayerUnit ? 
+						animVar.maxAnimeOpacity - (0.3 * ((layerUnit - transition) / halfLayerUnit )) : 
+						((animVar.maxAnimeOpacity*0.7) * (transition / halfLayerUnit ) )
+					);
+					
+					var thisLayerOpacity = (transition < halfLayerUnit ? 
+						animVar.maxAnimeOpacity - (0.3 * (transition / halfLayerUnit ) ): 
+						((animVar.maxAnimeOpacity*0.7) * ((layerUnit - transition) / halfLayerUnit ) )
+					);
                                         
-                                        var thisLayerOpacity = (transition < halfLayerUnit ? 
-                                            animVar.maxAnimeOpacity - (0.3 * (transition / halfLayerUnit ) ): 
-                                            ((animVar.maxAnimeOpacity*0.7) * ((layerUnit - transition) / halfLayerUnit ) )
-                                        );
-                                        
-					for (var i = 0; i < animLayers.length; i++){
+					for (var i = 0; i < getAnimationLength(); i++){
 						if (i < curLayer)
 						{
 							if (animLayers[i] != null)
@@ -208,6 +218,7 @@ function showAnimWindow(rootNode, selectedNode)
 		{
 			title         : animationNodeTitle, 
 			layout        : 'absolute',
+			id			  : 'animationWindow',	
 			width         : 430,
 			height        : 90,
 			maxHeight	  : 90,
@@ -236,7 +247,7 @@ function showAnimWindow(rootNode, selectedNode)
 						idx = getScenarioIDX (selectedNode);
 						if (animServices[idx].scale)
 						{
-							slider.scale_length = 100 / (animServices[idx].scale.length - 1);
+							slider.scale_length = slider.maxValue / (animServices[idx].scale.length - 1);
 							drawSliderTicks(slider, 'slider', animServices[idx].scale.length);
 							drawSliderScale(slider, 'slider', animServices[idx].scale);
 						} else
@@ -254,7 +265,7 @@ function showAnimWindow(rootNode, selectedNode)
 						idx = getScenarioIDX (selectedNode);
 						if (animServices[idx].scale)
 						{
-							slider.scale_length = 100 / (animServices[idx].scale.length - 1);
+							slider.scale_length = slider.maxValue / (animServices[idx].scale.length - 1);
 							removeSliderScale('slider', animServices[idx].scale.length);
 							removeSliderTicks('slider', animServices[idx].scale.length);							
 							drawSliderTicks(slider, 'slider', animServices[idx].scale.length);
@@ -332,7 +343,7 @@ function showAnimWindow(rootNode, selectedNode)
 					animServices[idx].layers[items].setOpacity (1);
 				app.mapPanel.map.addLayer(animServices[idx].layers[items]);
 			}
-			for (var j = 0; j < animLayers.length; j++)
+			for (var j = 0; j < getAnimationLength(); j++)
 				animLayers [j] = null;
 
 			for (items = animServices[idx].names.length - 1; items >= 0; items--)
@@ -401,7 +412,7 @@ function showAnimWindow(rootNode, selectedNode)
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		function reset()
 		{
-			for (var j = 0; j < animLayers.length; j++)
+			for (var j = 0; j < getAnimationLength(); j++)
 			{
 				if (animLayers [j] != null)
 				{
