@@ -206,6 +206,7 @@ gxp.plugins.Measure = Ext.extend(gxp.plugins.Tool, {
         this.activeIndex = 0;
         this.button = new Ext.SplitButton({
             iconCls: "gxp-icon-measure-length",
+			id: "measureButton",
             tooltip: this.measureTooltip,
             enableToggle: true,
             toggleGroup: this.toggleGroup,
@@ -235,6 +236,7 @@ gxp.plugins.Measure = Ext.extend(gxp.plugins.Tool, {
                     new Ext.menu.CheckItem(
                         new GeoExt.Action({
                             text: this.lengthMenuText,
+							id: "distanceMeasureButton",
                             iconCls: "gxp-icon-measure-length",
                             toggleGroup: this.toggleGroup,
                             group: this.toggleGroup,
@@ -257,6 +259,7 @@ gxp.plugins.Measure = Ext.extend(gxp.plugins.Tool, {
                     new Ext.menu.CheckItem(
                         new GeoExt.Action({
                             text: this.areaMenuText,
+							id: "areaMeasureButton",
                             iconCls: "gxp-icon-measure-area",
                             toggleGroup: this.toggleGroup,
                             group: this.toggleGroup,

@@ -42,18 +42,24 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
      *  Text for remove action tooltip (i18n).
      */
     removeActionTip: "Remove layer",
+	errorHeader: "Error",
+	errorText: "Can't remove the layer",
     
+	selectedLayer: null,
     /** api: method[addActions]
      */
     addActions: function() {
-        var selectedLayer;
         var actions = gxp.plugins.RemoveLayer.superclass.addActions.apply(this, [{
             menuText: this.removeMenuText,
+			id: "removeLayerButton",
             iconCls: "gxp-icon-removelayers",
             disabled: true,
             tooltip: this.removeActionTip,
             handler: function() {
-                var record = selectedLayer;
+                
+				i
+				
+				var record = this.selectedLayer;
                 if(record) {
                     this.target.mapPanel.layers.remove(record);
                 }
@@ -63,14 +69,14 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
         var removeLayerAction = actions[0];
 
         this.target.on("layerselectionchange", function(record) {
-            selectedLayer = record;
+            this.selectedLayer = record;
             removeLayerAction.setDisabled(
                 this.target.mapPanel.layers.getCount() <= 1 || !record
             );
         }, this);
         var enforceOne = function(store) {
             removeLayerAction.setDisabled(
-                !selectedLayer || store.getCount() <= 1
+                !this.selectedLayer || store.getCount() <= 1
             );
         }
         this.target.mapPanel.layers.on({
@@ -79,7 +85,22 @@ gxp.plugins.RemoveLayer = Ext.extend(gxp.plugins.Tool, {
         });
         
         return actions;
-    }
+    },
+	
+	tryRemoveCurrent: function() {
+		
+		var record = this.selectedLayer;
+		if (selectedNode) {
+					selectedNode.ui.checkbox.click();
+				}
+		if(record) {
+			this.target.mapPanel.layers.remove(record);
+		}
+		
+		else {
+			Ext.Msg.alert(this.errorHeader, this.errorText);
+		}
+	}
         
 });
 

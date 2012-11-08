@@ -58,6 +58,7 @@ gxp.plugins.Navigation = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.tooltip,
             menuText: this.menuText,
             iconCls: "gxp-icon-pan",
+			id: "navigationAction",
             enableToggle: true,
             pressed: true,
             allowDepress: false,

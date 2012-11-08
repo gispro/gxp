@@ -3,7 +3,7 @@
 }
 
 .x-tree-node-leaf  .gxp-tree-rasterlayer-icon {
-    background-image: url(img/silk/map.png);
+    background-image: url(img/islayer.png);
 }
 
 /* position the zoom slider within map panel */
@@ -227,6 +227,62 @@
     background: url(../../../../externals/ext/resources/images/default/tree/folder-open.gif);
 }
 
+.x-tree-node img.gxp-isservice, .x-tree-node-collapsed img.gxp-isservice{
+    background: url(img/isservice.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node-expanded img.gxp-isservice {
+    background: url(img/isservice.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node img.gxp-islayer, .x-tree-node-collapsed img.gxp-islayer{
+    background: url(img/islayer.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node-expanded img.gxp-islayer {
+    background: url(img/islayer.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node img.gxp-feed, .x-tree-node-collapsed img.gxp-feed{
+    background: url(img/feed.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node-expanded img.gxp-feed {
+    background: url(img/feed.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node img.gxp-control, .x-tree-node-collapsed img.gxp-control{
+    background: url(img/control.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.x-tree-node-expanded img.gxp-control {
+    background: url(img/control.png);
+	background-repeat: no-repeat;
+	height: 18px;
+	vertical-align: middle;
+}
+
 /* gxp_layeruploadpanel */
 .x-btn .gxp-icon-filebrowse { 
     background-image: url(img/silk/folder.png);
@@ -296,4 +352,7 @@ div.map-overlay div.overlay-element {
 }
 .x-action-col-cell img.gxp-icon-edit {
     background-image: url(img/pencil.png);
+}
+.customTree .x-tree-node .x-tree-selected  {
+    font-weight: normal;
 }

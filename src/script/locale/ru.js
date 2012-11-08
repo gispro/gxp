@@ -25,13 +25,35 @@
         availableLayersText: "Доступные слои", 
         expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>",
         panelTitleText: "Заголовок",
-        layerSelectionText: "Просматривать данные с:",
+        layerSelectionText: "Просматривать слои с:",
         doneText: "Готово",
         uploadText: "Загрузить данные",
 		ascText: "Сортировать по возрастанию",
 		descText: "Сортировать по убыванию",
 		colText: "Колонки"
     },
+	
+	"gxp.plugins.RubricatorTree.prototype": {
+		title: "Рубрики",
+		metadata: "Метаданные",
+		geoserviceMetadata: "Метаданные геосервиса",
+		resourceMetadata: "Метаданные ресурса",
+		nodeid: "Номер узла",
+		resourceid: "Ресурс",
+		workspace: "Рабочая область",
+		nodename: "Имя узла",
+		layername: "Имя слоя",
+		parentnode: "Родительский узел",
+		serverpath: "Адрес сервера",
+		servicepath: "Адрес сервиса",
+		servicetype: "Тип сервиса",
+		stylename: "Имя стиля",
+		defaultValue: "Значение не определено",
+		errorTitle: "Ошибка",
+		proxyException: "Невозможно добавить слой. Проверьте конфигурацию ресурса и настройки прокси-сервера",	
+		noRecordsFound: "Выбранный слой недоступен",
+		resourceLoadMask: "Подключение ресурса..."
+	},
 	
 	"gxp.plugins.AnimationManager.prototype": {
         addActionMenuText: "Добавить слои",
@@ -43,7 +65,7 @@
         availableLayersText: "Доступные слои",
         expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>",
         panelTitleText: "Заголовок",
-        layerSelectionText: "Просматривать данные с:",
+        layerSelectionText: "Просматривать слои с:",
         doneText: "Готово",
 		cancelText: "Отмена",
         uploadText: "Загрузить данные",
@@ -89,6 +111,75 @@
 		noText: "Нет"
 	},
     
+	"gxp.plugins.ChartManager.prototype": {
+		windowTitle: "Менеджер графиков",
+		addChartText: "Добавить",
+		chartTitleText: "Название",
+		ownerTitleText: "Владелец",
+		actionText: "Действия",
+		editBtnText: "Редактировать",
+		deleteBtnText: "Удалить",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		doneText: "Готово",
+		askForDeleteHeaderText: "Удаление описания графика",
+		askForDeleteText: "Вы действительно хотите удалить выбранное описание графика?",
+		yesText: "Да",
+		noText: "Нет",
+		deleteErrorHeader: "Предупреждение",
+		deleteErrorText: "Невозможно удалить график, используемый по умолчанию",
+		defaultUseText: "Использовать по умолчанию",
+		serviceURLText: "URL сервиса"
+	},
+    
+	"gxp.plugins.ChartEditor.prototype": {
+        addActionMenuText: "Добавить слои",
+        addActionTip: "Добавить слои",
+        addServerText: "Добавить сервис",
+        addButtonText: "Добавить слои",
+        untitledText: "Безымянный",
+        addLayerSourceErrorText: "Ошибка получения WMS ({msg}).\nПожалуйста проверьте ссылку и попробуйте еще раз.",
+        availableLayersText: "Доступные слои",
+        expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>",
+        panelTitleText: "Заголовок",
+        selectSourceText: "Сервис",
+        doneText: "Готово",
+		cancelText: "Отмена",
+		layerSelectionText: "Просматривать слои с: ",
+		errorText: "Ошибка",	
+		wrongAxisRequest: "Не удалось получить метаданные",
+        uploadText: "Загрузить данные",
+		queryLayerText: "Использовать",
+		includeBtnText: "Включить",
+		excludeBtnText: "Исключить",
+		moveUpBtnText: "Вверх",		
+		moveDownBtnText: "Вниз",
+		performFieldsText: "Получить описание полей",
+		chosenLayersText: "Выбранные слои",
+		actionText: "Действия",
+		panelLabelText: "Подпись",
+		chartNameText: "Наименование",
+		nameRequiredErrorText: "Пожалуйста, введите наименование",
+		layersRequiredErrorText: "Выберите хотя бы один слой",
+		errorTitleText: "Ошибка",
+		xaxisRequiredErrorText: "Введите подписи для всех выбранных слоев",
+		fieldsRequiredErrorText: "Выберите оси для создаваемого графика",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		saveSucceedText: "Данные успешно сохранены",
+		saveFailedText: "Произошла ошибка при сохранении",
+		saveText: "Сохранение",
+		doubledRecordText: "Запись с такими полями уже существует",
+		errorText: "Ошибка",
+		aimationInvalidErrorText: "Невозможно открыть график. Возможно, отсутствует картографический сервис или график был поврежден",
+		windowTitle: "Настройка графика",
+		XText: "Ось X: ",
+		YText: "Ось Y: ",
+		isDefaultText: "Использовать по умолчанию"		
+    },
+	
     "gxp.plugins.BingSource.prototype": {
         title: "Bing Layers",
         roadTitle: "Bing Roads",
@@ -109,7 +200,30 @@
         nextPageTip: "Следующая страница",
         lastPageTip: "Последняя страница",
         totalMsg: "Всего: {0} записей",
-        zoomToFeaturesTip: "Показать всю геометрию выборки"
+        zoomToFeaturesTip: "Показать всю геометрию выборки",
+		statisticsText: "Статистика",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		createGetFeatureInfoFieldsPanelText: 'Отображение полей в окне информации',
+        getFeatureInfoPanelFieldNameHeader: 'Код',
+        getFeatureInfoPanelFieldTranslateHeader: 'Название',
+        getFeatureInfoPanelFieldShowHeader: 'Отображать',
+        getFeatureInfoPanelFieldText: "Участвовать в запросах",
+        stylesText: "Стили",
+        singleTileText: 'Загружать по частям',
+        getFeatureInfoPanelFieldStatisticWindowTitle: 'Статистика',
+        getFeatureInfoPanelFieldStatisticHeader: 'Статистика',
+        wpsLiterals: {
+          Count: 'Количество объектов',
+          Average: 'Среднее арифметическое',
+          Max: 'Максимум',
+          Median: 'Медиана',
+          Min: 'Минимум',
+          StandardDeviation: 'Отклонение',
+          Sum: 'Сумма'
+        },
+        statisticNotAvailableText: 'Статистика не доступна.'
     },
 
     "gxp.plugins.GoogleEarth.prototype": {
@@ -212,9 +326,16 @@
         downloadText: 'Скачать'
     },
 
-    "gxp.plugins.RemoveLayer.prototype": {
+    "gxp.plugins.UploadPlugin.prototype": {
+		uploadText: "Идет загрузка данных",
+		addActionTip: "Загрузить данные"
+    },
+	
+	"gxp.plugins.RemoveLayer.prototype": {
         removeMenuText: "Удалить слой",
-        removeActionTip: "Удалить слой"
+        removeActionTip: "Удалить слой",
+		errorHeader: "Слой не выбран",
+		errorText: "Пожалуйста, выберите слой"
     },
     
     "gxp.plugins.Styler.prototype": {
@@ -225,7 +346,12 @@
 
     "gxp.plugins.GridWmsFeatureInfo.prototype": {
         infoActionTip: "Информация",
-        popupTitle: "Информация"
+        popupTitle: "Информация",
+		ascText: "Сортировать по возрастанию",
+		descText: "Сортировать по убыванию",
+		colText: "Колонки",
+		groupByText: "Группировать по этому полю",
+		showGroupsText: "Показывать в группах"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -250,7 +376,12 @@
         tooltip: "Показать видимые границы слоя"
     },
     
-    "gxp.plugins.ZoomToSelectedFeatures.prototype": {
+    "gxp.plugins.WMSGetFeatureInfo.prototype": {
+        infoActionTip: "Информация",
+        popupTitle: "Информация"
+    },
+	
+	 "gxp.plugins.ZoomToSelectedFeatures.prototype": {
         menuText: "Показать выбранный объект",
         tooltip: "Показать выбранный объект"
     },
@@ -289,7 +420,7 @@
         nameHeaderText : "Название",
         titleHeaderText : "Заголовок",
         queryableHeaderText : "Queryable",
-        layerSelectionLabel: "Просматривать данные с:",
+        layerSelectionLabel: "Просматривать слои с:",
         layerAdditionLabel: "или добавить новый сервер.",
         expanderTemplateText: "<p><b>Описание:</b> {abstract}</p>"
     },
@@ -438,13 +569,16 @@
         fileLabel: "Данные",
         fieldEmptyText: "Обзор",
         uploadText: "Загрузить",
-        waitMsgText: "Загрузить данные",
+        waitMsgText: "Идет загрузка данных",
         invalidFileExtensionText: "Расширение файла должно быть одним из: ",
         optionsText: "Опции",
         workspaceLabel: "Рабочее окружение",
         workspaceEmptyText: "Рабочее окружение по умолчанию",
         dataStoreLabel: "Хранилище",
-        dataStoreEmptyText: "Хранилище по умолчанию"
+        dataStoreEmptyText: "Хранилище по умолчанию",
+		error: "Ошибка",
+		uploadError: "Произошла ошибка при загрузке данных",
+		waitHeaderText: "Пожалуйста, подождите..."
     },
     
     "gxp.NewSourceWindow.prototype": {

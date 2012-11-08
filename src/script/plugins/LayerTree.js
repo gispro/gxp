@@ -278,6 +278,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                             var c = tree.contextMenu;
                             c.contextNode = node;
                             c.items.getCount() > 0 && c.showAt(e.getXY());
+							Ext.getCmp("tree").doLayout();
+							c.hide();
+							c.items.getCount() > 0 && c.showAt(e.getXY());
                         }
                     }
                 },

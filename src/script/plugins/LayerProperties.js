@@ -70,6 +70,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
         var actions = gxp.plugins.LayerProperties.superclass.addActions.apply(this, [{
             menuText: this.menuText,
             iconCls: "gxp-icon-layerproperties",
+			id: 'layerPropertiesButton',
             disabled: true,
             tooltip: this.toolTip,
             handler: function() {
@@ -111,16 +112,6 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
             defaults: {
                 style: "padding: 10px",
                 autoHeight: this.outputConfig.autoHeight
-            },
-            listeners: {
-                added: function(cmp) {
-                    if (!this.outputTarget) {
-                        cmp.on("afterrender", function() {
-                            cmp.ownerCt.ownerCt.center();
-                        }, this, {single: true});
-                    }
-                },
-                scope: this
             }
         }, config));
     }
