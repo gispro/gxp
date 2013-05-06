@@ -129,6 +129,11 @@
     background-image: url(img/silk/printer.png);
 }
 
+/* gxp_logger */
+.x-btn .gxp-icon-logger, .x-menu-item .gxp-icon-logger, .x-tree-node .gxp-icon-logger {
+    background-image: url(img/silk/logger.png);
+}
+
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
     background-image: url(img/silk/information.png);
@@ -355,4 +360,16 @@ div.map-overlay div.overlay-element {
 }
 .customTree .x-tree-node .x-tree-selected  {
     font-weight: normal;
+}
+
+.x-grid3-cell-inner {
+overflow: visible;
+white-space: normal !important;
+word-wrap: break-word; 
+word-break: break-all;
+}
+
+.olImageLoadError { 
+    /* when OL encounters a 404, don't display the pink image */
+    display: none !important;
 }

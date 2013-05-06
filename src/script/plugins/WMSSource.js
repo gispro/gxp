@@ -178,7 +178,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             REQUEST: "GetCapabilities"
         };
         if (this.version) {
-            baseParams.VERSION = this.version;
+            baseParams.VERSION = this.version; // else getcapabilities fails
         }
 
         var lazy = this.isLazy();

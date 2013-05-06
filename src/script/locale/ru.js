@@ -297,6 +297,11 @@
         notAllNotPrintableText: "Не все слои могут быть напечатаны",
         nonePrintableText: "Не все слои вашей карты могут быть напечатаны"
     },
+	
+	"gxp.plugins.Logger.prototype": {
+        menuText: "Журнал",
+        tooltip: "Показать журнал"
+    },
 
     "gxp.plugins.MapQuestSource.prototype": {
         title: "MapQuest Layers",
