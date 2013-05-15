@@ -12,7 +12,7 @@ arcgisVar.arcgisLoaded   = false;
 arcgisVar.arcgisDownload = false;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var arcgisStore = new Ext.data.JsonStore({ 
-	url       : 'arcgis.json',
+	url       : OVROOT+'arcgis.json',
 	root      : 'arcgis',
 	fields    : ['params', 'options', 'servers'],
 	listeners :

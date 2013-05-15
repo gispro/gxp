@@ -9,7 +9,7 @@ Ext.namespace("gxp.plugins");
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var animationStore = new Ext.data.JsonStore({ 
-	url       : 'animation.json',
+	url       : OVROOT+'animation.json',
 	root      : 'layers',
 	fields    : [ {name: 'name', mapping: 'owner'}, 'animId', 'url', 'title', 'x_axis', 'layers'],
 	listeners :
