@@ -21,7 +21,7 @@ Ext.namespace("gxp");
  */
  
 var	wmsStore =  new Ext.data.JsonStore({ 
-	url       : 'wms.json',
+	url       : OVROOT+'wms.json',
 	root      : 'services',
 	fields    : ['serverName', 'url', 'owner', 'access', 'restUrl'],
 	listeners :
@@ -290,7 +290,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                     isValid = this.iconSelector.validate() && isValid
 
                     if (isValid) {
-                        this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue());
+                        this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue(), '1.3.0');
                     }
 
                 },
