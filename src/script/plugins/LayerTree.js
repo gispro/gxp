@@ -85,7 +85,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             var groups = {}
 
             groups["default"] = this.overlayNodeText
-            groups["background"] = { title: this.baseNodeText, exclusive: true }
+            groups["background"] = { title: this.baseNodeText, exclusive: true, id: 'backgroundLayers'}
 
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Added by gispro (before me)
             this.groups["animation"] = {
@@ -184,7 +184,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             groupConfig = typeof this.groups[group] == "string" ?
                 {title: this.groups[group]} : this.groups[group];
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
-                text: groupConfig.title,
+                id : groupConfig.id,
+				text: groupConfig.title,
                 iconCls: "gxp-folder",
                 expanded: true,
                 group: group == defaultGroup ? undefined : group,
@@ -238,7 +239,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 allowDrag: false,
                 listeners: {
                     append: function(tree, node) {
-                        node.expand();
+                        //node.expand();
                     }
                 }
             }));
@@ -270,7 +271,10 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 }
             }),
             listeners: {
-                contextmenu: function(node, e) {
+				afterrender: function(t) {
+					t.nodeHash.backgroundLayers.collapse();
+				},
+				contextmenu: function(node, e) {
                     if(node && node.layer) {
                         node.select();
                         var tree = node.getOwnerTree();
