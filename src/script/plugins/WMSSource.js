@@ -406,12 +406,14 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  created from this source.
      */
     initDescribeLayerStore: function() {
-        var req = this.store.reader.raw.capability.request.describelayer;
+        //var req = this.store.reader.raw.capability.request.describelayer;
+		var req = this.store.reader.raw.capability.request.getcapabilities;
         if (req) {
             this.describeLayerStore = new GeoExt.data.WMSDescribeLayerStore({
                 url: req.href,
                 baseParams: {
-                    VERSION: this.store.reader.raw.version,
+                    //VERSION: this.store.reader.raw.version,
+					VERSION: '1.1.1',
                     REQUEST: "DescribeLayer"
                 }
             });
