@@ -67,8 +67,8 @@ gxp.plugins.WMSCSource = Ext.extend(gxp.plugins.WMSSource, {
     constructor: function(config) {
         config.baseParams = {
             SERVICE: "WMS",
-            REQUEST: "GetCapabilities",
-            TILED: true
+            REQUEST: "GetCapabilities"/*,
+            TILED: true*/
         };
         gxp.plugins.WMSCSource.superclass.constructor.apply(this, arguments); 
         this.format = new OpenLayers.Format.WMSCapabilities({profile: 'WMSC'});

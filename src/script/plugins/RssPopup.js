@@ -395,7 +395,7 @@ function RssPopupAddActions()
                 if (selectedNode) {
 					selectedNode.ui.checkbox.click();
 				}*/
-				var node = Ext.getCmp('rubricatorTree').items.items[0].getNodeById(selectedLayer.get('id'));
+				var node = Ext.getCmp('rubricatorTree').items.items[0].getNodeById(selectedLayer.get('rubricatorNode'));
 				if (node) node.ui.checkbox.checked = false;
 				var record = selectedLayer;
 				
