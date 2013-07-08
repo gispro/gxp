@@ -28,7 +28,59 @@ var	wmsStore =  new Ext.data.JsonStore({
 	{
 		loadexception : function(o, arg, nul, e)
 		{
-			alert ("gxp.NewSourceWindow :  serversStore.listeners - LoadException : " + e);         
+			gxp.plugins.Logger.log("Ошибка при загрузке списка сохраненных ресурсов WMS: "+e, gxp.plugins.Logger.prototype.LOG_LEVEL_NETWORK_LOCAL_ERRORS);
+		} 
+	},
+	isRecordPresent : function (url)
+	{
+		var result = false;
+		for (var i = 0; i < this.data.length; i++)
+		{
+			if (url === this.data.items[i].get('url'))
+			{
+				result = true;
+				break;
+	}  
+		}
+		return result;
+	}
+});
+
+var	rssStore =  new Ext.data.JsonStore({ 
+	url       : OVROOT+'rss.json',
+	root      : 'layers',
+	fields    : ['name', 'title', 'icon', 'url', 'owner', 'access'],
+	listeners :
+	{
+		loadexception : function(o, arg, nul, e)
+		{
+			gxp.plugins.Logger.log("Ошибка при загрузке списка сохраненных ресурсов GeoRSS: "+e, gxp.plugins.Logger.prototype.LOG_LEVEL_NETWORK_LOCAL_ERRORS);
+		} 
+	},
+	isRecordPresent : function (url)
+	{
+		var result = false;
+		for (var i = 0; i < this.data.length; i++)
+		{
+			if (url === this.data.items[i].get('url'))
+			{
+				result = true;
+				break;
+	}  
+		}
+		return result;
+	}
+});
+
+var arcgisStore =  new Ext.data.JsonStore({ 
+	url       : OVROOT+'arcgis.json',
+	root      : 'arcgis.servers',
+	fields    : ['title', 'url'],
+	listeners :
+	{
+		loadexception : function(o, arg, nul, e)
+		{
+			gxp.plugins.Logger.log("Ошибка при загрузке списка сохраненных ресурсов ArcGIS: "+e, gxp.plugins.Logger.prototype.LOG_LEVEL_NETWORK_LOCAL_ERRORS);
 		} 
 	},
 	isRecordPresent : function (url)
@@ -160,6 +212,57 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 				return result;
 			}
         });
+		
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
+        this.rssServersSelector = new Ext.form.ComboBox({
+		    fieldLabel: "GeoRSS",
+            emptyText: "Введите или выберите сервис GeoRSS",
+            displayField: 'title',
+            valueField: 'url',
+            editable: true,
+            triggerAction: 'all',
+            mode: 'local',
+            store: rssStore, // this.serversStore,
+			anchor: '100%',
+			getServerName : function()
+			{
+				var result = "";
+				for (var i = 0; i < this.store.data.length; i++)
+				{
+					if (this.store.data.items[i].data.url === this.getValue())
+					{
+						result = this.store.data.items[i].data.title;
+						break;
+					}
+				}
+				return result;
+			}
+        });
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
+        this.arcgisServersSelector = new Ext.form.ComboBox({
+		    fieldLabel: "ArcGIS",
+            emptyText: "Введите или выберите сервис ArcGIS",
+            displayField: 'title',
+            valueField: 'url',
+            editable: true,
+            triggerAction: 'all',
+            mode: 'local',
+            store: arcgisStore, // this.serversStore,
+			anchor: '100%',
+			getServerName : function()
+			{
+				var result = "";
+				for (var i = 0; i < this.store.data.length; i++)
+				{
+					if (this.store.data.items[i].data.url === this.getValue())
+					{
+						result = this.store.data.items[i].data.title;
+						break;
+					}
+				}
+				return result;
+			}
+        });
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
         this.iconSelector = new Ext.form.ComboBox({
             fieldLabel: "Иконка",
@@ -167,7 +270,6 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             displayField: 'color',
             valueField: 'url',
             editable: true,
-            disabled:true,
             triggerAction: 'all',
             mode: 'local',
             store: this.iconStore,
@@ -188,8 +290,53 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             },
             scope: this
         });
+		
+		this.rssServersSelector.on({
+            //click: this.stopMouseEvents,
+            //mousedown: this.stopMouseEvents,
+            select: function(combo, record, index)
+            {
+                this.rssUrlTextField.setValue(record.data.url);                
+                this.rssTitleTextField.setValue (record.data.title);
+				this.iconSelector.setValue (record.data.icon);
+            },
+            scope: this
+        });
+		
+		this.arcgisServersSelector.on({
+            //click: this.stopMouseEvents,
+            //mousedown: this.stopMouseEvents,
+            select: function(combo, record, index)
+            {
+                this.arcgisUrlTextField.setValue(record.data.url);                
+                this.arcgisTitleTextField.setValue (record.data.title);
+            },
+            scope: this
+        });
 
         this.urlTextField = new Ext.form.TextField({
+            fieldLabel: "URL",
+            allowBlank: false,
+            blankText: this.blankText,
+            editable: false,
+            anchor: '100%',
+            msgTarget: "under",
+//          validator: this.urlValidator.createDelegate(this),
+            hidden: false
+        });
+		
+		this.rssUrlTextField = new Ext.form.TextField({
+            fieldLabel: "URL",
+            allowBlank: false,
+            blankText: this.blankText,
+            editable: false,
+            anchor: '100%',
+            msgTarget: "under",
+//          validator: this.urlValidator.createDelegate(this),
+            hidden: false
+        });
+		
+		this.arcgisUrlTextField = new Ext.form.TextField({
             fieldLabel: "URL",
             allowBlank: false,
             blankText: this.blankText,
@@ -212,6 +359,24 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         });
 
         this.titleTextField = new Ext.form.TextField({
+            fieldLabel: "Наименование", // "Title",
+            allowBlank: false,
+            blankText: this.blankText,
+            anchor: '100%',
+            msgTarget: "under",
+            hidden: false
+        });
+		
+		this.rssTitleTextField = new Ext.form.TextField({
+            fieldLabel: "Наименование", // "Title",
+            allowBlank: false,
+            blankText: this.blankText,
+            anchor: '100%',
+            msgTarget: "under",
+            hidden: false
+        });
+		
+		this.arcgisTitleTextField = new Ext.form.TextField({
             fieldLabel: "Наименование", // "Title",
             allowBlank: false,
             blankText: this.blankText,
@@ -242,23 +407,83 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             }, scope: this
         });
 
-        this.form = new Ext.form.FormPanel({
-            items: [
-                this.serversSelector,
-                this.titleTextField,
-                this.urlTextField,
-                this.restUrlTextField,
-				this.iconSelector,
-				this.radioGroup
-            ],
-            border: false,
+        
+		
+		this.form = new Ext.TabPanel({
+			id: 'NewSourceWinTabPanel',
+			border: false,
             bodyStyle: "padding: 5px",
             labelWidth: 90,
+			activeTab: 0,
             height : 220,
             width : 620,
             autoWidth: true,
-            autoHeight: false
-        });
+            autoHeight: false,
+			items: [
+				{
+					id : 'WMSTab',
+					title : 'WMS',
+					xtype: 'form',
+					items: [
+						{
+							xtype: 'fieldset',
+							items: [
+								this.serversSelector
+							]
+						},
+						{
+							xtype: 'fieldset',
+							items: [
+								this.titleTextField,
+								this.urlTextField,
+								this.restUrlTextField,
+							]
+						}
+					]
+				},
+				{
+					id : 'RSSTab',
+					title : 'GeoRSS',
+					xtype: 'form',
+					items: [
+						{
+							xtype: 'fieldset',
+							items: [
+								this.rssServersSelector
+							]
+						},
+						{
+							xtype: 'fieldset',
+							items: [
+								this.rssTitleTextField,
+								this.rssUrlTextField,
+								this.iconSelector								
+							]
+						}
+					]
+				},
+				{
+					id : 'ArcGISTab',
+					title : 'ArcGIS',
+					xtype: 'form',
+					items: [
+						{
+							xtype: 'fieldset',
+							items: [
+								this.arcgisServersSelector
+							]
+						},
+						{
+							xtype: 'fieldset',
+							items: [
+								this.arcgisTitleTextField,
+								this.arcgisUrlTextField,						
+							]
+						}              				
+					]
+				}
+			]
+		});
 
         this.bbar = [
             new Ext.Button({
@@ -287,12 +512,22 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
                     var isValid = this.urlTextField.validate()
                     isValid = this.restUrlTextField.validate() && isValid
                     isValid = this.titleTextField.validate() && isValid
-                    isValid = this.iconSelector.validate() && isValid
-
-                    if (isValid) {
-                        this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue(), '1.3.0');
-                    }
-
+                    //isValid = this.iconSelector.validate() && isValid
+                    
+                        if (this.getServiceIDX() == 'WMS') {
+							var isValid = this.urlTextField.validate() && this.restUrlTextField.validate() && this.titleTextField.validate();
+							if (isValid)
+								this.fireEvent("server-added", this.urlTextField.getValue(), this.restUrlTextField.getValue(), this.titleTextField.getValue(), this.iconSelector.getValue(), '1.3.0');
+						} else if (this.getServiceIDX() == 'GeoRSS') {
+							var isValid = this.rssUrlTextField.validate() && this.iconSelector.validate() && this.rssTitleTextField.validate();
+							if (isValid)
+								this.fireEvent("server-added", this.rssUrlTextField.getValue(), this.rssTitleTextField.getValue(), this.iconSelector.getValue(), '1.3.0');
+						} else if (this.getServiceIDX() == 'ArcGIS') {
+							var isValid = this.arcgisUrlTextField.validate() && this.arcgisTitleTextField.validate();
+							if (isValid)
+								this.fireEvent("server-added", this.arcgisUrlTextField.getValue(), this.arcgisTitleTextField.getValue(), undefined,'1.3.0');	
+						}
+					
                 },
                 scope: this
             })
@@ -324,7 +559,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.on("server-added", function(url)
 		{
 //			console.log ('server-added : url = ' + url + ', ' + this.getServiceIDX());
-			if (this.getServiceIDX() == 0)
+			if (this.getServiceIDX() == "WMS")
 			{
 				this.setLoading();
 				var success = function(record) {
@@ -350,48 +585,10 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         }, this);
 
     },
-  getServiceIDX: function() { return this.radioGroup.getValue().inputValue - 1 },
+  getServiceIDX: function() { return Ext.getCmp('NewSourceWinTabPanel').getActiveTab().title },
   lockFields: function(idx)
-  {
-    if (idx === 1)
-    {
-      this.serversSelector.setValue(this.serversSelector.emptyText);
-      this.iconSelector   .setValue(this.iconSelector   .emptyText);
-      this.titleTextField .setValue('');
-      this.urlTextField   .setValue('');
-
-      this.serversSelector.setDisabled (false);
-      this.titleTextField .setDisabled (false);
-      this.urlTextField   .setDisabled (false);
-      this.restUrlTextField.setDisabled(false);
-      this.iconSelector   .setDisabled ( true);
-    } else if (idx === 2) {
-      this.serversSelector.setValue(this.serversSelector.emptyText);
-      this.iconSelector   .setValue(this.iconSelector   .emptyText);
-      this.titleTextField.setValue('');
-      this.urlTextField  .setValue('');
-
-      this.serversSelector.setDisabled( true);
-      this.titleTextField.setDisabled (false);
-      this.urlTextField  .setDisabled (false);
-      this.restUrlTextField.setDisabled(true);
-      this.iconSelector  .setDisabled ( true);
-    } else if (idx === 3) {
-      this.serversSelector.setValue(this.serversSelector.emptyText);
-      this.iconSelector   .setValue(this.iconSelector   .emptyText);
-      this.titleTextField.setValue('');
-      this.urlTextField  .setValue('');
-
-      this.serversSelector.setDisabled( true);
-      this.titleTextField.setDisabled (false);
-      this.urlTextField  .setDisabled (false);
-      this.restUrlTextField.setDisabled(true);
-      this.iconSelector  .setDisabled (false);
-    }
-    this.urlTextField.clearInvalid()
-    this.restUrlTextField.clearInvalid()
-    this.titleTextField.clearInvalid()
-	},
+  {    
+  },
 
     /** private: property[urlRegExp]
      *  `RegExp`

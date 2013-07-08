@@ -191,7 +191,7 @@ function showAnimWindow(rootNode, selectedNode)
 		btnReset = new Ext.Button({
 			scale    : 'small', 
 			cls      : 'x-btn-icon',
-			icon     : 'script/images/stop.png',
+			icon     : OVROOT + 'script/images/stop.png',
 			x        : 5,
 			y        : 10,
 			handler  : function (b,e)
@@ -203,7 +203,7 @@ function showAnimWindow(rootNode, selectedNode)
 		btnPlay = new Ext.Button({
 			scale    : 'small', 
 			cls      : 'x-btn-icon',
-			icon     : 'script/images/play.png',
+			icon     : OVROOT + 'script/images/play.png',
 			x        : 30,
 			y        : 10,
 			handler  : function (b,e)
@@ -399,7 +399,7 @@ function showAnimWindow(rootNode, selectedNode)
 			timer.setRunCallBack (timerRunCB   );
 			timer.setEndCallBack (stopAnimation);
 			timer.start();
-			btnPlay.setIcon('script/images/pause.png');
+			btnPlay.setIcon(OVROOT + 'script/images/pause.png');
 			slider.disable (true);
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -407,7 +407,7 @@ function showAnimWindow(rootNode, selectedNode)
 		{
 			timer .stop();
 			slider.enable (true);
-			btnPlay.setIcon('script/images/play.png');
+			btnPlay.setIcon(OVROOT + 'script/images/play.png');
 		}
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		function reset()
