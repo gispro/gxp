@@ -194,7 +194,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.serversSelector = new Ext.form.ComboBox({
 		    fieldLabel: "WMS",
             emptyText: "Введите или выберите сервис WMS",
-            displayField: 'serverName',
+            displayField: 'server_name',
             valueField: 'url',
             editable: true,
             triggerAction: 'all',
@@ -208,7 +208,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 				{
 					if (this.store.data.items[i].data.url === this.getValue())
 					{
-						result = this.store.data.items[i].data.serverName;
+						result = this.store.data.items[i].data.server_name;
 						break;
 					}
 				}
@@ -220,7 +220,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         this.rssServersSelector = new Ext.form.ComboBox({
 		    fieldLabel: "GeoRSS",
             emptyText: "Введите или выберите сервис GeoRSS",
-            displayField: 'title',
+            displayField: 'name',
             valueField: 'url',
             editable: true,
             triggerAction: 'all',
@@ -288,8 +288,8 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             select: function(combo, record, index)
             {
                 this.urlTextField.setValue(record.data.url);
-                this.restUrlTextField.setValue(record.data.restUrl);
-                this.titleTextField.setValue (record.data.serverName);
+                this.restUrlTextField.setValue(record.data.rest_url);
+                this.titleTextField.setValue (record.data.server_name);
             },
             scope: this
         });
@@ -300,7 +300,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             select: function(combo, record, index)
             {
                 this.rssUrlTextField.setValue(record.data.url);                
-                this.rssTitleTextField.setValue (record.data.title);
+                this.rssTitleTextField.setValue (record.data.name);
 				this.iconSelector.setValue (record.data.icon);
             },
             scope: this
