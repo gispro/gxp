@@ -8,7 +8,8 @@
 Ext.namespace("gxp.plugins");
 
 var	rssStore = new Ext.data.JsonStore({ 
-	url       : OVROOT+'rss.json',
+	//url       : OVROOT+'rss.json',
+	url 	  : OVROOT + 'services?service=rss&action=getList',	
 	root      : 'layers',
 	fields    : ['timer', 'name', 'title', 'icon', 'url', 'owner', 'access'],
 	listeners :

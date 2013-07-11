@@ -21,9 +21,10 @@ Ext.namespace("gxp");
  */
  
 var	wmsStore =  new Ext.data.JsonStore({ 
-	url       : OVROOT+'wms.json',
+	//url       : OVROOT+'wms.json',
+	url       : OVROOT+'services?service=wms&action=getList',
 	root      : 'services',
-	fields    : ['serverName', 'url', 'owner', 'access', 'restUrl'],
+	fields    : ['id', 'server_name', 'url', 'owner', 'access', 'rest_url'],
 	listeners :
 	{
 		loadexception : function(o, arg, nul, e)
@@ -47,9 +48,10 @@ var	wmsStore =  new Ext.data.JsonStore({
 });
 
 var	rssStore =  new Ext.data.JsonStore({ 
-	url       : OVROOT+'rss.json',
-	root      : 'layers',
-	fields    : ['name', 'title', 'icon', 'url', 'owner', 'access'],
+	//url       : OVROOT+'rss.json',
+	url 	  : OVROOT + 'services?service=rss&action=getList',	
+	root      : 'services',
+	fields    : ['id', 'name', 'title', 'icon', 'url', 'owner', 'access'],
 	listeners :
 	{
 		loadexception : function(o, arg, nul, e)
@@ -73,9 +75,10 @@ var	rssStore =  new Ext.data.JsonStore({
 });
 
 var arcgisStore =  new Ext.data.JsonStore({ 
-	url       : OVROOT+'arcgis.json',
-	root      : 'arcgis.servers',
-	fields    : ['title', 'url'],
+	//url       : OVROOT+'arcgis.json',
+	url       : OVROOT+'services?service=arcgis&action=getList',
+	root      : 'servers',
+	fields    : ['id', 'title', 'url'],
 	listeners :
 	{
 		loadexception : function(o, arg, nul, e)
