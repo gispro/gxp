@@ -78,7 +78,11 @@ gxp.plugins.ArcGIS93Source = Ext.extend(gxp.plugins.LayerSource,
 	
 	createLayer: function(name, url)
 	{
-		return new OpenLayers.Layer.ArcGIS93Rest(name, url, arcgisStore.reader.jsonData.arcgis.params, arcgisStore.reader.jsonData.arcgis.options);
+	var arcgis = { 
+		params:{minZoomLevel:4,maxZoomLevel:17,maxResolution:156543.03390625,displayOutsideMaxExtent:false,transitionEffect:"resize",transparent:true,format:"PNG"},
+		options:{wrapDateLine:true, singleTile:true,ratio:1}
+	}
+		return new OpenLayers.Layer.ArcGIS93Rest(name, url, arcgis.params, arcgis.options);
 	},
 	createBaseLayers : function()
 	{

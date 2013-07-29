@@ -413,7 +413,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         
 		
 		this.form = new Ext.TabPanel({
-			id: 'NewSourceWinTabPanel',
+			//id: 'NewSourceWinTabPanel',
 			border: false,
             bodyStyle: "padding: 5px",
             labelWidth: 90,
@@ -424,7 +424,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
             autoHeight: false,
 			items: [
 				{
-					id : 'WMSTab',
+					// id : 'WMSTab',
 					title : 'WMS',
 					xtype: 'form',
 					items: [
@@ -445,7 +445,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 					]
 				},
 				{
-					id : 'RSSTab',
+					// id : 'RSSTab',
 					title : 'GeoRSS',
 					xtype: 'form',
 					items: [
@@ -466,7 +466,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 					]
 				},
 				{
-					id : 'ArcGISTab',
+					// id : 'ArcGISTab',
 					title : 'ArcGIS',
 					xtype: 'form',
 					items: [
@@ -588,7 +588,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
         }, this);
 
     },
-  getServiceIDX: function() { return Ext.getCmp('NewSourceWinTabPanel').getActiveTab().title },
+  getServiceIDX: function() { return this.form.getActiveTab().title },
   lockFields: function(idx)
   {    
   },

@@ -128,19 +128,19 @@ function RssPopupParseData (ajaxRequest)
 //		console.log ('RssPopupParseData : documentURI = ' + ajaxRequest._object.responseXML.documentURI);
 //		console.log ('RssPopupParseData : referrer = ' + ajaxRequest._object.responseXML.referrer);
 //		console.log ('RssPopupParseData : url = ' + url);
-		var name = rssStore.getRecordName (url); // null;
-		if (!name)
-		{
+		//var name = rssStore.getRecordName (url); // null;
+	//	if (!name)
+	//	{
 			try {
 				name = doc.getElementsByTagNameNS('*', 'title')[0].firstChild.nodeValue;
 			}
 			catch (e) {
 				name = doc.getElementsByTagName('title')[0].firstChild.nodeValue;
 			}
-		}
-		if (name) {
+	//	}
+		if (name) //{
 			this.setName(name);
-		}    
+	//	}    
 	}
 	var options = {};
 	

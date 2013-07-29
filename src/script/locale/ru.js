@@ -594,6 +594,15 @@
         contactingServerText: "Соединение с сервером",
         blankText: "Поле не может быть пустым."
     },
+	
+	"gxp.NewLayerWindow.prototype": {
+        title: "Добавить новый слой",
+        cancelText: "Отмена",
+        addServerText: "Добавить слой",
+        invalidURLText: "Введите правильный путь к WMS (пример http://example.com/geoserver/wms)",
+        contactingServerText: "Соединение с сервером",
+        blankText: "Поле не может быть пустым."
+    },
 
     "gxp.ScaleOverlay.prototype": { 
         zoomLevelText: "Уровень"

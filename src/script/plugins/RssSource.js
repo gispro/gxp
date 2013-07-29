@@ -59,7 +59,7 @@ function downloadRSS()
 	{
 		rssStore.load();
 		rssVar.downloadStart = true;
-	}
+	} 
 };
 
 gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
@@ -75,7 +75,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 
     createLayerRecord: function(config)
 	{
-		downloadRSS();
+		downloadRSS();		
 		var record = new GeoExt.data.LayerRecord();
 
 		layer = new OpenLayers.Layer.GeoRSS (config.name, config.url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': config.icon});
@@ -86,6 +86,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 		record.set("source"    , 'rss'                );
         record.set("icon"      , config.icon          );
         record.set("url"       , config.url           );
+		record.set("source"    , 'rss'		          );
 		record.set("properties", "gxp_wmslayerpanel"  );
 		record.data.layer = layer;
 		
@@ -94,29 +95,32 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 		return record;
 	},
 	
-    createRecord: function(title)
+    createRecord: function(name,id)
 	{
+		this.layersStore = rssStore;
 		var record = new GeoExt.data.LayerRecord();
 		var layer  = null;
-		var name;
+		var title;
 		var icon;
 		var url;
 		for (var idx = 0; idx < this.layersStore.data.length; idx++)
 		{
-			if (title === this.layersStore.data.items[idx].get('title'))
-			{
-				icon  = new OpenLayers.Icon(this.layersStore.data.items[idx].get('icon'), new OpenLayers.Size(21,25));
-				icon.imageDiv = {};
-				url   = this.layersStore.data.items[idx].get('url');
-				var parts = (this.layersStore.data.items[idx].get('url') ? this.layersStore.data.items[idx].get('url').split("/") : null);
-				if (parts)
-					name = parts[parts.length-1];
-				else
-					name = 'Unreachable';
+			if (name)
+				if (name === this.layersStore.data.items[idx].get('name'))
+				{
+					icon  = new OpenLayers.Icon(this.layersStore.data.items[idx].get('icon'), new OpenLayers.Size(21,25));
+					title  = this.layersStore.data.items[idx].get('title');
+					icon.imageDiv = {};
+					url   = this.layersStore.data.items[idx].get('url');
+					var parts = (this.layersStore.data.items[idx].get('url') ? this.layersStore.data.items[idx].get('url').split("/") : null);
+					if (parts)
+						name = parts[parts.length-1];
+					else
+						name = 'Unreachable';
 
-				layer = new OpenLayers.Layer.GeoRSS (name, url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': icon});
-				break;
-			}
+					layer = new OpenLayers.Layer.GeoRSS (name, url, {'projection': new OpenLayers.Projection("EPSG:4326"), 'icon': icon});
+					break;
+				}
 		}
 		
 		record.setLayer(layer);
@@ -125,6 +129,7 @@ gxp.plugins.RssSource = Ext.extend(gxp.plugins.LayerSource,
 		record.set("source"    , 'rss'                );
         record.set("icon"      , icon                 );
         record.set("url"       , url                  );
+		record.set("group"     , 'rss'                  );
 		record.set("properties", "gxp_wmslayerpanel"  );
 		record.data.layer = layer;
 		

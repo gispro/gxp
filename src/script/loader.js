@@ -16,6 +16,7 @@
         "widgets/WMSLayerPanel.js",
         "widgets/WMSStylesDialog.js",
         "widgets/NewSourceWindow.js",
+		"widgets/NewLayerWindow.js",
         "widgets/FillSymbolizer.js",
         "widgets/StrokeSymbolizer.js",
         "widgets/PointSymbolizer.js",
